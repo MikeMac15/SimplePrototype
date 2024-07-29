@@ -1,70 +1,204 @@
-import { Image, StyleSheet, Platform } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import AllShotPieChart from '@/components/StatComponents/AllShotPieChart';
+import RecentRoundStatList from '@/components/StatComponents/RecentRounds';
+import { Stack } from 'expo-router';
+import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { View, Text, StyleSheet, ImageBackground, ScrollView } from 'react-native'
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+import { MenuGradients, getRibbonImageSource } from '@/constants/Colors';
+import { useEffect, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { getRoundAllStats, getTimelineScores} from '@/components/DataBase/API';
+import BigStats from '@/components/StatComponents/BigStats';
+import { AllStats, Shot, TimelineStats, toPars } from '@/components/DataBase/Classes';
+import { getMenuGradient, getRibbonImage } from '@/components/DataBase/localStorage';
+import ParStatistics from '@/components/StatComponents/ParStats';
+
+import { ScoringBarChart } from '@/components/StatComponents/courseStats/overview/ScoringView';
+import { green } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
+import Timeline from '@/components/StatComponents/courseStats/overview/Timeline';
+import CourseAveragesView from '@/components/StatComponents/courseStats/overview/CourseAveragesView';
+
+
+
+export default function index() {
+    //////////////////////////////////////////////////////////////////////////
+    const [gradient, setGradient] = useState('cool-guy')
+    const [ribbonImage, setRibbonImage] = useState('proud-parent')
+    const getPreferences = async () => {
+        const value = await getMenuGradient()
+        setGradient(value)
+        const ribbonImgTag = await getRibbonImage()
+        setRibbonImage(ribbonImgTag)
+    }
+
+    useEffect(() => {
+        getPreferences();
+    }, [])
+    const image = getRibbonImageSource(ribbonImage)
+    //////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////
+    const [shotTotals, setShotTotals] = useState({ bad: 0, good: 0, great: 0, totalPutts: 0 });
+    const [timelineScores, setTimelineScores] = useState<number[]>([])
+    const [roundStatTotals, setRoundStatTotals] = useState<AllStats>({
+        count: 0,
+        minScore: 0,
+        maxScore: 0,
+        avgStrokes: 0,
+        eaglesOless: 0,
+        birdies: 0,
+        pars: 0,
+        bogies: 0,
+        doublePlus: 0,
+        toPar3: 0,
+        toPar4: 0,
+        toPar5: 0,
+        great: 0,
+        good: 0,
+        bad: 0,
+        totalPutts: 0,
+        avgGIR: 0,
+        avgFIR: 0,
+    });
+
+    
+    useEffect(() => {
+        const fetchRoundData = async () => {
+            try {
+                const roundStats = await getRoundAllStats();
+
+                const totals = {
+                    count: roundStats.count,
+                    minScore: roundStats.minScore,
+                    maxScore: roundStats.maxScore,
+                    avgStrokes: roundStats.avgStrokes,
+                    eaglesOless: roundStats.eaglesOless,
+                    birdies: roundStats.birdies,
+                    pars: roundStats.pars,
+                    bogies: roundStats.bogies,
+                    doublePlus: roundStats.doublePlus,
+                    toPar3: roundStats.toPar3,
+                    toPar4: roundStats.toPar4,
+                    toPar5: roundStats.toPar5,
+                    great: roundStats.great,
+                    good: roundStats.good,
+                    bad: roundStats.bad,
+                    totalPutts: roundStats.totalPutts,
+                    avgGIR: roundStats.avgGIR,
+                    avgFIR: roundStats.avgFIR
+                };
+                const Shots = {
+                    great: roundStats.great,
+                    good: roundStats.good,
+                    bad: roundStats.bad,
+                    totalPutts: roundStats.totalPutts,
+                }
+
+                setShotTotals(Shots)
+                setRoundStatTotals(totals);
+
+
+                const timelineScoreArray = await getTimelineScores();
+                setTimelineScores(timelineScoreArray)
+                
+
+            } catch (error) {
+                console.error("Error fetching round data:", error);
+            }
+        };
+
+
+        fetchRoundData();
+    }, []);
+
+    //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+    return (
+
+        <LinearGradient colors={MenuGradients[gradient]} style={styles.container2}>
+
+            <Stack.Screen options={{
+                title: 'StatHub',
+                headerBackTitle: "Menu",
+                headerBackground: () => (
+                    <ImageBackground
+                        source={image}
+                        style={[StyleSheet.absoluteFill, { flex: 1 }]}
+                    />
+                ),
+                headerTitleStyle: { fontSize: 25, fontWeight: '800' }
+            }} />
+            <SQLiteProvider databaseName='golfGooderSimple.db' >
+
+
+                    <ScrollView style={{overflow:'hidden'}}>
+                <View style={styles.container}>
+                        <View style={{justifyContent:'center', alignItems:'center', width:'100%'}}>
+
+                                <Text style={{ fontSize: 25, color: 'whitesmoke', fontFamily: 'arial', fontStyle: 'italic', marginTop: 20, marginBottom: 0 }}>Scoring Overview</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
+                            <View>
+
+                                <View >
+                                    <AllShotPieChart shotTotals={shotTotals} />
+                                </View>
+                            </View>
+                            {roundStatTotals.avgStrokes > 0
+                                ?
+                                <View>
+                                    
+                                    <View>
+                                        <View style={{ transform: 'scale(.8)', marginTop: 20, marginRight:20 }}>
+                                            <ScoringBarChart pars={roundStatTotals.pars} over={roundStatTotals.bogies + roundStatTotals.doublePlus} under={roundStatTotals.birdies + roundStatTotals.eaglesOless} />
+                                        </View>
+                                    </View>
+                                </View>
+                                : ''
+                            }
+                            </View>
+                        </View>
+                        <Timeline data1={timelineScores} />
+                        
+                        <View style={{transform:'scale(0.9)'}}>
+                            <CourseAveragesView best={roundStatTotals.minScore} worst={roundStatTotals.maxScore} avgScore={roundStatTotals.avgStrokes} avgGIR={(roundStatTotals.avgGIR / 18)*100} avgFIR={(roundStatTotals.avgFIR / 14)*100} avgPPR={(roundStatTotals.totalPutts / roundStatTotals.count)} count={roundStatTotals.count} />
+                        </View>
+
+                        <BigStats avgScore={roundStatTotals.avgStrokes} roundsPlayed={roundStatTotals.count} holesPlayed={roundStatTotals.count * 18} bestRound={roundStatTotals.minScore} />
+
+                        <ParStatistics />
+
+                        <RecentRoundStatList />
+                </View>
+                    </ScrollView>
+            </SQLiteProvider>
+        </LinearGradient>
+
+    )
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+    container2: {
+
+
+        height: '100%',
+
+        // padding: 20,
+        // alignItems: 'center',
+    },
+    container: {
+
+
+        // marginVertical:20,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+})

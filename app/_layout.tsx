@@ -1,37 +1,45 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useEffect, useState } from "react";
+import { Stack } from "expo-router";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { getRibbonImageSource } from "@/constants/Colors";
+import { ImageBackground, StyleSheet } from "react-native";
+import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+
+    const [gradient, setGradient] = useState('cool-guy')
+    const [ribbonImage, setRibbonImage] = useState('proud-parent')
+    const getPreferences = async () => {
+        const value = await getMenuGradient()
+        setGradient(value)
+        const ribbonImgTag = await getRibbonImage()
+        setRibbonImage(ribbonImgTag)
     }
-  }, [loaded]);
+    
+    useEffect(() => {
+        getPreferences();
+    }, [])
+    const image = getRibbonImageSource(ribbonImage)
 
-  if (!loaded) {
-    return null;
-  }
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    
+    return (
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+      <Stack.Screen name="index" options={{ title: "" }} />
+      <Stack.Screen name="(myCourses)/index" options={{ title: "My Courses" }} />
+      <Stack.Screen name="(play)/index" options={{ title: "Simple Counter" }} />
+      <Stack.Screen name="(settings)/index" options={{ title: "Settings" }} />
+      <Stack.Screen name="(tabs)" options={{ title: "Statistics",
+      headerBackground: () => (
+        <ImageBackground
+        source={image}
+        style={StyleSheet.absoluteFill}
+        />
+      ),
+  
+    }} />
+      {/* Add other screens as needed */}
+    </Stack>
   );
 }
