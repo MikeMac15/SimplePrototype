@@ -1,4 +1,5 @@
-import { AllStats } from "@/components/DataBase/Classes";
+import { getCourseHoleData, getTeeAllStats, getTeeTimelineScores, getTimelineScores } from "@/components/DataBase/API";
+import { AllStats, CourseHoleData } from "@/components/DataBase/Classes";
 import CourseStatView from "@/components/StatComponents/courseStats/CourseStatView";
 import HoleStats from "@/components/StatComponents/courseStats/holeStats/HoleStats";
 
@@ -16,9 +17,19 @@ const CourseStats = () => {
     const [showSelection, setShowSelection] = useState(false)
     const [btnTitle, setBtnTitle] = useState('Course Overview')
 
+    const [courseHoleData,setCourseHoleData] = useState<CourseHoleData>({
+        avgScores: [0],
+        totalScores: [0],
+        pph: [0],
+        gir: [0],
+        fir: [0],
+    });
+    
+
+
     const [shotTotals, setShotTotals] = useState({ bad: 0, good: 0, great: 0, totalPutts: 0 });
     const [timelineScores, setTimelineScores] = useState<number[]>([])
-    const [roundStatTotals, setRoundStatTotals] = useState<AllStats>({
+    const [allStatTotals, setAllStatTotals] = useState<AllStats>({
         count: 0,
         minScore: 0,
         maxScore: 0,
@@ -42,7 +53,7 @@ const CourseStats = () => {
     useEffect(() => {
         const fetchRoundData = async () => {
             try {
-                const roundStats = await getCourseAllStats();
+                const roundStats = await getTeeAllStats(Number(teeID));
 
                 const totals = {
                     count: roundStats.count,
@@ -72,11 +83,14 @@ const CourseStats = () => {
                 }
 
                 setShotTotals(Shots)
-                setRoundStatTotals(totals);
+                setAllStatTotals(totals);
 
 
-                const timelineScoreArray = await getTimelineScores();
-                setTimelineScores(timelineScoreArray)
+                const timelineScoreArray = await getTeeTimelineScores(Number(teeID));
+                setTimelineScores(timelineScoreArray);
+
+                const courseAllHoleData = await getCourseHoleData(Number(teeID));
+                setCourseHoleData(courseAllHoleData);
                 
 
             } catch (error) {
@@ -93,13 +107,13 @@ const CourseStats = () => {
 
         switch (viewSelection) {
             case 0:
-                return <CourseStatView />
+                return <CourseStatView AllStats={allStatTotals} Subjective={shotTotals} ShotTimeline={timelineScores} />
             case 1:
-                return <HoleStats title='Average Score' data={[0]} />
+                return <HoleStats title='Average Score' data={courseHoleData.avgScores} />
             case 2:
-                return <HoleStats title='Total Score' data={[0]} />
+                return <HoleStats title='Total Score' data={courseHoleData.totalScores} />
             case 3:
-                return <HoleStats title='Putts Per Hole' data={[0]} />
+                return <HoleStats title='Putts Per Hole' data={courseHoleData.pph} />
             case 4:
                 return <HoleStats title='Green In Regulation' data={[0]} />
             case 5:

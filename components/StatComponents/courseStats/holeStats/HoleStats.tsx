@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { Text, View, StyleSheet } from 'react-native'
 
 interface HoleStatsProps {
@@ -17,15 +18,15 @@ const HoleStats: React.FC<HoleStatsProps> = ({title, data, percentage  = false})
     }
 
     const adjustedColor = (val: number) => {
-        const min = Math.min(...data);
-        const max = Math.max(...data);
+        const max = Math.min(...data);
+        const min = Math.max(...data);
         let colorVal = (val - min)/(max - min);
         if ( colorVal > 0.5){
             colorVal = (colorVal * 100);
-            return `HSL(80,${colorVal}%,50%)`;
+            return `hsl(80,${colorVal}%,50%)`;
         } else if ( colorVal <= 0.5){
             colorVal = ((1 - colorVal)*100);
-            return `HSL(5,${colorVal}%,50%)`;
+            return `hsl(5,${colorVal}%,50%)`;
         }
     }
 
@@ -33,12 +34,14 @@ const HoleStats: React.FC<HoleStatsProps> = ({title, data, percentage  = false})
         
         return (
             
-            <View style={[styles.square,{backgroundColor:adjustedColor(data)}]}>
+            <View style={[styles.square,{}]}>
             <View style={styles.squareTitle}>
-                <Text style={styles.holeNum}>{`Hole ${holeNum}`}</Text>
+                <Text style={[styles.holeNum,{color:`${adjustedColor(data)}`}]}>{`Hole ${holeNum}`}</Text>
+                {/* <Text style={[styles.holeNum,{color:`#999`}]}>{`Hole ${holeNum}`}</Text> */}
             </View>
                 <View>
-                    <Text>{data.toFixed(2)}</Text>
+                    <Text style={[styles.holeData,{color:`${adjustedColor(data)}`}]}>{data.toFixed(2)}</Text>
+                    {/* <Text style={[styles.holeData,{color:`whitesmoke`}]}>{data.toFixed(1)}</Text> */}
                 </View>
             </View>
         )
@@ -49,13 +52,13 @@ const HoleStats: React.FC<HoleStatsProps> = ({title, data, percentage  = false})
     const chunkData = chunkArray(data, 3);
 
   return (
-<View style={styles.container}>
-    <View style={styles.contRow}>
+<LinearGradient colors={['#333','#111']} style={styles.container}>
+    <View style={styles.cont}>
     {
     chunkData.map((row, rowIdx)=>(
-        <View key={rowIdx} style={{}}>
+        <View key={rowIdx} style={styles.contRow}>
             {row.map((num, idx)=> (
-                <HoleDataSquare holeNum={idx+1+(rowIdx*3)} data={num} />
+                <HoleDataSquare key={idx} holeNum={idx+1+(rowIdx*3)} data={num} />
             ))
             }
         </View>
@@ -64,7 +67,7 @@ const HoleStats: React.FC<HoleStatsProps> = ({title, data, percentage  = false})
 }
     
 </View>
-</View>
+</LinearGradient>
 )
 }
 
@@ -74,17 +77,49 @@ export default HoleStats;
 
 const styles = StyleSheet.create({
 container: {
-
+    // flexDirection:'row',
+    // alignItems:'center',
+    // justifyContent:'space-evenly',
+    height:'100%',
 },
 square: {
     borderRadius:20,
-    borderWidth:2,
-    borderColor:'#3a3a3a'
+    borderWidth:3,
+    borderColor:'#3a3a3a',
+    
+    // backgroundColor:'whitesmoke',
+    
 },
 squareTitle: {
-    backgroundColor:'#444'
+    backgroundColor:'#333',
+    paddingVertical:5,
+    paddingHorizontal:15,
+    borderTopLeftRadius:17,
+    borderTopRightRadius:17,
 },
-holeNum: {},
-contRow: {},
+holeNum: {
+    textAlignVertical:'top',
+    fontSize:17
+},
+holeData: {
+    textAlignVertical:'top',
+    textAlign:'center',
+    paddingVertical:10,
+    fontSize:25,
+    color:'whitesmoke'
+},
+cont: {flexDirection:'column',
+    justifyContent:'space-between',
+    alignItems:'center',
+    width:'100%'
+
+
+},
+contRow:{
+    width:'100%',
+    flexDirection:'row',
+    justifyContent:'space-evenly',
+    marginVertical:5,
+},
 
 })

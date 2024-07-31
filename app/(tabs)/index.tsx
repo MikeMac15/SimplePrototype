@@ -8,13 +8,13 @@ import { View, Text, StyleSheet, ImageBackground, ScrollView } from 'react-nativ
 import { MenuGradients, getRibbonImageSource } from '@/constants/Colors';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { getRoundAllStats, getTimelineScores} from '@/components/DataBase/API';
+import { getRoundAllStats, getTimelineScores } from '@/components/DataBase/API';
 import BigStats from '@/components/StatComponents/BigStats';
 import { AllStats, Shot, TimelineStats, toPars } from '@/components/DataBase/Classes';
 import { getMenuGradient, getRibbonImage } from '@/components/DataBase/localStorage';
 import ParStatistics from '@/components/StatComponents/ParStats';
 
-import { ScoringBarChart } from '@/components/StatComponents/courseStats/overview/ScoringView';
+import ScoringView, { ScoringBarChart } from '@/components/StatComponents/courseStats/overview/ScoringView';
 import { green } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 import Timeline from '@/components/StatComponents/courseStats/overview/Timeline';
 import CourseAveragesView from '@/components/StatComponents/courseStats/overview/CourseAveragesView';
@@ -62,7 +62,7 @@ export default function index() {
         avgFIR: 0,
     });
 
-    
+
     useEffect(() => {
         const fetchRoundData = async () => {
             try {
@@ -101,7 +101,7 @@ export default function index() {
 
                 const timelineScoreArray = await getTimelineScores();
                 setTimelineScores(timelineScoreArray)
-                
+
 
             } catch (error) {
                 console.error("Error fetching round data:", error);
@@ -139,45 +139,34 @@ export default function index() {
             <SQLiteProvider databaseName='golfGooderSimple.db' >
 
 
-                    <ScrollView style={{overflow:'hidden'}}>
-                <View style={styles.container}>
-                        <View style={{justifyContent:'center', alignItems:'center', width:'100%'}}>
+                <ScrollView style={{ overflow: 'hidden' }}>
+                            <Text style={{ fontSize: 25, color: 'whitesmoke', fontFamily: 'arial', fontStyle: 'italic', marginTop: 20, marginBottom: 0, textAlign:'center' }}>Scoring Overview</Text>
+                        <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                                <BigStats avgScore={roundStatTotals.avgStrokes} roundsPlayed={roundStatTotals.count} holesPlayed={roundStatTotals.count * 18} bestRound={roundStatTotals.minScore} />
+                        </View>
+                    <View style={styles.container}>
 
-                                <Text style={{ fontSize: 25, color: 'whitesmoke', fontFamily: 'arial', fontStyle: 'italic', marginTop: 20, marginBottom: 0 }}>Scoring Overview</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
-                            <View>
-
-                                <View >
-                                    <AllShotPieChart shotTotals={shotTotals} />
-                                </View>
-                            </View>
-                            {roundStatTotals.avgStrokes > 0
-                                ?
+                        <View style={{ transform: 'scale(0.9)' }}>
+                            <CourseAveragesView best={roundStatTotals.minScore} worst={roundStatTotals.maxScore} avgScore={roundStatTotals.avgStrokes} avgGIR={(roundStatTotals.avgGIR / 18) * 100} avgFIR={(roundStatTotals.avgFIR / 14) * 100} avgPPR={(roundStatTotals.totalPutts / roundStatTotals.count)} count={roundStatTotals.count} />
+                        </View>
+                                <Timeline data1={timelineScores} />
+                            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
                                 <View>
-                                    
-                                    <View>
-                                        <View style={{ transform: 'scale(.8)', marginTop: 20, marginRight:20 }}>
-                                            <ScoringBarChart pars={roundStatTotals.pars} over={roundStatTotals.bogies + roundStatTotals.doublePlus} under={roundStatTotals.birdies + roundStatTotals.eaglesOless} />
-                                        </View>
+
+                                <ScoringView eagleOless={roundStatTotals.eaglesOless} birdies={roundStatTotals.birdies} pars={roundStatTotals.pars} bogeys={roundStatTotals.bogies} dblPlus={roundStatTotals.doublePlus} />
+                                    <View style={{justifyContent:'center', alignItems:'center'}}>
+                                        <AllShotPieChart shotTotals={shotTotals} />
                                     </View>
                                 </View>
-                                : ''
-                            }
+                                
                             </View>
-                        </View>
-                        <Timeline data1={timelineScores} />
-                        
-                        <View style={{transform:'scale(0.9)'}}>
-                            <CourseAveragesView best={roundStatTotals.minScore} worst={roundStatTotals.maxScore} avgScore={roundStatTotals.avgStrokes} avgGIR={(roundStatTotals.avgGIR / 18)*100} avgFIR={(roundStatTotals.avgFIR / 14)*100} avgPPR={(roundStatTotals.totalPutts / roundStatTotals.count)} count={roundStatTotals.count} />
-                        </View>
 
-                        <BigStats avgScore={roundStatTotals.avgStrokes} roundsPlayed={roundStatTotals.count} holesPlayed={roundStatTotals.count * 18} bestRound={roundStatTotals.minScore} />
 
                         <ParStatistics />
 
                         <RecentRoundStatList />
-                </View>
-                    </ScrollView>
+                    </View>
+                </ScrollView>
             </SQLiteProvider>
         </LinearGradient>
 

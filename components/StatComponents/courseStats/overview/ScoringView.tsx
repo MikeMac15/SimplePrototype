@@ -79,7 +79,7 @@ const ScoringView: React.FC<ScoringViewProps> = ({eagleOless,birdies,pars,bogeys
     <ScoringText title='Dbl Bogeys' value={dblPlus} extra='(or more)'/>
     </View>
     </View>
-<ScoringBarChart pars={pars} over={bogeys + dblPlus} under={birdies + eagleOless}/>
+    <ScoringBarChart pars={pars} over={(bogeys + dblPlus)} under={(birdies + eagleOless)}/>
     </View>
 </View>
 )

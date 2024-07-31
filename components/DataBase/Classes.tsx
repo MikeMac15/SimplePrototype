@@ -403,3 +403,11 @@ export interface TimelineStats {
   totalScore: number,
   totalPutts: number
 }
+
+export interface CourseHoleData {
+  avgScores: number[],
+  totalScores: number[],
+  pph: number[],
+  gir: number[],
+  fir: number[]
+}
