@@ -1,3 +1,5 @@
+import { saveFullRound, saveHoleStats } from "./API";
+
 export interface CourseAndTees {
   id: number;
   name: string;
@@ -122,7 +124,7 @@ export class Round {
     }
   
   
-    addRoundHole(hole: Hole, putts: number, great: number, good: number, bad: number, gir: boolean, strat: number, fir: boolean) {
+    addRoundHole(hole: Hole, putts: number, great: number, good: number, bad: number, gir: boolean, strat: number, fir: boolean): void {
       const roundHole = new HoleStats(hole, putts, great, good, bad, gir, strat, fir);
       const points = roundHole.calculatePoints();
       this.points += points;
@@ -168,7 +170,7 @@ export class Round {
       }
     }}
   
-    subtractRoundHole(oldHoleData: HoleStats) {
+    subtractRoundHole(oldHoleData: HoleStats): void {
       this.totalPutts -= oldHoleData.putts;
       this.totalStrokes -= (oldHoleData.putts + oldHoleData.great + oldHoleData.good + oldHoleData.bad);
       this.toPar -= oldHoleData.toPar;
@@ -202,7 +204,7 @@ export class Round {
           this.birdies--;
       }}}
   
-    updateRoundHole(newHoleData: HoleStats) {
+    updateRoundHole(newHoleData: HoleStats): void {
       this.holes[newHoleData.hole.num] = newHoleData;
   
       this.totalPutts += newHoleData.putts;
@@ -240,7 +242,53 @@ export class Round {
 
       }
     }
+
+
+    async saveRoundAndHoleStats(this: Round) : Promise<void> {
+      
+      try {
+        const roundId: number = await saveFullRound(
+          this.teebox_id,
+          this.totalStrokes,
+          this.totalPutts,
+          this.great,
+          this.good,
+          this.bad,
+          this.totalGIR,
+          this.totalFIR,
+          this.eaglesOless,
+          this.birdies,
+          this.pars,
+          this.bogeys,
+          this.doublePlus,
+          this.toPar,
+          this.toPar3,
+          this.toPar4,
+          this.toPar5,
+          true,
+        );
+  
+        for (const key in this.holes) {
+          const holeStat = this.holes[key];
+          await saveHoleStats(
+            holeStat.hole.id,
+            roundId,
+            holeStat.putts,
+            holeStat.gir,
+            holeStat.fir,
+            holeStat.hole.par === 3 ? true : false, /// FIR_ELI
+            holeStat.toPar,
+            holeStat.strat ? holeStat.strat : 0 /// if no strat chosen
+          );
+        }
+      } catch (error) {
+        console.error('Error saving round and hole stats:', error);
+      }
+    }
   }
+
+
+  
   
   export class HoleStats {
     hole: Hole;
