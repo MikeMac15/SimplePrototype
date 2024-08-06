@@ -1,63 +1,36 @@
 import { Hole, HoleStats, Round } from "@/components/DataBase/Classes";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
 import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 
 export const RoundView = ({round}:{round:Round}) => {
-    const holesPlayed = Object.keys(round.holes).length
-    const data = [{value:0}];
-    let tempPoints = 5
-    for (let i = 0; i < holesPlayed;i++){
-        data.push({value:round.holes[i+1].calculatePoints() + tempPoints})
+    const holesPlayed = Object.keys(round.holes).length;
+    const data = [{ value: 0 }];
+    const [max,setMax] = useState(0);
+    for (let i = 0; i < holesPlayed; i++) {
+        const holeStats = round.holes[i + 1];
+        if (holeStats) {
+            data.push({ value: holeStats.toPar });
+
+            if (holeStats.toPar > max) {
+                setMax(holeStats.toPar);
+            }
+        }
     }
     
     return (<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
-
-        {/* <View style={styles.midCircleDiv}>
-            <View style={{ flexDirection: 'column' }}>
-
-                <View style={styles.circleStat}>
-                    <Text style={styles.circleLabel}>Par3:</Text>
-                    <Text style={styles.circleNum}>{round.toPar3}</Text>
-                </View>
-                <View style={styles.circleStat}>
-
-                    <Text style={styles.circleLabel}>Par4:</Text>
-                    <Text style={styles.circleNum}>{round.toPar4}</Text>
-                </View>
-                <View style={styles.circleStat}>
-                    <Text style={styles.circleLabel}>Par5:</Text>
-                    <Text style={styles.circleNum}>{round.toPar5}</Text>
-                </View>
-            </View>
-            <View style={{ flexDirection: 'column' }}>
-                <View style={styles.circleStat}>
-                    <Text style={styles.circleLabel}>Gir:</Text>
-                    <Text style={styles.circleNum}>{round.totalGIR}</Text>
-                </View>
-
-                <View style={styles.circleStat}>
-                    <Text style={styles.circleLabel}>FIR:</Text>
-                    <Text style={styles.circleNum}>{round.totalFIR}</Text>
-                </View>
-            </View>
-            <View style={{ backgroundColor: '#444', paddingVertical: 20, paddingHorizontal: 20, borderRadius: 50, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.totalStrokes}</Text>
-                <Text style={{ fontSize: 10, color: 'whitesmoke' }}>TotalStrokes</Text>
-            </View>
-
-        </View> */}
-
-        <View style={{}}>
+        <View>
         <View style={{width:350, paddingRight:0, transform:'scaleX(.8)'}}>
-            {data.length > 5
+            {data.length > 2
             ?
             <LineChart
-            animateOnDataChange
+            
+            maxValue={3}
             adjustToWidth
             height={150}
-            
+            mostNegativeValue={-3}
             areaChart
             data={data}
             startFillColor="rgb(46, 217, 255)"
@@ -132,8 +105,8 @@ export const RoundView = ({round}:{round:Round}) => {
             <View style={{flexDirection:'row'}}>
                 <View><Text style={{fontSize:20, color:'whitesmoke', width:40}}>FIR:</Text></View>
                 <View style={{width:180, backgroundColor:'#444'}}>
-                <View style={{width:Object.keys(round.holes).length*12.85714286, backgroundColor:'salmon', borderWidth:.5, borderColor:'#222'}}>
-                    <View style={[styles.girBar, {width:round.totalGIR*12.85714286}]}>
+                <View style={{width:Object.keys(round.holes).length, backgroundColor:'salmon', borderWidth:.5, borderColor:'#222'}}>
+                    <View style={[styles.girBar, {width:round.totalGIR}]}>
                         <Text>{round.totalGIR}</Text>
                     </View>
                     </View>

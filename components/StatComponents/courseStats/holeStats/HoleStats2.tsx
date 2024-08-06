@@ -125,6 +125,7 @@ const HoleStats2: React.FC<HoleStats2Props> = ({ data}) => {
         <LinearGradient colors={['#555','#111']} style={styles.container}>
                 <DataTableHeader />
                 <NineHoleData data={data} startIdx={0}/>
+                <DataTableHeader />
                 <NineHoleData data={data} startIdx={9}/>
         </LinearGradient>
     )

@@ -31,12 +31,12 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                     return <Entypo name="document" color={'whitesmoke'} size={25} />
                 case 'bar':
                       return <Ionicons name='stats-chart-sharp' color={'whitesmoke'} size={25} />
-                case 'dot':
-                    return <AntDesign name='dotchart' color={'whitesmoke'} size={25} />
-                case 'yrd':
-                  return <MaterialIcons name="share-location" color={'whitesmoke'} size={25} />
-                case 'green':
-                  return <MaterialIcons name="golf-course" color={'whitesmoke'} size={25} />
+                // case 'dot':
+                //     return <AntDesign name='dotchart' color={'whitesmoke'} size={25} />
+                // case 'yrd':
+                //   return <MaterialIcons name="share-location" color={'whitesmoke'} size={25} />
+                // case 'green':
+                //   return <MaterialIcons name="golf-course" color={'whitesmoke'} size={25} />
                 case 'exit':
                     return <MaterialCommunityIcons name="exit-run" color={'whitesmoke'} size={25} />
                     

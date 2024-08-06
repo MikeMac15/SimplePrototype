@@ -7,17 +7,53 @@ interface BtnsProps {
     subtractShot: (shotType: string) => void;
     shotData: {
         [key: string]: number;
-    }
+    };
+    addShotColor: (color: string) => void;
+    subShotColor: (color: string) => void;
 }
 
-const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData}) => {
+const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, addShotColor, subShotColor}) => {
+
+    const addShotGreat =()=> {
+      addShot('great');
+      addShotColor('skyblue');
+    }
+    const subShotGreat =()=> {
+      subtractShot('great');
+      subShotColor('skyblue');
+    }
+    const addShotGood =()=> {
+      addShot('good');
+      addShotColor('yellowgreen');
+    }
+    const subShotGood =()=> {
+      subtractShot('good');
+      subShotColor('yellowgreen');
+    }
+    const addShotBad =()=> {
+      addShot('bad');
+      addShotColor('salmon');
+    }
+    const subShotBad =()=> {
+      subtractShot('bad');
+      subShotColor('salmon');
+    }
+    const addShotPutt =()=> {
+      addShot('putt');
+      addShotColor('#E1CAB2');
+    }
+    const subShotPutt =()=> {
+      subtractShot('putt');
+      subShotColor('#E1CAB2');
+    }
+
     return (
       <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
   
   
         <TouchableOpacity activeOpacity={0.5} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          onPress={() => addShot('great')}
-          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subtractShot('great') }}>
+          onPress={() => addShotGreat()}
+          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotGreat(); }}>
           <View style={{ backgroundColor: '#555', borderRadius: 20, borderWidth: 3, borderColor: '#73c7eb' }}>
             <View style={styles.centeredRow}>
   
@@ -33,8 +69,8 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData}) =
   
   
         <TouchableOpacity activeOpacity={0.8} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          onPress={() => addShot('good')}
-          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subtractShot('good') }}>
+          onPress={() => addShotGood()}
+          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotGood() }}>
           <View style={{ backgroundColor: '#555', borderRadius: 20, borderWidth: 3, borderColor: 'yellowgreen' }}>
             <View style={styles.centeredRow}>
   
@@ -51,8 +87,8 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData}) =
   
   
         <TouchableOpacity activeOpacity={0.8} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          onPress={() => addShot('bad')}
-          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subtractShot('bad') }}>
+          onPress={() => addShotBad()}
+          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotBad() }}>
           <View style={{ backgroundColor: '#555', borderRadius: 20, borderWidth: 3, borderColor: 'salmon' }}>
   
             <View style={styles.centeredRow}>
@@ -68,8 +104,8 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData}) =
         </TouchableOpacity>
   
         <TouchableOpacity activeOpacity={0.8} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          onPress={() => addShot('putt')}
-          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subtractShot('putt') }}>
+          onPress={() => addShotPutt()}
+          onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotPutt() }}>
   
           <View style={{ backgroundColor: '#555', borderRadius: 20, borderWidth: 3, borderColor: '#E1CAB2' }}>
             <View style={styles.centeredRow}>

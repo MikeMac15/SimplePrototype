@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Alert, Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 
-import { Hole, Round } from "@/components/DataBase/Classes";
+import { Hole, Round, ShotData } from "@/components/DataBase/Classes";
 import { getAllTeeboxHoles, saveFullRound, saveHoleStats } from "@/components/DataBase/API";
 
 
@@ -27,7 +27,7 @@ const CounterThree: React.FC = () => {
   const [teeboxHoles, setTeeboxHoles] = useState<Hole[]>([]);
   const [currentHoleData, setCurrentHoleData] = useState<Hole>();
   const [holeNumber, setHoleNumber] = useState<number>(1);
-  const [shotData, setShotData] = useState<{ [key: string]: number }>({
+  const [shotData, setShotData] = useState<ShotData>({
     great: 0,
     good: 0,
     bad: 0,
@@ -36,10 +36,11 @@ const CounterThree: React.FC = () => {
   const [gir, setGir] = useState<boolean>(false);
   const [fir, setFir] = useState<boolean>(false);
   const [timelineChoice, setTimelineChoice] = useState<number>(0);
-
+  
   const roundRef = useRef<Round>(new Round(Number(teeID)));
   const round = roundRef.current;
-
+  const [shotColors, setShotColors] = useState<string[]>([]);
+  
   const getTotalShots = () => {
     return Object.values(shotData).reduce((total, value) => total + value, 0);
   };
@@ -95,6 +96,7 @@ const CounterThree: React.FC = () => {
     });
     setGir(false);
     setFir(false);
+    setShotColors([]);
   }
 
   const addRoundHole = () => {
@@ -124,7 +126,7 @@ const CounterThree: React.FC = () => {
 
 
   const getAllShotData = () => {
-    const shots = {
+    const shots:ShotData = {
       great: round.great,
       good: round.good,
       bad: round.bad,
@@ -197,31 +199,73 @@ const CounterThree: React.FC = () => {
 
       const MainView = () => {
       
+        const addShotColor = (color: string) => {
+          setShotColors(prevColors => [...prevColors, color]);
+        };
       
-      return (
+        const subShotColor = (color: string) => {
+          setShotColors(prevColors => {
+            const lastColorIdx = prevColors.lastIndexOf(color);
+            if (lastColorIdx !== -1) {
+              const newShotColorArr = [
+                ...prevColors.slice(0, lastColorIdx),
+                ...prevColors.slice(lastColorIdx + 1)
+              ];
+              return newShotColorArr;
+            }
+            return prevColors; // Return the original state if color not found
+          });
+        };
+      
+      
+        return (
           <View style={{ backgroundColor: '#333', height: '100%' }}>
-            
-            <StatMarquee round={round} holeNumber={holeNumber} girGoal={Number(girGoal)} firGoal={Number(firGoal)} puttGoal={Number(puttGoal)} />
+            <StatMarquee
+              round={round}
+              holeNumber={holeNumber}
+              girGoal={Number(girGoal)}
+              firGoal={Number(firGoal)}
+              puttGoal={Number(puttGoal)}
+            />
             {currentHoleData && (
               <View>
-                <C3Header3 courseName={''} holeData={currentHoleData} roundToPar={round.toPar} roundGoal={Number(strokeGoal)} getTotalShots={getTotalShots} shotData={shotData} allShotData={getAllShotData()} />
+                <C3Header3
+                  courseName={''}
+                  holeData={currentHoleData}
+                  shotColors={shotColors}
+                  getTotalShots={getTotalShots}
+                  shotData={shotData}
+                  allShotData={getAllShotData()}
+                />
               </View>
             )}
             {teeboxHoles && (
-              <C3Options3 teeboxHoles={teeboxHoles} roundHoles={round.holes} round={round} holeNumber={holeNumber} />
+              <C3Options3
+                teeboxHoles={teeboxHoles}
+                roundHoles={round.holes}
+                round={round}
+                holeNumber={holeNumber}
+              />
             )}
             <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-              <VerticalCheckBoxes hole={currentHoleData} gir={gir} setGir={setGir} fir={fir} setFir={setFir} />
-              <VerticalBtns3 addShot={addShot} subtractShot={subtractShot} shotData={shotData} />
-            </View>
-            <View style={{ marginVertical: 10 }}>
-              <Text style={{ color: 'white', fontSize: 20 }}>
-                {round.points ? `$${round.points}` : ''}
-              </Text>
+              <VerticalCheckBoxes
+                hole={currentHoleData}
+                gir={gir}
+                setGir={setGir}
+                fir={fir}
+                setFir={setFir}
+              />
+              <VerticalBtns3
+                addShot={addShot}
+                subtractShot={subtractShot}
+                shotData={shotData}
+                addShotColor={addShotColor}
+                subShotColor={subShotColor}
+              />
             </View>
           </View>
         );
-      }
+      };
 
 
 
@@ -516,11 +560,12 @@ const StylesInsights = StyleSheet.create({
 const { width } = Dimensions.get('window');
 
 const views = [
-  // { key: 'view1', component: <HoleInfo /> },
-  { key: 'view1', component: <Insights holeNum={1} par={4} /> },
-  { key: 'view2', component: <MainView /> },
-  // { key: 'view3', component: Score9(teeboxHoles.slice(0, 9), 'Front Nine') },
-  // { key: 'view4', component: Score9(teeboxHoles.slice(9, 18), 'Back Nine') },
+  
+  // { key: 'view1', component: <Insights holeNum={1} par={4} /> },
+  // { key: 'view2', component: <MainView /> },
+  { key: 'view1', component: <MainView /> },
+  { key: 'view2', component: <Insights holeNum={1} par={4} /> },
+
 ];
 
 const Carousel = () => {
