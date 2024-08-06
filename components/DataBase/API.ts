@@ -507,91 +507,58 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
     }
 
 
-    export async function getCourseHoleData(teeboxID:number) {
+    export async function getCourseHoleData(teeboxID: number): Promise<CourseHoleData> {
         const db = await openDb();
-
-        // const avgScores: number[] = await db.getAllAsync(`
-        // SELECT avg(round.totalStrokes) AS avgScore
-        // FROM round
-        // JOIN hole ON round.teebox_id = hole.teebox_id
-        // WHERE round.teebox_id = $teeboxID
-        // GROUP BY hole.num
-        // ORDER BY hole.num`,{$teeboxID : teeboxID});
-
-
-        const queryAvgScore = `
-        SELECT hole.num, hole.par, avg(holestats.toPar) AS avgScore
-        FROM holestats                                               
-        JOIN hole ON holestats.hole_id = hole.id
-        WHERE hole.teebox_id = $teeboxID
-        GROUP BY hole.num
-        ORDER BY hole.num
-    `;
-        const queryTotalScore = `
-        SELECT hole.num, sum(holestats.toPar) AS totalScore
-        FROM holestats                                               
-        JOIN hole ON holestats.hole_id = hole.id
-        WHERE hole.teebox_id = $teeboxID
-        GROUP BY hole.num
-        ORDER BY hole.num
-    `;
-        const queryPPH = `
-        SELECT hole.num, avg(holestats.putts) AS pph
-        FROM holestats                                               
-        JOIN hole ON holestats.hole_id = hole.id
-        WHERE hole.teebox_id = $teeboxID
-        GROUP BY hole.num
-        ORDER BY hole.num
-    `;
-    //     const queryGIR = `
-    //     SELECT hole.num, hole.par, avg(holestats.GIR) AS avgGIR
-    //     FROM holestats                                               
-    //     JOIN hole ON holestats.hole_id = hole.id
-    //     WHERE hole.teebox_id = $teeboxID
-    //     GROUP BY hole.num
-    //     ORDER BY hole.num
-    // `;
-    //     const queryFIR = `
-    //     SELECT hole.num, hole.par, avg(holestats.FIR) AS avgFIR
-    //     FROM holestats                                               
-    //     JOIN hole ON holestats.hole_id = hole.id
-    //     WHERE hole.teebox_id = $teeboxID
-    //     GROUP BY hole.num
-    //     ORDER BY hole.num
-    // `;
-
-    const resultAvgScore = await db.getAllAsync<{ num: number; par: number; avgScore: number }>(queryAvgScore, { $teeboxID: teeboxID });
-    const resultTotalScore = await db.getAllAsync<{ num: number; totalScore: number }>(queryTotalScore, { $teeboxID: teeboxID });
-    const resultPPH = await db.getAllAsync<{ num: number; pph: number }>(queryPPH, { $teeboxID: teeboxID });
-
     
-    const avgScores: number[] = new Array(18).fill(0);
-    const totalScores: number[] = new Array(18).fill(0);
-    const pph: number[] = new Array(18).fill(0);
-    const gir: number[] = new Array(18).fill(0);
-    const fir: number[] = new Array(18).fill(0);
-
+        const combinedQuery = `
+            SELECT 
+                hole.num, 
+                hole.par, 
+                avg(holestats.toPar) AS avgScore,
+                sum(holestats.toPar) AS totalScore,
+                avg(holestats.putts) AS pph,
+                sum(holestats.GIR) AS gir,
+                sum(holestats.FIR) AS fir,
+                count(*) AS totalCount
+            FROM holestats                                               
+            JOIN hole ON holestats.hole_id = hole.id
+            WHERE hole.teebox_id = $teeboxID
+            GROUP BY hole.num, hole.par
+            ORDER BY hole.num
+        `;
     
-    resultAvgScore.forEach(hole => {
-        avgScores[hole.num - 1] = hole.avgScore + hole.par;
-    });
-    resultTotalScore.forEach(hole => {
-        totalScores[hole.num - 1] = hole.totalScore;
-    });
-    resultPPH.forEach(hole => {
-        pph[hole.num - 1] = hole.pph;
-    });
-
-
-
-
-        const courseData:CourseHoleData = 
-        {
-            avgScores : avgScores,
+        const results = await db.getAllAsync<{ num: number; par: number; avgScore: number; totalScore: number; pph: number; gir: number; fir:number; totalCount:number; }>(combinedQuery, { $teeboxID: teeboxID });
+        const holePars: number[] = new Array(18).fill(0);
+        const avgScores: number[] = new Array(18).fill(0);
+        const totalScores: number[] = new Array(18).fill(0);
+        const pph: number[] = new Array(18).fill(0);
+        const gir: number[] = new Array(18).fill(0);
+        const fir: number[] = new Array(18).fill(0);
+        let firCount = 0;
+        let totalCount = 0;
+    
+        results.forEach(hole => {
+            holePars[hole.num - 1] = hole.par;
+            avgScores[hole.num - 1] = hole.avgScore + hole.par;
+            totalScores[hole.num - 1] = hole.totalScore;
+            pph[hole.num - 1] = hole.pph;
+            gir[hole.num - 1] = hole.gir;
+            fir[hole.num - 1] = hole.fir;
+            if (hole.par > 3)  firCount++;
+            totalCount += hole.totalCount;
+        });
+    
+        const courseData: CourseHoleData = {
+            holePars: holePars,
+            avgScores: avgScores,
             totalScores: totalScores,
             pph: pph,
-            gir: avgScores,
-            fir:avgScores
-        }
-        return courseData
+            gir: gir,  // Update this if you plan to include GIR in the query
+            fir: fir,  // Update this if you plan to include FIR in the query
+            count: totalCount/18,
+            firCount: firCount
+        };
+        console.log('courseData:', courseData);
+    
+        return courseData;
     }

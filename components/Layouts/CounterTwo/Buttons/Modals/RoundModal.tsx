@@ -3,6 +3,182 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 
+export const RoundView = ({round}:{round:Round}) => {
+    const holesPlayed = Object.keys(round.holes).length
+    const data = [{value:0}];
+    let tempPoints = 5
+    for (let i = 0; i < holesPlayed;i++){
+        data.push({value:round.holes[i+1].calculatePoints() + tempPoints})
+    }
+    
+    return (<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+
+        {/* <View style={styles.midCircleDiv}>
+            <View style={{ flexDirection: 'column' }}>
+
+                <View style={styles.circleStat}>
+                    <Text style={styles.circleLabel}>Par3:</Text>
+                    <Text style={styles.circleNum}>{round.toPar3}</Text>
+                </View>
+                <View style={styles.circleStat}>
+
+                    <Text style={styles.circleLabel}>Par4:</Text>
+                    <Text style={styles.circleNum}>{round.toPar4}</Text>
+                </View>
+                <View style={styles.circleStat}>
+                    <Text style={styles.circleLabel}>Par5:</Text>
+                    <Text style={styles.circleNum}>{round.toPar5}</Text>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'column' }}>
+                <View style={styles.circleStat}>
+                    <Text style={styles.circleLabel}>Gir:</Text>
+                    <Text style={styles.circleNum}>{round.totalGIR}</Text>
+                </View>
+
+                <View style={styles.circleStat}>
+                    <Text style={styles.circleLabel}>FIR:</Text>
+                    <Text style={styles.circleNum}>{round.totalFIR}</Text>
+                </View>
+            </View>
+            <View style={{ backgroundColor: '#444', paddingVertical: 20, paddingHorizontal: 20, borderRadius: 50, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.totalStrokes}</Text>
+                <Text style={{ fontSize: 10, color: 'whitesmoke' }}>TotalStrokes</Text>
+            </View>
+
+        </View> */}
+
+        <View style={{}}>
+        <View style={{width:350, paddingRight:0, transform:'scaleX(.8)'}}>
+            {data.length > 5
+            ?
+            <LineChart
+            animateOnDataChange
+            adjustToWidth
+            height={150}
+            
+            areaChart
+            data={data}
+            startFillColor="rgb(46, 217, 255)"
+            startOpacity={0.8}
+            endFillColor="rgb(203, 241, 250)"
+            endOpacity={0.3}
+            />
+            :''
+        }
+        </View>
+        </View>
+
+
+        <View style={{ flexDirection: 'row', marginVertical:10 }}>
+            
+            <View style={styles.leftStatFull}>
+
+                <View style={styles.leftStat}>
+                    <Text style={styles.rightStatLabel}>Great: </Text>
+                    <Text style={styles.rightStatNum}>{round.great}</Text>
+                </View>
+                <View style={styles.leftStat}>
+                    <Text style={styles.rightStatLabel}>Good: </Text>
+                    <Text style={styles.rightStatNum}>{round.good}</Text>
+                </View>
+                <View style={styles.leftStat}>
+                    <Text style={styles.rightStatLabel}>Bad: </Text>
+                    <Text style={styles.rightStatNum}>{round.bad}</Text>
+                </View>
+                <View style={styles.leftStat}>
+                    <Text style={styles.rightStatLabel}>Putts: </Text>
+                    <Text style={styles.rightStatNum}>{round.totalPutts}</Text>
+                </View>
+                <View style={styles.leftStat}>
+                    <Text style={styles.rightStatLabel}>Strokes: </Text>
+                    <Text style={styles.rightStatNum}>{round.totalStrokes}</Text>
+                </View>
+
+
+            </View>
+
+
+
+            <View style={{justifyContent:'center', alignItems:'center', width:225}}>
+            <View style={styles.circle}>
+                <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar3}</Text>
+                <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 3's</Text>
+            </View>
+            
+            <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
+
+            <View style={styles.circle}>
+            <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar4}</Text>
+            <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 4's</Text>
+            </View>
+            <View style={styles.circle}>
+            <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar5}</Text>
+            <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 5's</Text>
+            </View>
+            </View>
+        <View style={{marginVertical:10, transform:'scaleX(.9)', paddingRight:30}}>
+            <View style={{flexDirection:'row'}}>
+                <View><Text style={{fontSize:20, color:'whitesmoke', width:40}}>GIR:</Text></View>
+                <View style={{width:180, backgroundColor:'#444'}}>
+                <View style={{width:Object.keys(round.holes).length*10, backgroundColor:'salmon', borderWidth:.5, borderColor:'#222'}}>
+                    <View style={[styles.girBar, {width:round.totalGIR*10}]}>
+                        <Text>{round.totalGIR}</Text>
+                    </View>
+                    </View>
+                </View>
+            </View>
+            <View style={{flexDirection:'row'}}>
+                <View><Text style={{fontSize:20, color:'whitesmoke', width:40}}>FIR:</Text></View>
+                <View style={{width:180, backgroundColor:'#444'}}>
+                <View style={{width:Object.keys(round.holes).length*12.85714286, backgroundColor:'salmon', borderWidth:.5, borderColor:'#222'}}>
+                    <View style={[styles.girBar, {width:round.totalGIR*12.85714286}]}>
+                        <Text>{round.totalGIR}</Text>
+                    </View>
+                    </View>
+                </View>
+            </View>
+
+            
+        </View>
+            </View>
+
+
+            
+        </View>
+
+
+        <View style={styles.boxStatFull}>
+
+                <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
+                    <Text style={styles.boxStatLabel}>Eagles(-): </Text>
+                    <Text style={styles.boxStatNum}>{round.eaglesOless}</Text>
+                </LinearGradient>
+                <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
+                    <Text style={styles.boxStatLabel}>Birdies: </Text>
+                    <Text style={styles.boxStatNum}>{round.birdies}</Text>
+                </LinearGradient>
+                <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
+                    <Text style={styles.boxStatLabel}>Pars: </Text>
+                    <Text style={styles.boxStatNum}>{round.pars}</Text>
+                </LinearGradient>
+                <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
+                    <Text style={styles.boxStatLabel}>Bogeys: </Text>
+                    <Text style={styles.boxStatNum}>{round.bogeys}</Text>
+                </LinearGradient>
+                <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
+                    <Text style={styles.boxStatLabel}>Dbl(+): </Text>
+                    <Text style={styles.boxStatNum}>{round.doublePlus}</Text>
+                </LinearGradient>
+
+
+            </View>
+
+ 
+
+    </View>)
+}
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -10,184 +186,8 @@ interface ModalProps {
 }
 
 const RoundModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible, round }) => {
-    const data = [{value:5}];
+ 
 
-    const RoundView = () => {
-        const holesPlayed = Object.keys(round.holes).length
-
-        let tempPoints = 5
-        for (let i = 0; i < holesPlayed;i++){
-            data.push({value:round.holes[i+1].calculatePoints() + tempPoints})
-        }
-        
-        return (<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-
-
-            {/* <View style={styles.midCircleDiv}>
-                <View style={{ flexDirection: 'column' }}>
-
-                    <View style={styles.circleStat}>
-                        <Text style={styles.circleLabel}>Par3:</Text>
-                        <Text style={styles.circleNum}>{round.toPar3}</Text>
-                    </View>
-                    <View style={styles.circleStat}>
-
-                        <Text style={styles.circleLabel}>Par4:</Text>
-                        <Text style={styles.circleNum}>{round.toPar4}</Text>
-                    </View>
-                    <View style={styles.circleStat}>
-                        <Text style={styles.circleLabel}>Par5:</Text>
-                        <Text style={styles.circleNum}>{round.toPar5}</Text>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'column' }}>
-                    <View style={styles.circleStat}>
-                        <Text style={styles.circleLabel}>Gir:</Text>
-                        <Text style={styles.circleNum}>{round.totalGIR}</Text>
-                    </View>
-
-                    <View style={styles.circleStat}>
-                        <Text style={styles.circleLabel}>FIR:</Text>
-                        <Text style={styles.circleNum}>{round.totalFIR}</Text>
-                    </View>
-                </View>
-                <View style={{ backgroundColor: '#444', paddingVertical: 20, paddingHorizontal: 20, borderRadius: 50, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.totalStrokes}</Text>
-                    <Text style={{ fontSize: 10, color: 'whitesmoke' }}>TotalStrokes</Text>
-                </View>
-
-            </View> */}
-
-            <View style={{}}>
-            <View style={{width:350, paddingRight:0, transform:'scaleX(.8)'}}>
-                {data.length > 5
-                ?
-                <LineChart
-                animateOnDataChange
-                adjustToWidth
-                height={150}
-                
-                areaChart
-                data={data}
-                startFillColor="rgb(46, 217, 255)"
-                startOpacity={0.8}
-                endFillColor="rgb(203, 241, 250)"
-                endOpacity={0.3}
-                />
-                :''
-            }
-            </View>
-            </View>
-
-
-            <View style={{ flexDirection: 'row', marginVertical:10 }}>
-                
-                <View style={styles.leftStatFull}>
-
-                    <View style={styles.leftStat}>
-                        <Text style={styles.rightStatLabel}>Great: </Text>
-                        <Text style={styles.rightStatNum}>{round.great}</Text>
-                    </View>
-                    <View style={styles.leftStat}>
-                        <Text style={styles.rightStatLabel}>Good: </Text>
-                        <Text style={styles.rightStatNum}>{round.good}</Text>
-                    </View>
-                    <View style={styles.leftStat}>
-                        <Text style={styles.rightStatLabel}>Bad: </Text>
-                        <Text style={styles.rightStatNum}>{round.bad}</Text>
-                    </View>
-                    <View style={styles.leftStat}>
-                        <Text style={styles.rightStatLabel}>Putts: </Text>
-                        <Text style={styles.rightStatNum}>{round.totalPutts}</Text>
-                    </View>
-                    <View style={styles.leftStat}>
-                        <Text style={styles.rightStatLabel}>Strokes: </Text>
-                        <Text style={styles.rightStatNum}>{round.totalStrokes}</Text>
-                    </View>
-
-
-                </View>
-
-
-
-                <View style={{justifyContent:'center', alignItems:'center', width:225}}>
-                <View style={styles.circle}>
-                    <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar3}</Text>
-                    <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 3's</Text>
-                </View>
-                
-                <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
-
-                <View style={styles.circle}>
-                <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar4}</Text>
-                <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 4's</Text>
-                </View>
-                <View style={styles.circle}>
-                <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar5}</Text>
-                <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 5's</Text>
-                </View>
-                </View>
-            <View style={{marginVertical:10, transform:'scaleX(.9)', paddingRight:30}}>
-                <View style={{flexDirection:'row'}}>
-                    <View><Text style={{fontSize:20, color:'whitesmoke', width:40}}>GIR:</Text></View>
-                    <View style={{width:180, backgroundColor:'#444'}}>
-                    <View style={{width:Object.keys(round.holes).length*10, backgroundColor:'salmon', borderWidth:.5, borderColor:'#222'}}>
-                        <View style={[styles.girBar, {width:round.totalGIR*10}]}>
-                            <Text>{round.totalGIR}</Text>
-                        </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={{flexDirection:'row'}}>
-                    <View><Text style={{fontSize:20, color:'whitesmoke', width:40}}>FIR:</Text></View>
-                    <View style={{width:180, backgroundColor:'#444'}}>
-                    <View style={{width:Object.keys(round.holes).length*12.85714286, backgroundColor:'salmon', borderWidth:.5, borderColor:'#222'}}>
-                        <View style={[styles.girBar, {width:round.totalGIR*12.85714286}]}>
-                            <Text>{round.totalGIR}</Text>
-                        </View>
-                        </View>
-                    </View>
-                </View>
-
-                
-            </View>
-                </View>
-
-
-                
-            </View>
-
-
-            <View style={styles.boxStatFull}>
-
-                    <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                        <Text style={styles.boxStatLabel}>Eagles(-): </Text>
-                        <Text style={styles.boxStatNum}>{round.eaglesOless}</Text>
-                    </LinearGradient>
-                    <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                        <Text style={styles.boxStatLabel}>Birdies: </Text>
-                        <Text style={styles.boxStatNum}>{round.birdies}</Text>
-                    </LinearGradient>
-                    <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                        <Text style={styles.boxStatLabel}>Pars: </Text>
-                        <Text style={styles.boxStatNum}>{round.pars}</Text>
-                    </LinearGradient>
-                    <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                        <Text style={styles.boxStatLabel}>Bogeys: </Text>
-                        <Text style={styles.boxStatNum}>{round.bogeys}</Text>
-                    </LinearGradient>
-                    <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                        <Text style={styles.boxStatLabel}>Dbl(+): </Text>
-                        <Text style={styles.boxStatNum}>{round.doublePlus}</Text>
-                    </LinearGradient>
-
-
-                </View>
-
-     
-
-        </View>)
-    }
 
 
     return (
@@ -205,7 +205,7 @@ const RoundModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible, round
 
                 <View style={styles.modalView}>
 
-                    <RoundView />
+                    <RoundView round={round} />
 
                     <Pressable
                         style={[styles.button, styles.buttonCancel]}

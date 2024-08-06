@@ -1,4 +1,4 @@
-import { saveFullRound, saveHoleStats } from "./API";
+import { getCourseHoleData, saveFullRound, saveHoleStats } from "./API";
 
 export interface CourseAndTees {
   id: number;
@@ -53,6 +53,24 @@ export class Hole {
         this.par = par;
         this.yardage = yardage;
     }
+
+  //   async populateHoleInsights(): Promise<HoleInsights> {
+  //     await getCourseHoleData(this.teebox_id);
+  //     return {
+  //       pastScores: [],
+  //       pastPPH: [],
+  //       pastGIR: [],
+  //       pastFIR: []
+
+  //   }
+  // }
+}
+
+export interface HoleInsights {
+  pastScores: number[],
+  pastPPH: number[],
+  pastGIR: number[],
+  pastFIR: number[]
 }
 
 export class Round {
@@ -453,9 +471,12 @@ export interface TimelineStats {
 }
 
 export interface CourseHoleData {
+  holePars: number[],
   avgScores: number[],
   totalScores: number[],
   pph: number[],
   gir: number[],
-  fir: number[]
+  fir: number[],
+  count: number,
+  firCount: number,
 }

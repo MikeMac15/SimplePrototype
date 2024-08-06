@@ -2,11 +2,11 @@ import { Alert, Animated, Button, Modal, Pressable, ScrollView, StyleSheet, Text
 import { AntDesign, Ionicons, MaterialCommunityIcons, Entypo, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Hole, HoleStats, Round } from "@/components/DataBase/Classes";
-import ScoreModal from "../CounterTwo/Buttons/Modals/ScoreModal";
+// import ScoreModal from "../CounterTwo/Buttons/Modals/ScoreModal";
 import RoundModal from "../CounterTwo/Buttons/Modals/RoundModal";
 import ExitModal from "../CounterTwo/Buttons/Modals/ExitModal";
 import ScoreModal3 from "./ScoreModal3";
-import ImagesModal from "../CounterTwo/Buttons/Modals/ImagesModal";
+// import ImagesModal from "../CounterTwo/Buttons/Modals/ImagesModal";
 
 interface OptionsProps {
   teeboxHoles:Hole[];
@@ -49,10 +49,10 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                     return <RoundModal modalVisible={modalVisible} setModalVisible={setModalVisible} round={round} />
                 // case 'dot':
                 //     return <PrevModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
-                case 'yrd':
-                    return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber}  green={false}/>
-                case 'green':
-                    return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber} green={true}/>
+                // case 'yrd':
+                //     return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber}  green={false}/>
+                // case 'green':
+                //     return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber} green={true}/>
                 case 'exit':
                     return <ExitModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
                     
