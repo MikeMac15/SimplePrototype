@@ -1,47 +1,21 @@
 import { Text, View, StyleSheet } from 'react-native'
 import { BarChart } from 'react-native-gifted-charts';
 
-export const ScoringBarChart = ({pars, over, under}:{pars:number, over:number, under:number}) => {
-    const barData = [
-        
-        {value: under, label: 'Under', frontColor: 'skyblue'},
-        {value: pars, label: 'Par', frontColor: 'yellowgreen'},
-        {value: over, label: 'Over', frontColor: 'salmon'},
-        
-    ];
-    return (
-        <View>
-            <BarChart
-                
-                barWidth={20}
-                height={170}
-                barBorderRadius={3}
-                
-                frontColor="#888"
-                yAxisTextStyle={{color:'#ccc'}}
-                xAxisLabelTextStyle={{color:'#ccc'}}
-                data={barData}
-                yAxisThickness={0}
-                xAxisThickness={0}
-            />
-        </View>
-    );
-};
 
 
 
 interface ScoringViewProps {
-  eagleOless:number,
-  birdies:number,
-  pars:number,
-  bogeys:number,
-  dblPlus:number,
-  
+    eagleOless:number,
+    birdies:number,
+    pars:number,
+    bogeys:number,
+    dblPlus:number,
+    
 }
 
 const ScoringView: React.FC<ScoringViewProps> = ({eagleOless,birdies,pars,bogeys,dblPlus}) => {
-
-
+    
+    
     const ScoringText = ({title,value, extra}:{title:string, value:number, extra:string}) => {
         return (
             <View style={{ alignItems:'center', flexDirection:'row'}}>
@@ -58,13 +32,13 @@ const ScoringView: React.FC<ScoringViewProps> = ({eagleOless,birdies,pars,bogeys
                 </View>
         )
     }
-
-
-
-
-
-  return (
-<View style={styles.container}>
+    
+    
+    
+    
+    
+    return (
+        <View style={styles.container}>
     <View style={{flexDirection:'row'}}>
     
     <View style={{flexDirection:'column',marginTop:10}}>
@@ -88,12 +62,37 @@ const ScoringView: React.FC<ScoringViewProps> = ({eagleOless,birdies,pars,bogeys
 export default ScoringView;
 
 
+export const ScoringBarChart = ({pars, over, under}:{pars:number, over:number, under:number}) => {
+    const barData = [
+        {value: under, label: 'Under', frontColor: 'skyblue'},
+        {value: pars, label: 'Par', frontColor: 'yellowgreen'},
+        {value: over, label: 'Over', frontColor: 'salmon'},
+    ];
+    if (pars !== 0 || over !== 0 || under !== 0) {
+    return (
+        <View>
+            <BarChart
+                
+                barWidth={20}
+                height={170}
+                barBorderRadius={3}
+                
+                frontColor="#888"
+                yAxisTextStyle={{color:'#ccc'}}
+                xAxisLabelTextStyle={{color:'#ccc'}}
+                data={barData}
+                yAxisThickness={0}
+                xAxisThickness={0}
+            />
+        </View>
+    );
+}};
 
 const styles = StyleSheet.create({
-container: {
-    flexDirection:'column',
-    justifyContent:'center',
-    alignItems:'center',
+    container: {
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center',
     marginBottom:20
 },
 title: {
@@ -108,7 +107,7 @@ value: {
 },
 extra:{
     fontSize:8,
-    color:'#aaa'
+    color:'whitesmoke'
 }
 
 })
