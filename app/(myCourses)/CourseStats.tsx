@@ -2,6 +2,7 @@ import { getCourseHoleData, getTeeAllStats, getTeeTimelineScores, getTimelineSco
 import { AllStats, CourseHoleData } from "@/components/DataBase/Classes";
 import CourseStatView from "@/components/StatComponents/courseStats/CourseStatView";
 import HoleStats from "@/components/StatComponents/courseStats/holeStats/HoleStats";
+import HoleStats2 from "@/components/StatComponents/courseStats/holeStats/HoleStats2";
 
 import { teeTextColor, TeeColors } from "@/constants/Colors";
 import { Picker } from "@react-native-picker/picker";
@@ -18,11 +19,14 @@ const CourseStats = () => {
     const [btnTitle, setBtnTitle] = useState('Course Overview')
 
     const [courseHoleData,setCourseHoleData] = useState<CourseHoleData>({
+        holePars: [0],
         avgScores: [0],
         totalScores: [0],
         pph: [0],
         gir: [0],
         fir: [0],
+        count: 0,
+        firCount: 0,
     });
     
 
@@ -109,15 +113,15 @@ const CourseStats = () => {
             case 0:
                 return <CourseStatView AllStats={allStatTotals} Subjective={shotTotals} ShotTimeline={timelineScores} />
             case 1:
-                return <HoleStats title='Average Score' data={courseHoleData.avgScores} />
-            case 2:
-                return <HoleStats title='Total Score' data={courseHoleData.totalScores} />
-            case 3:
-                return <HoleStats title='Putts Per Hole' data={courseHoleData.pph} />
-            case 4:
-                return <HoleStats title='Green In Regulation' data={[0]} />
-            case 5:
-                return <HoleStats title='Fairway In Regulation' data={[0]} />
+                return <HoleStats2 data={courseHoleData} />
+            // case 2:
+            //     return <HoleStats title='Total Score' data={courseHoleData.totalScores} />
+            // case 3:
+            //     return <HoleStats title='Putts Per Hole' data={courseHoleData.pph} />
+            // case 4:
+            //     return <HoleStats title='Green In Regulation' data={[0]} />
+            // case 5:
+            //     return <HoleStats title='Fairway In Regulation' data={[0]} />
         }
     }
 
@@ -125,12 +129,12 @@ const CourseStats = () => {
     const DropDown = () => {
         return (<View>
             <Button title="Course Overview" onPress={()=>{setViewSelection(0); setShowSelection(!showSelection); setBtnTitle('Course Overview')}} />
-            <Button title="Average Score" onPress={()=>{setViewSelection(1); setShowSelection(!showSelection); setBtnTitle('Average Score')}} />
-            <Button title="Total Score" onPress={()=>{setViewSelection(2); setShowSelection(!showSelection); setBtnTitle('Total Score')}} />
+            <Button title="Holes Overview" onPress={()=>{setViewSelection(1); setShowSelection(!showSelection); setBtnTitle('Holes Overview')}} />
+            {/* <Button title="Total Score" onPress={()=>{setViewSelection(2); setShowSelection(!showSelection); setBtnTitle('Total Score')}} />
             <Button title="Putts Per Hole" onPress={()=>{setViewSelection(3); setShowSelection(!showSelection); setBtnTitle('Putts Per Hole')}} />
             <Button title="Green In Regulation" onPress={()=>{setViewSelection(4); setShowSelection(!showSelection); setBtnTitle('Green In Regulation')}} />
             <Button title="Fairway In Regulation" onPress={()=>{setViewSelection(5); setShowSelection(!showSelection); setBtnTitle('Fairway In Regulation')}} />
-            
+             */}
         </View>)
     }
 

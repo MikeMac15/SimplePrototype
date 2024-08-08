@@ -17,7 +17,7 @@ const CourseAveragesView: React.FC<AveragesProps> = ({ best, worst, avgScore, av
             <View style={styles.column}>
                 <View style={styles.square}>
                     <Text style={styles.statTitle}>Avg Putts</Text>
-                    <Text style={styles.statNumber}>{avgPPR}</Text>
+                    <Text style={styles.statNumber}>{avgPPR.toFixed(1)}</Text>
                 </View>
                 
                 <View style={styles.square}>

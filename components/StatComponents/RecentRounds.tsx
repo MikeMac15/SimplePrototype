@@ -1,15 +1,16 @@
 import { Scorecard } from '@/app/(myCourses)/(holes)/Holes';
-import {  getAllRounds } from '@/components/DataBase/API'
+import {  getAllRounds, RecentRoundTitleInfo } from '@/components/DataBase/API'
 import { Round } from '../DataBase/Classes';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert, Pressable} from 'react-native'
 import PreviousScore9 from './PreviousScore9';
 import { LinearGradient } from 'expo-linear-gradient';
+import { TeeColors, teeTextColor } from '@/constants/Colors';
 
 export default function RecentRoundStatList() {
     const db = useSQLiteContext();
-    const [roundData, setRoundData] = useState<Round[]>()
+    const [roundData, setRoundData] = useState<RecentRoundTitleInfo[]>()
     const [showModal, setShowModal] = useState(false)
     const [ roundID, setRoundID ] = useState(0)
     const [ teeID, setTeeID ] = useState(0)
@@ -86,8 +87,8 @@ export default function RecentRoundStatList() {
                         {/* <Text>Teebox: {round.color}</Text> */}
                         <Text style={{color:'white'}}>{round.name}</Text>
                         <Text style={{color:'white'}}>{round.date}</Text>
-                        <Text style={{color:'white'}}>{round.color} tee's</Text>
-                        <Text style={{color:'white'}}>{round.par + round.toPar}({round.toPar>0 ? '+' : '' }{round.toPar})</Text>
+                        <Text style={{color:'white'}}>{TeeColors[round.color1]} tee's</Text>
+                        <Text style={{color:'white'}}>{round.totalStrokes}({round.toPar>0 ? '+' : '' }{round.toPar})</Text>
                         
                       
 

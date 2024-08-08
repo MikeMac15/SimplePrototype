@@ -14,62 +14,6 @@ interface ModalProps {
 
 const ScoreModal3: React.FC<ModalProps> = ({modalVisible, setModalVisible, teeboxHoles, roundHoles, holeNumber, round}) => {
 
-    // const Score = () => {
-    //   const labels = ['Hole','Par','Dist', 'Score']
-
-    //   const fontColor = (toPar:number) => {
-        
-    //    if (toPar > 0){
-    //     return 'salmon'
-    //    } else if (toPar < 0){
-    //     return 'yellowgreen'
-    //    } else {
-    //     return 'whitesmoke'
-    //    }
-    //   }
-
-
-    //   return(
-    //     <View  style={{flexDirection:'row'}}>
-    //       <View style={{flexDirection:'column'}}>
-    //       {labels.map((label, idx)=>(
-    //         <View>
-
-    //         <View key={idx} style={styles.scoreLabel} >
-    //           <Text style={{color:'whitesmoke'}} >{label}</Text>
-    //         </View>
-    //         <View style={styles.seperator} />
-    //         </View>
-    //         ))}
-    //         </View>
-    //         <ScrollView horizontal style={{flexDirection:"row"}}>
-
-    //       {teeboxHoles.map((hole)=> (
-    //         <View key={hole.id}  style={[{flexDirection:'column'},{backgroundColor: hole.id%2==0 ? '#222' : '#111'}]}>
-    //           <View style={styles.scoreValues}>
-    //           <Text style={{color:roundHoles[hole.num] ? fontColor(roundHoles[hole.num].toPar ): 'white'}}>{hole.num}</Text>
-    //           </View>
-    //           <View style={styles.seperator} />
-    //           <View style={styles.scoreValues}>
-    //           <Text style={{color:'whitesmoke'}}>{hole.par}</Text>
-    //           </View>
-    //           <View style={styles.seperator} />
-    //           <View style={styles.scoreValues}>
-    //           <Text style={{color:'whitesmoke'}}>{hole.yardage}</Text>
-    //           </View>
-    //           <View style={styles.seperator} />
-    //           <View style={styles.scoreValues}>
-    //           <Text  style={{color:roundHoles[hole.num] ? fontColor(roundHoles[hole.num].toPar ): 'white'}}>{roundHoles[hole.num] ? roundHoles[hole.num].toPar : ''}</Text>
-    //           </View>
-    //           <View style={styles.seperator} />
-    //         </View>
-    //       ))}
-    //       </ScrollView>
-          
-    //     </View>
-    //   )
-    // }
-
 
     return(
       <Modal
@@ -87,7 +31,7 @@ const ScoreModal3: React.FC<ModalProps> = ({modalVisible, setModalVisible, teebo
                 <View style={styles.modalView}>
                 <Score9 holes={teeboxHoles.slice(0, 9)} title="Front Nine" holeNumber={holeNumber} round={round} />
                 <Score9 holes={teeboxHoles.slice(9, 18)} title="Back Nine" holeNumber={holeNumber} round={round} />
-                   <Text>ois</Text>
+                
                     <Pressable
                     style={[styles.button, styles.buttonCancel]}
                     onPress={() => setModalVisible(!modalVisible)}>

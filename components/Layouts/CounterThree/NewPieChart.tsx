@@ -1,13 +1,9 @@
 import { Text, View } from "react-native";
 import PieChart from "react-native-pie-chart";
 import C3Header3 from "./Header3";
+import { ShotData } from "@/components/DataBase/Classes";
 
-interface ShotData {
-  great: number;
-  good: number;
-  bad: number;
-  putt: number;
-}
+
 
 interface ShotPieChartV1Props {
   shotData: ShotData;
@@ -15,7 +11,7 @@ interface ShotPieChartV1Props {
 }
 
 const NewPieChart: React.FC<ShotPieChartV1Props> = ({ shotData, allShotData }) => {
-
+    console.log('shotData:', shotData);
 
     const colors = ["#36BFFA", "#97cc66", "#F97066", "#E1CAB2"]
 
@@ -27,8 +23,7 @@ const NewPieChart: React.FC<ShotPieChartV1Props> = ({ shotData, allShotData }) =
     };
 
     const HolePieChart = () => {
-      console.log(shotData)
-      console.log(allShotData)
+      
       return (
         <View style={{ alignItems: 'center', margin: 0, padding: 0, }}>
           <Text style={{ marginVertical: 5, fontSize: 20, fontFamily: 'Arial', fontStyle: 'italic', color: 'whitesmoke' }}>This Hole</Text>

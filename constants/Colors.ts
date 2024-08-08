@@ -107,3 +107,54 @@ export const teeTextColor = (color:number) : string => {
       return 'grey'
   }
 }
+
+export const GIRFIRColors = (data:number, count:number) => {
+  const dif = data/count;
+  if (dif > 0.75) {
+    return 'yellowgreen'
+  } else if (dif > 0.60) {
+    return '#ddfa84'
+  } else if (dif > 0.45) {
+    return '#e7fcb8'
+  } else if (dif >= 0.35) {
+    return '#faaba2'
+ } else {
+    return 'salmon'
+  }
+  
+}
+
+export const PuttColors = (data:number) => {
+  if (data < 1.75) {
+    return 'yellowgreen'
+  } else if (data < 1.95) {
+    return '#ddfa84'
+  } else if (data < 2.15) {
+    return '#e7fcb8'
+  } else if (data < 2.25) {
+    return '#faaba2'
+  } else {
+    return 'salmon'
+  }
+}
+
+export const AvgScoreColors = (data:number, hcp:number = 0, par:number) => {
+  let dif = 0;
+  if (hcp!=0) {
+    dif = (data - (hcp/18)) - par;
+  } else {
+    dif = data - par;
+  }
+
+  if (dif <= 0) {
+    return 'yellowgreen'
+  } else if (dif < 0.5) {
+    return '#ddfa84'
+  } else if (dif < 0.75) {
+    return '#e7fcb8'
+  } else if (dif < 1) {
+    return '#faaba2'
+  } else {
+    return 'salmon'
+  }
+}
