@@ -275,14 +275,52 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
         }
     };
 
-      export const getAllRounds = async (): Promise<Round[]> => {
+    export interface RecentRoundTitleInfo {
+        name: string;
+        color1: number;
+        color2: number;
+        id: number;
+        date: string;
+        teebox_id: number;
+        totalStrokes: number;
+        toPar: number;
+    }
+
+    export const getAllRounds = async (): Promise<RecentRoundTitleInfo[]> => {
         const db = await openDb();
-        return await db.getAllAsync(
-        `SELECT round.*, teebox.*, course.*
-            FROM round
-            JOIN teebox ON teebox.id = round.teebox_id
-            JOIN course ON course.id = teebox.course_id
-            ORDER BY round.date DESC;`);
+        
+        try {
+            const rows = await db.getAllAsync(`
+                SELECT 
+                    course.name,
+                    teebox.color1, teebox.color2,
+                    round.id, round.date, round.teebox_id, round.totalStrokes, round.toPar
+                FROM round
+                JOIN teebox ON teebox.id = round.teebox_id
+                JOIN course ON course.id = teebox.course_id
+                ORDER BY round.date DESC;
+            `);
+    
+            // Map the result to the RecentRoundTitleInfo type
+            const recentRounds: RecentRoundTitleInfo[] = rows.map((row: any) => ({
+                name: row.name,
+                color1: row.color1,
+                color2: row.color2,
+                id: row.id,
+                date: row.date,
+                teebox_id: row.teebox_id,
+                totalStrokes: row.totalStrokes,
+                toPar: row.toPar
+            }));
+    
+            return recentRounds;
+        } catch (error) {
+            console.error('Error fetching rounds:', error);
+            throw new Error('Failed to fetch rounds');
+        }
+        //  finally {
+        //     await db.closeAsync()
+        // }
     };
     
     /// get recent round or best round

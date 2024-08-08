@@ -38,7 +38,7 @@ const ScoreModal: React.FC<ModalProps> = ({modalVisible, setModalVisible, teebox
             </View>
             ))}
             </View>
-            <ScrollView horizontal style={{flexDirection:"row"}}>
+            <View style={{flexDirection:"row"}}>
 
           {teeboxHoles.map((hole)=> (
             <View key={hole.id}  style={[{flexDirection:'column'},{backgroundColor: hole.id%2==0 ? '#222' : '#111'}]}>
@@ -60,7 +60,7 @@ const ScoreModal: React.FC<ModalProps> = ({modalVisible, setModalVisible, teebox
               <View style={styles.seperator} />
             </View>
           ))}
-          </ScrollView>
+          </View>
           
         </View>
       )

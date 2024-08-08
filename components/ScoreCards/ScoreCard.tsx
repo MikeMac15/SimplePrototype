@@ -35,12 +35,6 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
             </View>
 
 
-            
-
-
-            
-            
-          
 
             <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
               <View style={{ width: 50 }}>
@@ -53,25 +47,6 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
               ))}
 
             </View>
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             {/* Score Row */}
             <View style={{ flexDirection: 'row', borderWidth: 0.5 }}>
@@ -132,7 +107,7 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
  
             <View style={{ flexDirection: 'row', borderWidth: 0.5 }}>
               <View style={{ width: 50 }}>
-                <Text style={[styles.text, { marginTop: 3, }]}>Fir/Gir</Text>
+                <Text style={[styles.text, { marginTop: 3, }]}>FIR</Text>
               </View>
               {holes.map(hole => (
                 <View
@@ -151,7 +126,34 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
                   key={hole.id}
                 >
                     {round.holes[hole.num]?
-                  <LinearGradient colors={[round.holes[hole.num].firEligible ? round.holes[hole.num].fir ?'yellowgreen':'salmon':'#333',round.holes[hole.num].gir ? 'yellowgreen':'salmon']} style={{width:'100%',height:'100%'}}></LinearGradient>
+                  <View style={{backgroundColor: round.holes[hole.num].firEligible ? round.holes[hole.num].fir ?'yellowgreen':'salmon':'#333', width:'100%',height:'100%'}}/>
+                  :''
+                    }
+                </View>
+              ))}
+            </View>
+            <View style={{ flexDirection: 'row', borderWidth: 0.5 }}>
+              <View style={{ width: 50 }}>
+                <Text style={[styles.text, { marginTop: 3, }]}>GIR</Text>
+              </View>
+              {holes.map(hole => (
+                <View
+                  style={{
+                    width: 36.25,
+                    height: 25,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderLeftWidth: 0.5,
+                    borderBottomWidth: 0.5,
+                    borderRightWidth: 0.5,
+                    borderColor: 'grey',
+                    borderTopWidth: 0.5,
+                    backgroundColor: hole.num == holeNumber ? 'gold' : hole.num % 2 == 0 ? color1 : color2
+                  }}
+                  key={hole.id}
+                >
+                    {round.holes[hole.num]?
+                  <View style={{backgroundColor: round.holes[hole.num].gir ? 'yellowgreen': 'salmon',width:'100%',height:'100%'}}/>
                   :''
                     }
                 </View>
