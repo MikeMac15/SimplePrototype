@@ -76,7 +76,8 @@ const HoleStats2: React.FC<HoleStats2Props> = ({ data}) => {
                                 <View style={[styles.square,]}>
                                     <Text style={[styles.dataText, { color: AvgScoreColors(avgScore, 0, data.holePars[idx + startIdx]) }]}>{(avgScore).toFixed(1)}</Text>
                                 </View>
-                                <View style={[styles.square, { backgroundColor: '#333' }]}>
+                                <View style={[styles.square, { backgroundColor: '#333', flexDirection:'row' }]}>
+                                    <Text style={{color:'whitesmoke', fontSize:10}}>{data.totalScores[idx + startIdx] > 0 ? "+": ''}</Text>
                                     <Text style={[styles.dataText, {}]}>{data.totalScores[idx + startIdx]}</Text>
                                 </View>
                                 <View style={[styles.square,]}>

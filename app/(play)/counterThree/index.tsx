@@ -77,15 +77,12 @@ const CounterThree: React.FC = () => {
   const saveRoundAndHoleStats = async (round: Round) => {
     try {
       await round.saveRoundAndHoleStats();
-      
       Alert.alert('Saved')
       router.dismissAll()
-
     } catch (error) {
       console.error('Error saving round and hole stats:', error);
     }
   };
-
   const resetForNewHole = (): void => {
     setShotData({
       strokes: 0,
@@ -98,7 +95,6 @@ const CounterThree: React.FC = () => {
     setFir(false);
     setShotColors([]);
   }
-
   const addRoundHole = () => {
     const hole = teeboxHoles.find(hole => hole.num === holeNumber)
     if (hole) {
@@ -106,25 +102,15 @@ const CounterThree: React.FC = () => {
     }
   }
   const nextHole = () => {
-    
     addRoundHole();
-    
     resetForNewHole();
     setHoleNumber(holeNumber + 1);
-    
   }
   const lastHole = () => {
-    
     addRoundHole();
     saveRoundAndHoleStats(round);
-    
-    
   }
-
-
-  ////////////////////////////////////////// Save Data ////////////////////////////////////
-
-
+  ////////////////////////////////////////// Shot Data ////////////////////////////////////
   const getAllShotData = () => {
     const shots:ShotData = {
       great: round.great,
@@ -132,19 +118,14 @@ const CounterThree: React.FC = () => {
       bad: round.bad,
       putt: round.totalPutts,
     }
-
     return shots
-  }
-
-
+  };
   const addShot = (shotType: string) => {
     setShotData((prevData) => ({
       ...prevData,
       [shotType]: prevData[shotType] + 1,
     }));
-
   };
-
   const subtractShot = (shotType: string) => {
     setShotData((prevData) => ({
       ...prevData,
@@ -192,80 +173,76 @@ const CounterThree: React.FC = () => {
           />
         );
       };
-      
 
-
-      
-
-      const MainView = () => {
-      
-        const addShotColor = (color: string) => {
-          setShotColors(prevColors => [...prevColors, color]);
-        };
-      
-        const subShotColor = (color: string) => {
-          setShotColors(prevColors => {
-            const lastColorIdx = prevColors.lastIndexOf(color);
-            if (lastColorIdx !== -1) {
-              const newShotColorArr = [
-                ...prevColors.slice(0, lastColorIdx),
-                ...prevColors.slice(lastColorIdx + 1)
-              ];
-              return newShotColorArr;
-            }
-            return prevColors; // Return the original state if color not found
-          });
-        };
-      
-      
-        return (
-          <View style={{ backgroundColor: '#333', height: '100%' }}>
-            <StatMarquee
-              round={round}
-              holeNumber={holeNumber}
-              girGoal={Number(girGoal)}
-              firGoal={Number(firGoal)}
-              puttGoal={Number(puttGoal)}
+  const MainView = () => {
+  
+    const addShotColor = (color: string) => {
+      setShotColors(prevColors => [...prevColors, color]);
+    };
+  
+    const subShotColor = (color: string) => {
+      setShotColors(prevColors => {
+        const lastColorIdx = prevColors.lastIndexOf(color);
+        if (lastColorIdx !== -1) {
+          const newShotColorArr = [
+            ...prevColors.slice(0, lastColorIdx),
+            ...prevColors.slice(lastColorIdx + 1)
+          ];
+          return newShotColorArr;
+        }
+        return prevColors; // Return the original state if color not found
+      });
+    };
+  
+  
+    return (
+      <View style={{ backgroundColor: '#333', height: '100%' }}>
+        <StatMarquee
+          round={round}
+          holeNumber={holeNumber}
+          girGoal={Number(girGoal)}
+          firGoal={Number(firGoal)}
+          puttGoal={Number(puttGoal)}
+        />
+        {currentHoleData && (
+          <View>
+            <C3Header3
+              courseName={''}
+              holeData={currentHoleData}
+              shotColors={shotColors}
+              getTotalShots={getTotalShots}
+              shotData={shotData}
+              allShotData={getAllShotData()}
             />
-            {currentHoleData && (
-              <View>
-                <C3Header3
-                  courseName={''}
-                  holeData={currentHoleData}
-                  shotColors={shotColors}
-                  getTotalShots={getTotalShots}
-                  shotData={shotData}
-                  allShotData={getAllShotData()}
-                />
-              </View>
-            )}
-            {teeboxHoles && (
-              <C3Options3
-                teeboxHoles={teeboxHoles}
-                roundHoles={round.holes}
-                round={round}
-                holeNumber={holeNumber}
-              />
-            )}
-            <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-              <VerticalCheckBoxes
-                hole={currentHoleData}
-                gir={gir}
-                setGir={setGir}
-                fir={fir}
-                setFir={setFir}
-              />
-              <VerticalBtns3
-                addShot={addShot}
-                subtractShot={subtractShot}
-                shotData={shotData}
-                addShotColor={addShotColor}
-                subShotColor={subShotColor}
-              />
-            </View>
           </View>
-        );
-      };
+        )}
+        {teeboxHoles && (
+          <C3Options3
+            teeboxHoles={teeboxHoles}
+            roundHoles={round.holes}
+            round={round}
+            holeNumber={holeNumber}
+          />
+        )}
+        <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+          <VerticalCheckBoxes
+            hole={currentHoleData}
+            gir={gir}
+            setGir={setGir}
+            fir={fir}
+            setFir={setFir}
+          />
+          <VerticalBtns3
+            addShot={addShot}
+            subtractShot={subtractShot}
+            shotData={shotData}
+            addShotColor={addShotColor}
+            subShotColor={subShotColor}
+          />
+        </View>
+      </View>
+    );
+  };
 
 
 
@@ -543,17 +520,6 @@ const StylesInsights = StyleSheet.create({
     alignItems: 'center',
   }
 });
-
-
-
-
-
-
-
-
-
-
-
 
 ///////////////////////////////////////////////////////Addititon///////////////////////////////////////////////////////
 
