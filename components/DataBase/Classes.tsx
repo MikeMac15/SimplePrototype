@@ -67,10 +67,10 @@ export class Hole {
 }
 
 export interface HoleInsights {
-  pastScores: number[],
-  pastPPH: number[],
-  pastGIR: number[],
-  pastFIR: number[]
+  scores: number[],
+  pph: number[],
+  gir: number[],
+  fir: number[]
 }
 
 export class Round {

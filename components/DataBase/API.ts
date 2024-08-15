@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { Course, Teebox, Hole, Round, HoleStats, MostRecentRound, TimelineStats, AllStats, CourseHoleData } from './Classes';
+import { Course, Teebox, Hole, Round, HoleStats, MostRecentRound, TimelineStats, AllStats, CourseHoleData, HoleInsights } from './Classes';
 
 
 export const openDb = async() => {
@@ -599,4 +599,47 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
         console.log('courseData:', courseData);
     
         return courseData;
+    }
+
+
+    export async function getHoleStatsByHoleID(holeID: number): Promise<HoleInsights> {
+        const db = await openDb();
+    
+        const query = `
+            SELECT 
+                (holestats.toPar + hole.par) AS score,
+                holestats.putts,
+                holestats.GIR,
+                holestats.FIR
+            FROM holestats
+            JOIN hole ON holestats.hole_id = hole.id
+            WHERE holestats.hole_id = $holeID
+        `;
+    
+        const results = await db.getAllAsync<{ score: number; putts: number; GIR: number; FIR: number; }>(query, { $holeID: holeID });
+    
+        // Initialize arrays for scores, putts, GIR, and FIR
+        const scores: number[] = [];
+        const putts: number[] = [];
+        const gir: number[] = [];
+        const fir: number[] = [];
+    
+        // Fill arrays with data from the results
+        results.forEach(holeStats => {
+            scores.push(holeStats.score);
+            putts.push(holeStats.putts);
+            gir.push(holeStats.GIR);
+            fir.push(holeStats.FIR);
+        });
+    
+        const holeStatsData: HoleInsights = {
+            scores: scores,
+            pph: putts,
+            gir: gir,
+            fir: fir
+        };
+    
+        
+    
+        return holeStatsData;
     }
