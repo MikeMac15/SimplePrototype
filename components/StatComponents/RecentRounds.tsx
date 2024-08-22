@@ -1,5 +1,5 @@
 import { Scorecard } from '@/app/(myCourses)/(holes)/Holes';
-import {  getAllRounds, RecentRoundTitleInfo } from '@/components/DataBase/API'
+import {  getAllRounds, getLastFiveRounds, RecentRoundTitleInfo } from '@/components/DataBase/API'
 import { Round } from '../DataBase/Classes';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react'
@@ -9,7 +9,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { TeeColors, teeTextColor } from '@/constants/Colors';
 
 export default function RecentRoundStatList() {
-    const db = useSQLiteContext();
     const [roundData, setRoundData] = useState<RecentRoundTitleInfo[]>()
     const [showModal, setShowModal] = useState(false)
     const [ roundID, setRoundID ] = useState(0)
@@ -17,7 +16,8 @@ export default function RecentRoundStatList() {
     useEffect(() => {
         const fetchRounds = async () => {
             try {
-                const roundDataArray = await getAllRounds();
+                // const roundDataArray = await getAllRounds();
+                const roundDataArray = await getLastFiveRounds();
                 setRoundData(roundDataArray)
             } catch (error) {
                 console.error("Error fetching round data: ", error);
@@ -56,13 +56,13 @@ export default function RecentRoundStatList() {
             setShowModal(!showModal);
           }}>
           <View style={styles.centeredView}>
-            <View style={[styles.modalView, { backgroundColor: "#333" }]}>
-              <Text style={styles.modalText}>Scorecard</Text>
-              <View style={{ transform: 'scale(.95)' }}>
+            <View style={[styles.modalView, { backgroundColor: "#444", transform: 'scale(.8)', padding:20 }]}>
+              
+              <View style={{ }}>
                 {<PreviousScore9 roundID={roundID} teeboxID={teeID} />}
               </View>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={[styles.button, styles.buttonClose,{margin:10}]}
                 onPress={() => setShowModal(!showModal)}>
                 <Text style={styles.textStyle}>Hide</Text>
               </Pressable>
@@ -77,7 +77,7 @@ export default function RecentRoundStatList() {
             <View style={styles.container}>
                 {roundData?.map((round, index) => (
 
-                        <TouchableOpacity key={index} style={{ backgroundColor:'rgba(250,250,250,.05)', padding:5, borderRadius:20, marginVertical:20, flexDirection:'column', alignItems:'center', width:200, justifyContent:'center'}} onPress={()=> showRound(round.id,round.teebox_id)}>
+                        <TouchableOpacity key={index} style={{ backgroundColor:'rgba(250,250,250,.05)', padding:5, borderRadius:20, marginVertical:10, flexDirection:'column', alignItems:'center', width:200, justifyContent:'center'}} onPress={()=> showRound(round.id,round.teebox_id)}>
                         
                         
 
@@ -116,7 +116,7 @@ return(
 
 const styles = StyleSheet.create({
     container:{
-        marginVertical:20,
+        
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
@@ -126,13 +126,13 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
+        
       },
       modalView: {
-        margin: 20,
+       
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 35,
+        
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {

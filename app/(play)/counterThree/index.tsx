@@ -196,7 +196,7 @@ const CounterThree: React.FC = () => {
   
   
     return (
-      <View style={{ backgroundColor: '#333', height: '100%' }}>
+      <View style={{}}>
         <StatMarquee
           round={round}
           holeNumber={holeNumber}
@@ -204,6 +204,7 @@ const CounterThree: React.FC = () => {
           firGoal={Number(firGoal)}
           puttGoal={Number(puttGoal)}
         />
+      <View style={{  height:'100%', justifyContent:'flex-start', marginTop:10}}>
         {currentHoleData && (
           <View>
             <C3Header3
@@ -224,6 +225,7 @@ const CounterThree: React.FC = () => {
             holeNumber={holeNumber}
           />
         )}
+        <View style={{height:'50%', justifyContent:'center'}}>
         <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
           <VerticalCheckBoxes
             hole={currentHoleData}
@@ -240,6 +242,8 @@ const CounterThree: React.FC = () => {
             subShotColor={subShotColor}
           />
         </View>
+        </View>
+      </View>
       </View>
     );
   };

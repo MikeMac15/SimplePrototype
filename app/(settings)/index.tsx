@@ -74,6 +74,7 @@ export default function Settings() {
             <Text>Settings</Text>
         <View style={{flexDirection:'row'}}>
             <View>
+                <Text>Menu Gradient</Text>
                 <Button title="cool-guy" onPress={()=> setGradient('cool-guy')} />
                 <Button title="sunset" onPress={()=> setGradient('sunset')} />
                 <Button title="morning-dew" onPress={()=> setGradient('morning-dew')} />
@@ -81,17 +82,22 @@ export default function Settings() {
                 <Button title="OG-Light" onPress={()=> setGradient('OG-Light')} />
             </View>
             <View>
+                <Text>Menu Image</Text>
                 <Button title="proud-parent" onPress={()=> setMenuImage('proud-parent')} />
+                <Button title="ocean" onPress={()=> setMenuImage('ocean')} />
+                <Button title="sunset" onPress={()=> setMenuImage('sunset')} />
                 <Button title="retro" onPress={()=> setMenuImage('retro')} />
                 <Button title="JamesWebb" onPress={()=> setMenuImage('nasaJW')} />
             </View>
             <View>
+                <Text>Ribbon Image</Text>
                 <Button title="proud-parent" onPress={()=> setRibbonImage('proud-parent')} />
                 <Button title="retro" onPress={()=> setRibbonImage('retro')} />
                 <Button title="JamesWebb" onPress={()=> setRibbonImage('nasaJW')} />
             </View>
         </View>
             <View>
+                <Text>Counter Layout</Text>
                 <Button title="counterV1" onPress={()=>{setCounterLayoutPref('/simpleCounter')}} />
                 <Button title="counterV2" onPress={()=>{setCounterLayoutPref('/counterTwo')}} />
                 <Button title="counterV3" onPress={()=>{setCounterLayoutPref('/counterThree')}} />

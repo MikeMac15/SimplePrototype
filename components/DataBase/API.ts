@@ -322,6 +322,43 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
         //     await db.closeAsync()
         // }
     };
+    export const getLastFiveRounds = async (): Promise<RecentRoundTitleInfo[]> => {
+        const db = await openDb();
+        
+        try {
+            const rows = await db.getAllAsync(`
+                SELECT 
+                    course.name,
+                    teebox.color1, teebox.color2,
+                    round.id, round.date, round.teebox_id, round.totalStrokes, round.toPar
+                FROM round
+                JOIN teebox ON teebox.id = round.teebox_id
+                JOIN course ON course.id = teebox.course_id
+                ORDER BY round.date DESC
+                LIMIT 5;
+            `);
+    
+            // Map the result to the RecentRoundTitleInfo type
+            const recentRounds: RecentRoundTitleInfo[] = rows.map((row: any) => ({
+                name: row.name,
+                color1: row.color1,
+                color2: row.color2,
+                id: row.id,
+                date: row.date,
+                teebox_id: row.teebox_id,
+                totalStrokes: row.totalStrokes,
+                toPar: row.toPar
+            }));
+    
+            return recentRounds;
+        } catch (error) {
+            console.error('Error fetching rounds:', error);
+            throw new Error('Failed to fetch rounds');
+        }
+        //  finally {
+        //     await db.closeAsync()
+        // }
+    };
     
     /// get recent round or best round
     export const getRecentRounds = async (): Promise<MostRecentRound> => {
@@ -399,6 +436,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
     interface timestat {
         totalStrokes:number
     }
+
     export const getTimelineScores = async (): Promise<number[]> => {
     try {
         const db = await openDb();
@@ -418,6 +456,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
     }
     return []
     }
+
     export const getTeeTimelineScores = async (teeboxID:number): Promise<number[]> => {
     try {
         const db = await openDb();
@@ -607,6 +646,8 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
     
         const query = `
             SELECT 
+                holestats.toPar,
+                hole.par,
                 (holestats.toPar + hole.par) AS score,
                 holestats.putts,
                 holestats.GIR,
@@ -616,7 +657,8 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             WHERE holestats.hole_id = $holeID
         `;
     
-        const results = await db.getAllAsync<{ score: number; putts: number; GIR: number; FIR: number; }>(query, { $holeID: holeID });
+        const results = await db.getAllAsync<{ toPar: number; par: number; score: number; putts: number; GIR: number; FIR: number; }>(query, { $holeID: holeID });
+       
     
         // Initialize arrays for scores, putts, GIR, and FIR
         const scores: number[] = [];
@@ -639,7 +681,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             fir: fir
         };
     
-        
+     
     
         return holeStatsData;
     }

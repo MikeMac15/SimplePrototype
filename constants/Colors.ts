@@ -45,6 +45,10 @@ export const getMenuImageSource = (menuImage: string) => {
   switch (menuImage) {
     case 'proud-parent':
       return require('../assets/images/ggwp.png');
+    case 'ocean':
+      return require('../assets/images/ocean.png');
+    case 'sunset':
+      return require('../assets/images/sunset.png');
     case 'retro':
       return require('../assets/images/retro4.png');
     case 'nasaJW':

@@ -10,11 +10,12 @@ interface ModalProps {
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   holeID: number;
-
+  holePar:number;
+  holeNumber?: number;
 }
 
 
-const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible, holeID }) => {
+const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible, holeID, holePar, holeNumber }) => {
 
   const [timelineChoice, setTimelineChoice] = useState<number>(0);
   const [holeInsight, setHoleInsight] = useState<HoleInsights>({
@@ -27,6 +28,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
   const fetchHoleInsight = async () => {
     try {
       const data = await getHoleStatsByHoleID(holeID);
+      
       setHoleInsight(data);
     } catch (error) {
       console.error('Error fetching hole insights:', error);
@@ -46,7 +48,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
   const HoleTitle = () => {
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', backgroundColor: '#222', paddingVertical: 3, }}>
-        <Text style={{ color: 'whitesmoke', fontSize: 20, fontFamily: 'papyrus' }}>Hole {holeID} Insights</Text>
+        <Text style={{ color: 'whitesmoke', fontSize: 20, fontFamily: 'papyrus' }}>Hole {holeNumber} Insights</Text>
 
       </View>
     );
@@ -58,9 +60,9 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
     let over = 0
 
     holeInsight.scores.map((score) => {
-      if (score < 4) {
+      if (score < holePar) {
         under++
-      } else if (score === 4) {
+      } else if (score === holePar) {
         par++
       } else {
         over++

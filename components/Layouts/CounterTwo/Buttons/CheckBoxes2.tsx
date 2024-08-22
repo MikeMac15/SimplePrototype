@@ -106,7 +106,7 @@ const CheckBoxes2: React.FC<CheckBoxes2Props> = ({ gir, setGIR, fir, setFIR }) =
     };
 
     const image = require('../../../../assets/images/ggwp.png');
-    const image2 = require('../../../../assets/images/retro6.png');
+    const image2 = require('../../../../assets/images/retro4.png');
 
     return (
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>

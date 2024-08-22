@@ -50,7 +50,7 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                 case 'bar':
                     return <RoundModal modalVisible={modalVisible} setModalVisible={setModalVisible} round={round} />
                 case 'dot':
-                    return <HoleInsightsModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeID={teeboxHoles[holeNumber].id}  />
+                    return <HoleInsightsModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeID={teeboxHoles[holeNumber-1].id} holePar={teeboxHoles[holeNumber-1].par} holeNumber={teeboxHoles[holeNumber-1].num} />
                 // case 'yrd':
                 //     return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber}  green={false}/>
                 // case 'green':

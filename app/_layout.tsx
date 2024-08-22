@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stack } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 
 import { getRibbonImageSource } from "@/constants/Colors";
 import { ImageBackground, StyleSheet } from "react-native";
@@ -23,6 +23,14 @@ export default function RootLayout() {
     const image = getRibbonImageSource(ribbonImage)
 
 
+    const HeaderRibbonImg = () => {
+        return (
+            <ImageBackground
+                source={image}
+                style={StyleSheet.absoluteFill}
+            />
+          )
+          }
     
     return (
       <Stack>
@@ -30,16 +38,7 @@ export default function RootLayout() {
       <Stack.Screen name="(myCourses)/index" options={{ title: "My Courses" }} />
       <Stack.Screen name="(play)/index" options={{ title: "Simple Counter" }} />
       <Stack.Screen name="(settings)/index" options={{ title: "Settings" }} />
-      <Stack.Screen name="(tabs)" options={{ title: "Statistics",
-      headerBackground: () => (
-        <ImageBackground
-        source={image}
-        style={StyleSheet.absoluteFill}
-        />
-      ),
-  
-    }} />
-      {/* Add other screens as needed */}
+      <Stack.Screen name="(tabs)" options={{ headerShown:false }} />
     </Stack>
   );
 }

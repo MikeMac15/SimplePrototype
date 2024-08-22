@@ -1,8 +1,8 @@
 
 import {getAllCourses, getAllCourseTeeboxes } from "@/components/DataBase/API"
 
-import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, ScrollView } from "react-native"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { StyleSheet, Text, View, ScrollView, ImageBackground } from "react-native"
 
 
 import { MenuGradients, getRibbonImageSource } from "@/constants/Colors";
@@ -10,60 +10,57 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Teebox, Course, CourseAndTees } from "@/components/DataBase/Classes";
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import CourseTeeStatView from "@/components/StatComponents/courseStats/CourseTeeStatView";
+import { Stack } from "expo-router";
+import StackHeader from "@/constants/StackHeader";
 
 
-const statsCourse = () => {
+const StatsCourse = () => {
+  const [courses, setCourses] = useState<CourseAndTees[]>([]);
+  const [gradient, setGradient] = useState("OG-Dark");
+  const [ribbonImage, setRibbonImage] = useState("retro");
 
-
-    const [courses, setCourses] = useState<CourseAndTees[]>([]);
-    const [gradient, setGradient] = useState('OG-Dark')
-    const [ribbonImage, setRibbonImage] = useState('retro')
-
-    const getPreferences = async() => {
-        const value = await getMenuGradient()
-        setGradient(value)
-        const ribbonImgTag = await getRibbonImage()
-        setRibbonImage(ribbonImgTag)  
+  const getPreferences = useCallback(async () => {
+    try {
+      const [value, ribbonImgTag] = await Promise.all([getMenuGradient(), getRibbonImage()]);
+      setGradient(value);
+      setRibbonImage(ribbonImgTag);
+    } catch (error) {
+      console.error("Failed to fetch preferences", error);
     }
+  }, []);
 
-    useEffect(()=>{
-        getPreferences();
-    },[])
+  useEffect(() => {
+    getPreferences();
+  }, [getPreferences]);
 
-    const getCourses = async () => {
-        
-        const coursesData: Course[] = await getAllCourses();
-        const coursesWithTeeboxes: CourseAndTees[] = await Promise.all(coursesData.map(async (course) => {
-            const teeData: Teebox[] = await getAllCourseTeeboxes(course.id);
-            return { ...course, teeboxes: teeData };
-        }));
-    
-        setCourses(coursesWithTeeboxes);
+  const getCourses = useCallback(async () => {
+    try {
+      const coursesData: Course[] = await getAllCourses();
+      const coursesWithTeeboxes: CourseAndTees[] = await Promise.all(
+        coursesData.map(async (course) => {
+          const teeData: Teebox[] = await getAllCourseTeeboxes(course.id);
+          return { ...course, teeboxes: teeData };
+        })
+      );
+      setCourses(coursesWithTeeboxes);
+    } catch (error) {
+      console.error("Failed to fetch courses", error);
     }
-    
+  }, []);
 
+  useEffect(() => {
+    getCourses();
+  }, [getCourses]);
 
+  const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 
-
-
-    useEffect(() => {
-        getCourses();
-        
-    }, []);
-
-
-    
-    
-    
-    const image = getRibbonImageSource(ribbonImage);
-    
     
 
     return (
         <LinearGradient colors={MenuGradients[gradient]} style={{ height:'100%'}}>
        
            
-
+       <StackHeader title='Course Stats' image={image}/>
          
 
             <ScrollView>
@@ -91,7 +88,7 @@ const statsCourse = () => {
 }
 
 
-export default statsCourse;
+export default StatsCourse;
 
 const styles = StyleSheet.create({
     centeredView: {
