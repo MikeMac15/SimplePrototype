@@ -116,7 +116,7 @@ export default function Holes() {
 
   const [holes, setHoles] = useState<Hole[]>([]);
 
-  const [gradient, setGradient] = useState('cool-guy')
+  const [gradient, setGradient] = useState('OG-Dark')
   const [ribbonImage, setRibbonImage] = useState('proud-parent')
   const setUserPreferences = async () => {
     const value = await getMenuGradient()
@@ -234,10 +234,12 @@ export default function Holes() {
   }
 
   const AddHoleInfoBtn = () => {
+    return (<View>
+
     {
       newHoleNumber <= 18
-        ?
-        <View style={[styles.newHoleBtn, { width: '100%', height: 100, justifyContent: 'space-evenly', alignItems: 'center', backgroundColor: '#aaa' }]}>
+      ?
+      <View style={[styles.newHoleBtn, { width: '100%', height: 100, justifyContent: 'space-evenly', alignItems: 'center', backgroundColor: '#aaa' }]}>
           <Text style={styles.text}>Hole {newHoleNumber}</Text>
 
           <View style={styles.newHoleColumn}>
@@ -257,8 +259,8 @@ export default function Holes() {
 
           {
             teeBoxColors[1] > 0
-              ?
-              <View style={styles.newHoleColumn}>
+            ?
+            <View style={styles.newHoleColumn}>
                 <Text style={[styles.text, { color: `${TeeColors[teeBoxColors[holeColorIndex]].toLowerCase()}` }]}>color:</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Button title="<" onPress={() => setHoleColorIndex((prev) => prev === 1 ? prev - 1 : prev)} />
@@ -268,12 +270,13 @@ export default function Holes() {
               </View>
               :
               ''
-          }
+            }
 
           <Button title="Add" onPress={() => addNewHole()} />
         </View>
         : <Text></Text>
-    }
+      }
+      </View>)
   }
 
 
@@ -287,7 +290,7 @@ export default function Holes() {
 
         <TeeInfo />
 
-        {/* <AddHoleInfoBtn /> */}
+        {AddHoleInfoBtn()}
 
         {holes && holes.length > 0
           ?

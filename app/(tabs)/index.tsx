@@ -18,7 +18,7 @@ import ToParBreakdown from '@/components/StatComponents/courseStats/overview/ToP
 import ParSpecificStatView from '@/components/StatComponents/ParSpecificStatView';
 
 export default function Index() {
-    const [gradient, setGradient] = useState('cool-guy');
+    const [gradient, setGradient] = useState('OG-Dark');
     const [ribbonImage, setRibbonImage] = useState('proud-parent');
     const [shotTotals, setShotTotals] = useState({ bad: 0, good: 0, great: 0, totalPutts: 0 });
     const [timelineScores, setTimelineScores] = useState<number[]>([]);

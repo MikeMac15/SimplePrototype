@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { Alert, Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 
@@ -11,15 +11,102 @@ import StatMarquee from "@/components/PlayComponents/StatMarque";
 import C3Header3 from "@/components/Layouts/CounterThree/Header3";
 import C3Options3 from "@/components/Layouts/CounterThree/Options3";
 import VerticalBtns3 from "@/components/Layouts/CounterThree/VerticalShotBtns3";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import StackHeader from "@/constants/StackHeader";
+import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
+import { getRibbonImageSource, MenuGradients } from "@/constants/Colors";
+import { LinearGradient } from "expo-linear-gradient";
 
 
 
+interface State {
+  shotData: ShotData;
+  gir: boolean;
+  fir: boolean;
+  shotColors: string[];
+}
+
+type ActionType =
+  | { type: 'ADD_SHOT'; shotType: keyof ShotData }
+  | { type: 'SUBTRACT_SHOT'; shotType: keyof ShotData }
+  | { type: 'SET_GIR'; value: boolean }
+  | { type: 'SET_FIR'; value: boolean }
+  | { type: 'ADD_SHOT_COLOR'; color: string }
+  | { type: 'SUB_SHOT_COLOR'; color: string }
+  | { type: 'RESET' };
+
+  
+const initialState: State = {
+  shotData: {
+    great: 0,
+    good: 0,
+    bad: 0,
+    putt: 0,
+  },
+  gir: false,
+  fir: false,
+  shotColors: [],
+};
+
+const reducer = (state: State, action: ActionType): State => {
+  switch (action.type) {
+    case 'ADD_SHOT':
+      return {
+        ...state,
+        shotData: {
+          ...state.shotData,
+          [action.shotType]: state.shotData[action.shotType] + 1,
+        },
+      };
+    case 'SUBTRACT_SHOT':
+      return {
+        ...state,
+        shotData: {
+          ...state.shotData,
+          [action.shotType]: Math.max(state.shotData[action.shotType] - 1, 0),
+        },
+      };
+    case 'SET_GIR':
+      return {
+        ...state,
+        gir: action.value,
+      };
+    case 'SET_FIR':
+      return {
+        ...state,
+        fir: action.value,
+      };
+    case 'ADD_SHOT_COLOR':
+      return {
+        ...state,
+        shotColors: [...state.shotColors, action.color],
+      };
+    case 'SUB_SHOT_COLOR':
+      const lastColorIdx = state.shotColors.lastIndexOf(action.color);
+      if (lastColorIdx !== -1) {
+        return {
+          ...state,
+          shotColors: [
+            ...state.shotColors.slice(0, lastColorIdx),
+            ...state.shotColors.slice(lastColorIdx + 1),
+          ],
+        };
+      }
+      return state; // Return the original state if color not found
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
+};
 
 /**
  * CounterThree component.
  * @component
  */
 const CounterThree: React.FC = () => {
+
+  const [state, dispatch] = useReducer(reducer, initialState);
   
   const params = useLocalSearchParams();
   const { courseID, courseName, teeID, girGoal, puttGoal, firGoal, strokeGoal } = params;
@@ -27,52 +114,81 @@ const CounterThree: React.FC = () => {
   const [teeboxHoles, setTeeboxHoles] = useState<Hole[]>([]);
   const [currentHoleData, setCurrentHoleData] = useState<Hole>();
   const [holeNumber, setHoleNumber] = useState<number>(1);
-  const [shotData, setShotData] = useState<ShotData>({
-    great: 0,
-    good: 0,
-    bad: 0,
-    putt: 0,
-  });
-  const [gir, setGir] = useState<boolean>(false);
-  const [fir, setFir] = useState<boolean>(false);
-  
+ 
+
+  const [gradient, setGradient] = useState('OG-Dark');
+  const [ribbonImage, setRibbonImage] = useState('proud-parent');
+const getPreferences = useCallback(async () => {
+        try {
+            const [value, ribbonImgTag] = await Promise.all([getMenuGradient(), getRibbonImage()]);
+            setGradient(value);
+            setRibbonImage(ribbonImgTag);
+        } catch (error) {
+            console.error('Failed to fetch preferences:', error);
+        }
+    }, []);
+useEffect(() => {
+        getPreferences();
+    }, [getPreferences]);
+const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
+
+
+
+
+
+
+
+
+
+
   
   const roundRef = useRef<Round>(new Round(Number(teeID)));
-  const round = roundRef.current;
-  const [shotColors, setShotColors] = useState<string[]>([]);
+  
+  // const [shotColors, setShotColors] = useState<string[]>([]);
   
   const getTotalShots = () => {
-    return Object.values(shotData).reduce((total, value) => total + value, 0);
+    // return Object.values(shotData).reduce((total, value) => total + value, 0);
+    return Object.values(state.shotData).reduce((total: number, value:any) => total + value, 0);
+
   };
 
   ////////////////////////////////////////// SetUp ////////////////////////////////////
-  const getHoles = async () => {
-    try {
-      const holeData = await getAllTeeboxHoles(Number(teeID));
-      if (holeData) {
-        setTeeboxHoles(holeData);
-      }
-    } catch (error) {
-      console.error('Error fetching holes:', error);
-    }
-  };
-
   const getCurrentHole = () => {
     const hole = teeboxHoles.find(hole => hole.num === holeNumber);
     if (hole) {
       setCurrentHoleData(hole);
+    } else {
+      console.error('Current hole not found');
     }
   };
-
+  
   useEffect(() => {
-    getHoles();
-  }, [])
+    const fetchHoles = async () => {
+      try {
+        setIsLoading(true);
+        const holeData = await getAllTeeboxHoles(Number(teeID));
+        if (holeData) {
+          setTeeboxHoles(holeData);
+        } else {
+          console.error('No hole data found');
+        }
+      } catch (error) {
+        console.error('Error fetching holes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchHoles();
+  }, [teeID]);
+  
   useEffect(() => {
-    setIsLoading(false);
-    getCurrentHole();
-  }, [teeboxHoles])
-
-  useEffect(() => getCurrentHole(), [holeNumber])
+    if (teeboxHoles.length > 0) {
+      setIsLoading(true);
+      getCurrentHole();
+      setIsLoading(false);
+    }
+  }, [teeboxHoles, holeNumber]);
   ////////////////////////////////////////// Save Data ////////////////////////////////////
   const saveRoundAndHoleStats = async (round: Round) => {
     try {
@@ -83,22 +199,13 @@ const CounterThree: React.FC = () => {
       console.error('Error saving round and hole stats:', error);
     }
   };
-  const resetForNewHole = (): void => {
-    setShotData({
-      strokes: 0,
-      great: 0,
-      good: 0,
-      bad: 0,
-      putt: 0
-    });
-    setGir(false);
-    setFir(false);
-    setShotColors([]);
-  }
   const addRoundHole = () => {
+    console.log('Adding round hole');
+    console.log('State:', state);
+
     const hole = teeboxHoles.find(hole => hole.num === holeNumber)
     if (hole) {
-      roundRef.current.addRoundHole(hole, shotData.putt, shotData.great, shotData.good, shotData.bad, gir, 0, fir);
+      roundRef.current.addRoundHole(hole, state.shotData.putt, state.shotData.great, state.shotData.good, state.shotData.bad, state.gir, 0, state.fir);
     }
   }
   const nextHole = () => {
@@ -108,30 +215,39 @@ const CounterThree: React.FC = () => {
   }
   const lastHole = () => {
     addRoundHole();
-    saveRoundAndHoleStats(round);
+    saveRoundAndHoleStats(roundRef.current);
   }
   ////////////////////////////////////////// Shot Data ////////////////////////////////////
-  const getAllShotData = () => {
-    const shots:ShotData = {
-      great: round.great,
-      good: round.good,
-      bad: round.bad,
-      putt: round.totalPutts,
-    }
-    return shots
-  };
-  const addShot = (shotType: string) => {
-    setShotData((prevData) => ({
-      ...prevData,
-      [shotType]: prevData[shotType] + 1,
-    }));
-  };
-  const subtractShot = (shotType: string) => {
-    setShotData((prevData) => ({
-      ...prevData,
-      [shotType]: Math.max(prevData[shotType] - 1, 0),
-    }));
+  const resetForNewHole = (): void => {
+    dispatch({ type: 'RESET' });
+  }
 
+  const getAllShotData = () => {
+    return {
+      putt: roundRef.current.totalPutts,
+      great: roundRef.current.great,
+      good: roundRef.current.good,
+      bad: roundRef.current.bad,
+    };
+  };
+  const addShot = (shotType: keyof ShotData) => {
+    dispatch({ type: 'ADD_SHOT', shotType });
+  };
+  const subtractShot = (shotType: keyof ShotData) => {
+    dispatch({ type: 'SUBTRACT_SHOT', shotType });
+  };
+  const setGir = (value: boolean) => {
+    dispatch({ type: 'SET_GIR', value });
+  };
+  const setFir = (value: boolean) => {
+    dispatch({ type: 'SET_FIR', value });
+  };
+  const addShotColor = (color: string) => {
+    dispatch({ type: 'ADD_SHOT_COLOR', color });
+  };
+
+  const subShotColor = (color: string) => {
+    dispatch({ type: 'SUB_SHOT_COLOR', color });
   };
 
 
@@ -165,7 +281,7 @@ const CounterThree: React.FC = () => {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            Object.keys(round.holes).length == 17
+            Object.keys(roundRef.current.holes).length == 17
               ? <Button title='Finish' onPress={() => lastHole()} />
               : <Button title='Next >' onPress={() => nextHole()} />
             ),
@@ -174,45 +290,44 @@ const CounterThree: React.FC = () => {
         );
       };
 
-  const MainView = () => {
-  
-    const addShotColor = (color: string) => {
-      setShotColors(prevColors => [...prevColors, color]);
-    };
-  
-    const subShotColor = (color: string) => {
-      setShotColors(prevColors => {
-        const lastColorIdx = prevColors.lastIndexOf(color);
-        if (lastColorIdx !== -1) {
-          const newShotColorArr = [
-            ...prevColors.slice(0, lastColorIdx),
-            ...prevColors.slice(lastColorIdx + 1)
-          ];
-          return newShotColorArr;
-        }
-        return prevColors; // Return the original state if color not found
-      });
-    };
-  
-  
-    return (
-      <View style={{}}>
-        <StatMarquee
-          round={round}
+  ////////////////////////////////////////// Main View ////////////////////////////////////
+  const Marquee = useMemo(() => (
+    <StatMarquee
+          round={roundRef.current}
           holeNumber={holeNumber}
           girGoal={Number(girGoal)}
           firGoal={Number(firGoal)}
           puttGoal={Number(puttGoal)}
-        />
+        />), [holeNumber, girGoal, firGoal, puttGoal]);
+
+  const MainView = () => {
+    if (isLoading) {
+      return <Text>Loading...</Text>;
+    }
+  
+    if (!teeboxHoles.length || !currentHoleData) {
+      return <Text>No hole data available.</Text>;
+    }
+  
+    return (
+      <View style={{}}>
+        {/* <StatMarquee
+          round={roundRef.current}
+          holeNumber={holeNumber}
+          girGoal={Number(girGoal)}
+          firGoal={Number(firGoal)}
+          puttGoal={Number(puttGoal)}
+        /> */}
+        
       <View style={{  height:'100%', justifyContent:'flex-start', marginTop:10}}>
         {currentHoleData && (
           <View>
             <C3Header3
               courseName={''}
               holeData={currentHoleData}
-              shotColors={shotColors}
+              shotColors={state.shotColors}
               getTotalShots={getTotalShots}
-              shotData={shotData}
+              shotData={state.shotData}
               allShotData={getAllShotData()}
             />
           </View>
@@ -220,8 +335,8 @@ const CounterThree: React.FC = () => {
         {teeboxHoles && (
           <C3Options3
             teeboxHoles={teeboxHoles}
-            roundHoles={round.holes}
-            round={round}
+            roundHoles={roundRef.current.holes}
+            round={roundRef.current}
             holeNumber={holeNumber}
           />
         )}
@@ -229,15 +344,15 @@ const CounterThree: React.FC = () => {
         <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
           <VerticalCheckBoxes
             hole={currentHoleData}
-            gir={gir}
+            gir={state.gir}
             setGir={setGir}
-            fir={fir}
+            fir={state.fir}
             setFir={setFir}
           />
           <VerticalBtns3
             addShot={addShot}
             subtractShot={subtractShot}
-            shotData={shotData}
+            shotData={state.shotData}
             addShotColor={addShotColor}
             subShotColor={subShotColor}
           />
@@ -301,11 +416,21 @@ const CounterThree: React.FC = () => {
 
 
 return (
-  <View style={{ backgroundColor: '#333', height: '100%' }}>
-    <StackScreen />
+  <>
+    <StackHeader image={image} title={`${courseName}`} play roundRef={roundRef} lastHole={lastHole} nextHole={nextHole}/>
+  {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
+  <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
+    {Marquee}
+    {isLoading
+    ? <Text>Loading...</Text>
+    :
+    <>
     {/* <Carousel /> */}
     <MainView />
-  </View>
+    </>
+  }
+  </LinearGradient>
+  </>
 );
 };
 

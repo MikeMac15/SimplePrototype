@@ -11,7 +11,7 @@ interface ShotPieChartV1Props {
 }
 
 const NewPieChart: React.FC<ShotPieChartV1Props> = ({ shotData, allShotData }) => {
-    console.log('shotData:', shotData);
+    
 
     const colors = ["#36BFFA", "#97cc66", "#F97066", "#E1CAB2"]
 

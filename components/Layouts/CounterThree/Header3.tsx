@@ -210,6 +210,7 @@ import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { Hole, ShotData } from "@/components/DataBase/Classes";
 import NewPieChart from "./NewPieChart";
+import useTheme from "@/constants/Theme";
 
 const { width } = Dimensions.get('window');
 
@@ -263,24 +264,25 @@ interface C2HoleDataProps {
 
 // C3HoleData component to display information about the hole
 const C3HoleData: React.FC<C2HoleDataProps> = ({ courseName, holeData, totalShots, shotColors }) => {
+  const theme = useTheme();
   return (
     <View style={styles.holeDataContainer}>
       <Text style={styles.courseName}>{courseName}</Text>
       <View style={styles.centerColumn}>
         <View style={styles.holeInfoContainer}>
           <View style={styles.rowCenter}>
-            <Text style={styles.hole}>Hole</Text>
-            <Text style={styles.holeNum}>{holeData.num}</Text>
+            <Text style={[styles.dist,{color:theme.color}]}>Hole </Text>
+            <Text style={[styles.distNum,{color:theme.color}]}>{holeData.num}</Text>
           </View>
           
             <View style={styles.rowCenter}>
-              <Text style={styles.dist}>Par </Text>
-              <Text style={styles.distNum}>{holeData.par}</Text>
+              <Text style={[styles.dist,{color:theme.color}]}>Par </Text>
+              <Text style={[styles.distNum,{color:theme.color}]}>{holeData.par}</Text>
             </View>
           
           <View style={styles.rowCenter}>
-            <Text style={styles.distNum}>{holeData.yardage}</Text>
-            <Text style={styles.dist}>yrds</Text>
+            <Text style={[styles.distNum,{color:theme.color}]}>{holeData.yardage}</Text>
+            <Text style={[styles.dist,{color:theme.color}]}>yrds</Text>
           </View>
         </View>
         <View style={styles.scoreDataContainer}>
@@ -300,6 +302,7 @@ interface C2HScoreDataProps {
 
 // C2HScoreData component to display score and shot information
 const C2HScoreData: React.FC<C2HScoreDataProps> = ({ totalShots, holePar, shotColors }) => {
+  const theme = useTheme();
   const length = Math.max(holePar, totalShots);
       const combinedShotList = [...Array(length).fill('#444')];
       for (let i = 0; i < totalShots; i++) {
@@ -336,7 +339,7 @@ const C2HScoreData: React.FC<C2HScoreDataProps> = ({ totalShots, holePar, shotCo
         ))}
       </View>
       <View style={styles.scoreStringRow}>
-        <Text style={styles.scoreString}>{getScoreString()}</Text>
+        <Text style={[styles.scoreString,{color:theme.color}]}>{getScoreString()}</Text>
       </View>
     </View>
   );
@@ -368,7 +371,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   holeDataContainer: {
-    backgroundColor: '#333',
+    // backgroundColor: '#333',
     transform: 'scaleX(1.3)',
     marginLeft: 20,
   },
@@ -390,6 +393,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 2,
+    // backgroundColor: '#333',
+    // shadowColor: '#333',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.7,
+    // shadowRadius: 2,
+    
+
   },
   rowSpaceEvenly: {
     flexDirection: 'row',
