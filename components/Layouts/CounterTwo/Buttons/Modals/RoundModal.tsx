@@ -22,7 +22,7 @@ export const RoundView = ({round}:{round:Round}) => {
     return (<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
         <View>
-        <View style={{width:350, paddingRight:0, transform:'scaleX(.8)'}}>
+        {/* <View style={{width:350, paddingRight:0, transform:'scaleX(.8)'}}>
             {data.length > 2
             ?
             <LineChart
@@ -40,7 +40,7 @@ export const RoundView = ({round}:{round:Round}) => {
             />
             :''
         }
-        </View>
+        </View> */}
         </View>
 
 

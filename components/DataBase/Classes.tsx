@@ -67,10 +67,10 @@ export class Hole {
 }
 
 export interface HoleInsights {
-  pastScores: number[],
-  pastPPH: number[],
-  pastGIR: number[],
-  pastFIR: number[]
+  scores: number[],
+  pph: number[],
+  gir: number[],
+  fir: number[]
 }
 
 export class Round {
@@ -409,9 +409,12 @@ export interface toPars {
   toPar4: number,
   toPar5: number,
 }
-
+// Why you idiot?
 export interface ShotData {
-  [key: string]: number;
+  great: number,
+  good: number,
+  bad: number,
+  putt: number
 }
 
 export interface QuickStats {

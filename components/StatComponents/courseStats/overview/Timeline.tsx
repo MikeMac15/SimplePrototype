@@ -14,7 +14,7 @@ const Timeline = ({data1}:{data1:number[]}) => {
         data1.map((value)=>(xAxis.push((String(value)))))
         return (
             <View style={{}}>
-        <Text style={{color:'whitesmoke', fontSize:20, textAlign:'center', marginVertical:10}}>Scoring Timeline</Text>
+        {/* <Text style={{color:'whitesmoke', fontSize:20, textAlign:'center', marginVertical:10}}>Scoring Timeline</Text> */}
         <LineChart
         areaChart
         

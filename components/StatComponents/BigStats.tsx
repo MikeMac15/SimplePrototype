@@ -18,11 +18,11 @@ const BigStats = ({roundsPlayed,  holesPlayed, bestRound, avgScore}:{roundsPlaye
                 </LinearGradient>
                 
               </View>
-        <View style={{flexDirection:'row',justifyContent:'space-evenly', alignItems:'center'}}>
+        {/* <View style={{flexDirection:'row',justifyContent:'space-evenly', alignItems:'center'}}>
 
                 <LinearGradient colors={['#4f4f4f', '#333']} style={styles.statSquare}>
                   <Text style={{color:'whitesmoke', fontSize:20, fontFamily:'arial', fontStyle:'italic',}}>Avg. Score</Text>
-                  <Text style={{color:'whitesmoke', fontSize:40,marginLeft:10, fontFamily:'arial', fontStyle:'italic',}}>{avgScore}</Text>
+                  <Text style={{color:'whitesmoke', fontSize:40,marginLeft:10, fontFamily:'arial', fontStyle:'italic',}}>{(avgScore).toFixed(1)}</Text>
                 </LinearGradient>
                 
                 <LinearGradient colors={['#4f4f4f', '#333']} style={styles.statSquare}>
@@ -31,7 +31,7 @@ const BigStats = ({roundsPlayed,  holesPlayed, bestRound, avgScore}:{roundsPlaye
                 </LinearGradient>
                
 
-              </View>
+              </View> */}
               </View>
                 
     )

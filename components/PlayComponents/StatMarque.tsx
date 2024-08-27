@@ -1,6 +1,7 @@
 import { Marquee } from "@animatereactnative/marquee";
 import { StyleSheet, Text, View } from "react-native";
 import { Round, Hole, HoleStats } from "../DataBase/Classes";
+import React from "react";
 
 const StatMarquee = ({round, holeNumber, girGoal, firGoal, puttGoal}:{round: Round, holeNumber:number, girGoal:number, firGoal:number, puttGoal:number}) => {
     const formatPercentage = (value: number) => (value * 100).toFixed(2);

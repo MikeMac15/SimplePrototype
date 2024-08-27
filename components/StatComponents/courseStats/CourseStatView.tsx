@@ -21,6 +21,8 @@ const CourseStatView: React.FC<CourseStatProps> = ({AllStats,Subjective,ShotTime
 
     return (
     <LinearGradient colors={['#1f1f1f','#222','#444']}>
+        <Text style={{color:'white',fontSize:20,fontWeight:'bold',textAlign:'center',marginVertical:10}}>Scoring Timeline</Text>
+
         {/* Timeline                                                                                            30                            40 */}
         <Timeline data1={ShotTimeline}/>
         {/* Averages */}

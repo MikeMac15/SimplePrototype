@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { Alert, Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 
@@ -11,68 +11,184 @@ import StatMarquee from "@/components/PlayComponents/StatMarque";
 import C3Header3 from "@/components/Layouts/CounterThree/Header3";
 import C3Options3 from "@/components/Layouts/CounterThree/Options3";
 import VerticalBtns3 from "@/components/Layouts/CounterThree/VerticalShotBtns3";
-import { LineChart, PieChart } from "react-native-gifted-charts";
-import { RoundView } from "@/components/Layouts/CounterTwo/Buttons/Modals/RoundModal";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import StackHeader from "@/constants/StackHeader";
+import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
+import { getRibbonImageSource, MenuGradients } from "@/constants/Colors";
+import { LinearGradient } from "expo-linear-gradient";
 
 
+
+interface State {
+  shotData: ShotData;
+  gir: boolean;
+  fir: boolean;
+  shotColors: string[];
+}
+
+type ActionType =
+  | { type: 'ADD_SHOT'; shotType: keyof ShotData }
+  | { type: 'SUBTRACT_SHOT'; shotType: keyof ShotData }
+  | { type: 'SET_GIR'; value: boolean }
+  | { type: 'SET_FIR'; value: boolean }
+  | { type: 'ADD_SHOT_COLOR'; color: string }
+  | { type: 'SUB_SHOT_COLOR'; color: string }
+  | { type: 'RESET' };
+
+  
+const initialState: State = {
+  shotData: {
+    great: 0,
+    good: 0,
+    bad: 0,
+    putt: 0,
+  },
+  gir: false,
+  fir: false,
+  shotColors: [],
+};
+
+const reducer = (state: State, action: ActionType): State => {
+  switch (action.type) {
+    case 'ADD_SHOT':
+      return {
+        ...state,
+        shotData: {
+          ...state.shotData,
+          [action.shotType]: state.shotData[action.shotType] + 1,
+        },
+      };
+    case 'SUBTRACT_SHOT':
+      return {
+        ...state,
+        shotData: {
+          ...state.shotData,
+          [action.shotType]: Math.max(state.shotData[action.shotType] - 1, 0),
+        },
+      };
+    case 'SET_GIR':
+      return {
+        ...state,
+        gir: action.value,
+      };
+    case 'SET_FIR':
+      return {
+        ...state,
+        fir: action.value,
+      };
+    case 'ADD_SHOT_COLOR':
+      return {
+        ...state,
+        shotColors: [...state.shotColors, action.color],
+      };
+    case 'SUB_SHOT_COLOR':
+      const lastColorIdx = state.shotColors.lastIndexOf(action.color);
+      if (lastColorIdx !== -1) {
+        return {
+          ...state,
+          shotColors: [
+            ...state.shotColors.slice(0, lastColorIdx),
+            ...state.shotColors.slice(lastColorIdx + 1),
+          ],
+        };
+      }
+      return state; // Return the original state if color not found
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
+};
 
 /**
  * CounterThree component.
  * @component
  */
 const CounterThree: React.FC = () => {
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  
   const params = useLocalSearchParams();
   const { courseID, courseName, teeID, girGoal, puttGoal, firGoal, strokeGoal } = params;
   const [isLoading, setIsLoading] = useState(true);
   const [teeboxHoles, setTeeboxHoles] = useState<Hole[]>([]);
   const [currentHoleData, setCurrentHoleData] = useState<Hole>();
   const [holeNumber, setHoleNumber] = useState<number>(1);
-  const [shotData, setShotData] = useState<ShotData>({
-    great: 0,
-    good: 0,
-    bad: 0,
-    putt: 0,
-  });
-  const [gir, setGir] = useState<boolean>(false);
-  const [fir, setFir] = useState<boolean>(false);
-  const [timelineChoice, setTimelineChoice] = useState<number>(0);
+ 
+
+  const [gradient, setGradient] = useState('OG-Dark');
+  const [ribbonImage, setRibbonImage] = useState('proud-parent');
+const getPreferences = useCallback(async () => {
+        try {
+            const [value, ribbonImgTag] = await Promise.all([getMenuGradient(), getRibbonImage()]);
+            setGradient(value);
+            setRibbonImage(ribbonImgTag);
+        } catch (error) {
+            console.error('Failed to fetch preferences:', error);
+        }
+    }, []);
+useEffect(() => {
+        getPreferences();
+    }, [getPreferences]);
+const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
+
+
+
+
+
+
+
+
+
+
   
   const roundRef = useRef<Round>(new Round(Number(teeID)));
-  const round = roundRef.current;
-  const [shotColors, setShotColors] = useState<string[]>([]);
+  
+  // const [shotColors, setShotColors] = useState<string[]>([]);
   
   const getTotalShots = () => {
-    return Object.values(shotData).reduce((total, value) => total + value, 0);
+    // return Object.values(shotData).reduce((total, value) => total + value, 0);
+    return Object.values(state.shotData).reduce((total: number, value:any) => total + value, 0);
+
   };
 
   ////////////////////////////////////////// SetUp ////////////////////////////////////
-  const getHoles = async () => {
-    try {
-      const holeData = await getAllTeeboxHoles(Number(teeID));
-      if (holeData) {
-        setTeeboxHoles(holeData);
-      }
-    } catch (error) {
-      console.error('Error fetching holes:', error);
-    }
-  };
-
   const getCurrentHole = () => {
     const hole = teeboxHoles.find(hole => hole.num === holeNumber);
     if (hole) {
       setCurrentHoleData(hole);
+    } else {
+      console.error('Current hole not found');
     }
   };
-
+  
   useEffect(() => {
-    getHoles();
-  }, [])
+    const fetchHoles = async () => {
+      try {
+        setIsLoading(true);
+        const holeData = await getAllTeeboxHoles(Number(teeID));
+        if (holeData) {
+          setTeeboxHoles(holeData);
+        } else {
+          console.error('No hole data found');
+        }
+      } catch (error) {
+        console.error('Error fetching holes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchHoles();
+  }, [teeID]);
+  
   useEffect(() => {
-    setIsLoading(false);
-    getCurrentHole();
-  }, [teeboxHoles])
-
-  useEffect(() => getCurrentHole(), [holeNumber])
+    if (teeboxHoles.length > 0) {
+      setIsLoading(true);
+      getCurrentHole();
+      setIsLoading(false);
+    }
+  }, [teeboxHoles, holeNumber]);
   ////////////////////////////////////////// Save Data ////////////////////////////////////
   const saveRoundAndHoleStats = async (round: Round) => {
     try {
@@ -83,22 +199,13 @@ const CounterThree: React.FC = () => {
       console.error('Error saving round and hole stats:', error);
     }
   };
-  const resetForNewHole = (): void => {
-    setShotData({
-      strokes: 0,
-      great: 0,
-      good: 0,
-      bad: 0,
-      putt: 0
-    });
-    setGir(false);
-    setFir(false);
-    setShotColors([]);
-  }
   const addRoundHole = () => {
+    console.log('Adding round hole');
+    console.log('State:', state);
+
     const hole = teeboxHoles.find(hole => hole.num === holeNumber)
     if (hole) {
-      roundRef.current.addRoundHole(hole, shotData.putt, shotData.great, shotData.good, shotData.bad, gir, 0, fir);
+      roundRef.current.addRoundHole(hole, state.shotData.putt, state.shotData.great, state.shotData.good, state.shotData.bad, state.gir, 0, state.fir);
     }
   }
   const nextHole = () => {
@@ -108,30 +215,39 @@ const CounterThree: React.FC = () => {
   }
   const lastHole = () => {
     addRoundHole();
-    saveRoundAndHoleStats(round);
+    saveRoundAndHoleStats(roundRef.current);
   }
   ////////////////////////////////////////// Shot Data ////////////////////////////////////
-  const getAllShotData = () => {
-    const shots:ShotData = {
-      great: round.great,
-      good: round.good,
-      bad: round.bad,
-      putt: round.totalPutts,
-    }
-    return shots
-  };
-  const addShot = (shotType: string) => {
-    setShotData((prevData) => ({
-      ...prevData,
-      [shotType]: prevData[shotType] + 1,
-    }));
-  };
-  const subtractShot = (shotType: string) => {
-    setShotData((prevData) => ({
-      ...prevData,
-      [shotType]: Math.max(prevData[shotType] - 1, 0),
-    }));
+  const resetForNewHole = (): void => {
+    dispatch({ type: 'RESET' });
+  }
 
+  const getAllShotData = () => {
+    return {
+      putt: roundRef.current.totalPutts,
+      great: roundRef.current.great,
+      good: roundRef.current.good,
+      bad: roundRef.current.bad,
+    };
+  };
+  const addShot = (shotType: keyof ShotData) => {
+    dispatch({ type: 'ADD_SHOT', shotType });
+  };
+  const subtractShot = (shotType: keyof ShotData) => {
+    dispatch({ type: 'SUBTRACT_SHOT', shotType });
+  };
+  const setGir = (value: boolean) => {
+    dispatch({ type: 'SET_GIR', value });
+  };
+  const setFir = (value: boolean) => {
+    dispatch({ type: 'SET_FIR', value });
+  };
+  const addShotColor = (color: string) => {
+    dispatch({ type: 'ADD_SHOT_COLOR', color });
+  };
+
+  const subShotColor = (color: string) => {
+    dispatch({ type: 'SUB_SHOT_COLOR', color });
   };
 
 
@@ -165,7 +281,7 @@ const CounterThree: React.FC = () => {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            Object.keys(round.holes).length == 17
+            Object.keys(roundRef.current.holes).length == 17
               ? <Button title='Finish' onPress={() => lastHole()} />
               : <Button title='Next >' onPress={() => nextHole()} />
             ),
@@ -174,44 +290,44 @@ const CounterThree: React.FC = () => {
         );
       };
 
-  const MainView = () => {
-  
-    const addShotColor = (color: string) => {
-      setShotColors(prevColors => [...prevColors, color]);
-    };
-  
-    const subShotColor = (color: string) => {
-      setShotColors(prevColors => {
-        const lastColorIdx = prevColors.lastIndexOf(color);
-        if (lastColorIdx !== -1) {
-          const newShotColorArr = [
-            ...prevColors.slice(0, lastColorIdx),
-            ...prevColors.slice(lastColorIdx + 1)
-          ];
-          return newShotColorArr;
-        }
-        return prevColors; // Return the original state if color not found
-      });
-    };
-  
-  
-    return (
-      <View style={{ backgroundColor: '#333', height: '100%' }}>
-        <StatMarquee
-          round={round}
+  ////////////////////////////////////////// Main View ////////////////////////////////////
+  const Marquee = useMemo(() => (
+    <StatMarquee
+          round={roundRef.current}
           holeNumber={holeNumber}
           girGoal={Number(girGoal)}
           firGoal={Number(firGoal)}
           puttGoal={Number(puttGoal)}
-        />
+        />), [holeNumber, girGoal, firGoal, puttGoal]);
+
+  const MainView = () => {
+    if (isLoading) {
+      return <Text>Loading...</Text>;
+    }
+  
+    if (!teeboxHoles.length || !currentHoleData) {
+      return <Text>No hole data available.</Text>;
+    }
+  
+    return (
+      <View style={{}}>
+        {/* <StatMarquee
+          round={roundRef.current}
+          holeNumber={holeNumber}
+          girGoal={Number(girGoal)}
+          firGoal={Number(firGoal)}
+          puttGoal={Number(puttGoal)}
+        /> */}
+        
+      <View style={{  height:'100%', justifyContent:'flex-start', marginTop:10}}>
         {currentHoleData && (
           <View>
             <C3Header3
               courseName={''}
               holeData={currentHoleData}
-              shotColors={shotColors}
+              shotColors={state.shotColors}
               getTotalShots={getTotalShots}
-              shotData={shotData}
+              shotData={state.shotData}
               allShotData={getAllShotData()}
             />
           </View>
@@ -219,27 +335,30 @@ const CounterThree: React.FC = () => {
         {teeboxHoles && (
           <C3Options3
             teeboxHoles={teeboxHoles}
-            roundHoles={round.holes}
-            round={round}
+            roundHoles={roundRef.current.holes}
+            round={roundRef.current}
             holeNumber={holeNumber}
           />
         )}
+        <View style={{height:'50%', justifyContent:'center'}}>
         <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
           <VerticalCheckBoxes
             hole={currentHoleData}
-            gir={gir}
+            gir={state.gir}
             setGir={setGir}
-            fir={fir}
+            fir={state.fir}
             setFir={setFir}
           />
           <VerticalBtns3
             addShot={addShot}
             subtractShot={subtractShot}
-            shotData={shotData}
+            shotData={state.shotData}
             addShotColor={addShotColor}
             subShotColor={subShotColor}
           />
         </View>
+        </View>
+      </View>
       </View>
     );
   };
@@ -249,330 +368,69 @@ const CounterThree: React.FC = () => {
 
 
 ///////////////////////////////////////////////////////Create Own Folder When Finished///////////////////////////////////////////////////////
-const HoleInsights = ({holeNum,par}:{holeNum:number,par:number}) => {
 
-    const HoleTitle = () => {
-      return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', backgroundColor:'#222', paddingVertical:3 }}>
-          <Text style={{ color: 'whitesmoke', fontSize: 20, fontFamily:'papyrus' }}>Hole {holeNum} Insights</Text>
-          
-        </View>
-      );
-    }
+///////////////////////////////////////////////////////Carousel///////////////////////////////////////////////////////
+
+
+
+// const views = [
   
-    const UnderOverParChart = () => {
-      const ParPercentages = {
-        under: 3,
-        par: 80,
-        over: 17,
-      }
-      
-      const renderLegend = (text: string, count: number, color: string) => {
-        return (
-          <View style={{
-            flexDirection: 'column', marginBottom: 12,
-          }}>
-            <View
-              style={{
-                alignItems: 'center', justifyContent: 'center',
-                height: 50,
-                width: 50,
-                marginRight: 10,
-                borderRadius: 4,
-                backgroundColor: color || 'white',
-                borderColor:'#111',
-                borderWidth:1.5,
-              }}
-              >
-              <Text style={{ color: 'black', fontSize: 16 }}>{`${count}%` || ''}</Text>
-              <Text style={{ color: 'black', fontSize: 16 }}>{text || ''}</Text>
-            </View>
-          </View>
-        );
-      };
-      
-      return (
-        <View>
-          <PieChart
-              //   strokeColor="white"
-              strokeWidth={2}
-              
-              data={[
-                { value: ParPercentages.under, color: 'skyblue' },
-                { value: ParPercentages.over, color: 'salmon' },
-                { value: ParPercentages.par, color: 'yellowgreen' },
-                
-              ]}
-              innerCircleColor={'#333'}
-              innerRadius={50}
-              radius={80}
-              textColor="whitesmoke"
-              textSize={18}
-              centerLabelComponent={() => {
-                return (
-                  <View
-                  style={{
-                    
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    
-                    
-                  }}>
-                    
-                      {renderLegend('Par', ParPercentages.par, 'yellowgreen')}
-      
-                    <View style={{ flexDirection: 'row', justifyContent:'center', alignItems:'center' }}>
-                      {renderLegend('Under', ParPercentages.under, 'skyblue')}
-                      {renderLegend('Over', ParPercentages.over, 'salmon')}
-                    </View>
-                  </View>
-                );
-              }}
-              />
-        </View  >
-      );
-    }
-    const PastHoleStats = ({title, dataStr}:{title:string, dataStr:string}) => {
-      return (
-        <View style={StylesInsights.columns}>
-          
-            <Text style={StylesInsights.text}>{title}</Text>
-          
-  
-          <Text style={{ color: 'white', fontSize: 20 }}>{dataStr}</Text>
-        </View>
-      );
-    }
-    const AllPastHoleStats = () => {  
-      return (
-            <View style={[StylesInsights.columns, {}]}>
-        <View style={StylesInsights.row}>
-        <PastHoleStats title="GIR" dataStr="55%"/>
-        <PastHoleStats title="FIR" dataStr="72%"/>
-      </View>
-      <View style={StylesInsights.row}>
-        <PastHoleStats title="Avg Putts" dataStr="2.1"/>
-      </View>
-      <View style={StylesInsights.row}>
-        <PastHoleStats title="Avg Score" dataStr="4.1"/>
-        <PastHoleStats title="Hole Hcp" dataStr="+0.1"/>
-      </View>
-      </View>
-      );
-    }
+//   // { key: 'view1', component: <Insights holeNum={1} par={4} /> },
+//   // { key: 'view2', component: <MainView /> },
+//   { key: 'view1', component: <MainView /> },
+//   { key: 'view2', component: <Insights holeNum={1} par={4} /> },
 
-    const PastHoleTimeline = ({data1, refNum, title, step=false}:{data1:number[], refNum:number, title:string, step?:boolean}) => {
-      
-      const [stepValue,setStepValue] = useState(1)
-     
-          
-          
-          const xAxis: string[] = []
-          data1.map((value)=>(xAxis.push((String(value)))))
-          return (
-              <View style={{}}>
-          <Text style={{color:'whitesmoke', fontSize:20, textAlign:'center', marginVertical:10}}>Past {title} for Hole {holeNum}</Text>
-          <LineChart
+// ];
 
-          
-          {...(step ? { stepChart: true } : { areaChart: true })}
-          
-          
-          data={data1.map(item => {
-            const noStepProperties = {
-              value: item,
-              dataPointText: String(item),
-              textColor: item > refNum ? '#FFCCCC' : item < refNum ? '#CCCCFF' : '#CCFFCC',
-              dataPointColor: item > refNum ? 'salmon' : item < refNum ? 'skyblue' : 'yellowgreen'
-            };
-            const stepProperties = {
-              value : item,
-              textColor: item < refNum ? '#FFCCCC' : '#CCFFCC', 
-              dataPointColor: item < refNum ? 'salmon' : 'yellowgreen'
-              
-            }
-          
-            if (!step) {
-              // Return common properties as is or add additional properties
-              return noStepProperties;
-            } else {
-              // Return common properties as is or add different properties for step
-              return stepProperties;
-            }
-          })}
-          startFillColor="#6f6a7f"
-          startOpacity={0.8}
-          endFillColor="#222"
-          endOpacity={0.3}
-          stepValue={stepValue}
-          stepHeight={15}
-          
-          maxValue={Math.max(...data1)+1}
-          scrollToEnd
-          // curved
-         
-          dataPointsColor="#ccc"
-          showXAxisIndices
-          textShiftY={20}
-          textColor="#ccc"
-          textFontSize={14}
-          rulesColor={'black'}
-          yAxisTextStyle={{color:'#ccc'}}
-          color="#ccc"
-          />
-          {/* Timeline */}
-          
-      </View>
-      )
-      
-  }
+// const Carousel = () => {
+//   const renderItem = ({ item }: { item: { key: string, component: JSX.Element } }) => {
+//     return <View style={{width:width}}>{item.component}</View>;
+//   };
 
-  const TimelineViewer = (timelineChoice:number) => {
-    switch (timelineChoice) {
-      case 0:
-        return <PastHoleTimeline data1={[5,4,4,6,4,3,5,3,4]} refNum={4} title="Scores"/>  
-      case 1:
-        return <PastHoleTimeline data1={[2,2,2,1,2,2,3,2,2]} refNum={2} title="PPH"/>
-      case 2:
-        return <PastHoleTimeline data1={[0,1,0,1,1,0,0,0,1]} refNum={1} title="GIR" step/>
-      case 3:
-        return <PastHoleTimeline data1={[1,1,1,0,1,0,1,1,0]} refNum={1} title="FIR" step/>
-      default:
-        break;
-    }}
-  
-  return (
+//   const onViewRef = useRef(() => {
+//     // You can handle view change events here
+//   });
 
-    <View style={StylesInsights.container}>
-      <HoleTitle />
-      <View style={{width:width, }}>
-        {TimelineViewer(timelineChoice)}
-      </View>
+//   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
-      <View style={{flexDirection:'row'}}>
-        <View style={[StylesInsights.columns, {transform:'translateX(15px)', marginTop:20}]}>
-          <UnderOverParChart />
-        </View>
-        <AllPastHoleStats />
-      </View>
-    
+//   return (
 
 
+//     <FlatList
+//       data={views}
+//       renderItem={renderItem}
+//       keyExtractor={(item) => item.key}
+//       horizontal
+//       pagingEnabled
+//       snapToAlignment="center"
+//       showsHorizontalScrollIndicator={false}
+//       onViewableItemsChanged={onViewRef.current}
+//       viewabilityConfig={viewConfigRef.current}
+//     />
 
-      </View>
-  );
-}
-
-const RoundInsights = () => {
-  
-    return (
-      <View style={{ backgroundColor: '#333', height: '50%' }}>
-        <Text style={{ color: 'whitesmoke', fontSize: 20, fontFamily:'papyrus', textAlign:'center', marginVertical:20, backgroundColor:'#222' }}>Round Insights</Text>
-        <RoundView round={round}/>
-      </View>
-    );
-  }
-
-  const Insights = ({holeNum,par}:{holeNum:number,par:number}) => {
-    return (
-      <ScrollView style={{ backgroundColor: '#333', height: '100%' }}>
-        <HoleInsights holeNum={holeNum} par={par} />
-        <RoundInsights />
-      </ScrollView>
-    );
-  }
-
-
-const StylesInsights = StyleSheet.create({
-  container: { 
-    backgroundColor: '#333', 
-
-    justifyContent:'space-evenly',
-     },
-  row: {
-    flexDirection: 'row',
-    // justifyContent: 'space-around',
-    alignItems: 'center',
-    
-    
-  },
-  columns: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    // backgroundColor : '#111',
-    marginVertical: 10,
-    marginHorizontal: 12,
-     
-
-  },
-  text: {
-    color: 'white',
-    fontSize: 15,
-  },
-  circle: {
-    borderRadius: 100,
-    width: 90,
-    height: 90,
-    backgroundColor: '#888',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-});
-
-///////////////////////////////////////////////////////Addititon///////////////////////////////////////////////////////
-
-const { width } = Dimensions.get('window');
-
-const views = [
-  
-  // { key: 'view1', component: <Insights holeNum={1} par={4} /> },
-  // { key: 'view2', component: <MainView /> },
-  { key: 'view1', component: <MainView /> },
-  { key: 'view2', component: <Insights holeNum={1} par={4} /> },
-
-];
-
-const Carousel = () => {
-  const renderItem = ({ item }: { item: { key: string, component: JSX.Element } }) => {
-    return <View style={{width:width}}>{item.component}</View>;
-  };
-
-  const onViewRef = useRef(() => {
-    // You can handle view change events here
-  });
-
-  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
-
-  return (
-
-
-    <FlatList
-      data={views}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.key}
-      horizontal
-      pagingEnabled
-      snapToAlignment="center"
-      showsHorizontalScrollIndicator={false}
-      onViewableItemsChanged={onViewRef.current}
-      viewabilityConfig={viewConfigRef.current}
-    />
-
-  );
-}; 
+//   );
+// }; 
 
 
 ///////////////////////////////////////////////////////Addititon///////////////////////////////////////////////////////
 
 
 return (
-  <View style={{ backgroundColor: '#333', height: '100%' }}>
-    <StackScreen />
-    <Carousel />
-    {/* <MainView /> */}
-  </View>
+  <>
+    <StackHeader image={image} title={`${courseName}`} play roundRef={roundRef} lastHole={lastHole} nextHole={nextHole}/>
+  {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
+  <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
+    {Marquee}
+    {isLoading
+    ? <Text>Loading...</Text>
+    :
+    <>
+    {/* <Carousel /> */}
+    <MainView />
+    </>
+  }
+  </LinearGradient>
+  </>
 );
 };
 

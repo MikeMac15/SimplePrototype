@@ -6,6 +6,8 @@ import { Hole, HoleStats, Round } from "@/components/DataBase/Classes";
 import RoundModal from "../CounterTwo/Buttons/Modals/RoundModal";
 import ExitModal from "../CounterTwo/Buttons/Modals/ExitModal";
 import ScoreModal3 from "./ScoreModal3";
+import HoleInsightsModal from "../CounterTwo/Buttons/Modals/HoleInsights";
+
 // import ImagesModal from "../CounterTwo/Buttons/Modals/ImagesModal";
 
 interface OptionsProps {
@@ -31,8 +33,8 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                     return <Entypo name="document" color={'whitesmoke'} size={25} />
                 case 'bar':
                       return <Ionicons name='stats-chart-sharp' color={'whitesmoke'} size={25} />
-                // case 'dot':
-                //     return <AntDesign name='dotchart' color={'whitesmoke'} size={25} />
+                case 'dot':
+                    return <AntDesign name='dotchart' color={'whitesmoke'} size={25} />
                 // case 'yrd':
                 //   return <MaterialIcons name="share-location" color={'whitesmoke'} size={25} />
                 // case 'green':
@@ -47,8 +49,8 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                     return <ScoreModal3 modalVisible={modalVisible} setModalVisible={setModalVisible} teeboxHoles={teeboxHoles} roundHoles={roundHoles} holeNumber={holeNumber} round={round} />
                 case 'bar':
                     return <RoundModal modalVisible={modalVisible} setModalVisible={setModalVisible} round={round} />
-                // case 'dot':
-                //     return <PrevModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
+                case 'dot':
+                    return <HoleInsightsModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeID={teeboxHoles[holeNumber-1].id} holePar={teeboxHoles[holeNumber-1].par} holeNumber={teeboxHoles[holeNumber-1].num} />
                 // case 'yrd':
                 //     return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber}  green={false}/>
                 // case 'green':
@@ -101,8 +103,8 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                 </TouchableOpacity>
 
                 <Animated.View style={[styles.animatedView, { height,}, {}]}>
-        {/* {OptionBtn2('Yard Book', 'yrd')}
-        {OptionBtn2('GreensBook', 'green')} */}
+        {/* {OptionBtn2('Yard Book', 'yrd')} */}
+        {OptionBtn2('HoleHistory', 'dot')}
         {OptionBtn2('Scorecard', 'score')}
         {OptionBtn2('RoundStats', 'bar')}
         
