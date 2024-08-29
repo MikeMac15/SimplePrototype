@@ -109,8 +109,8 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
           strokeWidth={2}
 
           data={[
-            { value: ParPercentages.under, color: 'skyblue' },
             { value: ParPercentages.over, color: 'salmon' },
+            { value: ParPercentages.under, color: 'skyblue' },
             { value: ParPercentages.par, color: 'yellowgreen' },
 
           ]}
@@ -215,6 +215,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
           stepHeight={15}
           width={width * .8}
           maxValue={Math.max(...data1) + 1}
+          
           scrollToEnd
           // curved
 
@@ -240,7 +241,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
 
     switch (timelineChoice) {
       case 0:
-        return <PastHoleTimeline data1={holeInsight.scores} refNum={4} title="Scores" />
+        return <PastHoleTimeline data1={holeInsight.scores} refNum={holePar} title="Scores" />
       case 1:
         return <PastHoleTimeline data1={holeInsight.pph} refNum={2} title="PPH" />
       case 2:

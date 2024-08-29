@@ -101,6 +101,7 @@ export default function Settings() {
                 <Button title="counterV1" onPress={()=>{setCounterLayoutPref('/simpleCounter')}} />
                 <Button title="counterV2" onPress={()=>{setCounterLayoutPref('/counterTwo')}} />
                 <Button title="counterV3" onPress={()=>{setCounterLayoutPref('/counterThree')}} />
+                <Button title="emoji" onPress={()=>{setCounterLayoutPref('/emoji')}} />
             </View>
                 <Button title='Save Preferences' onPress={()=> {storeMenuGradient(); storeMenuImage(); storeRibbonImage();storeCounterLayoutPref();}} />
             <Button title="Delete Database" onPress={() => deleteDb()}/>

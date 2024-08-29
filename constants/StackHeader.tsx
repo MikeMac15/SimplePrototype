@@ -1,19 +1,25 @@
 import { Stack } from 'expo-router';
 import { StyleSheet, ImageBackground, TouchableOpacity, Text, Button } from 'react-native'
 import useTheme from './Theme';
+import { useState } from 'react';
+import { Hole } from '@/components/DataBase/Classes';
+import ScoreModal3 from '@/components/Layouts/CounterThree/ScoreModal3';
 
 interface StackHeaderProps {
     image:any;
     title:string;
     play?:boolean;
     roundRef?:any;
+    teeboxHoles?:Hole[];
     lastHole?: () => void;
     nextHole?: () => void;
+    scorecard?: () => void;
 }
 
-const StackHeader: React.FC<StackHeaderProps> = ({image,title, play=false, roundRef, lastHole, nextHole}) => {
+const StackHeader: React.FC<StackHeaderProps> = ({image,title, play=false, roundRef, lastHole, nextHole, scorecard, teeboxHoles}) => {
     const theme = useTheme();
-    if (play && roundRef && lastHole && nextHole) {
+    if (roundRef && lastHole && nextHole) {
+        const [modalVisible, setModalVisible] = useState(false);
         return (
             <Stack.Screen options={{
                 gestureEnabled: false,
@@ -29,8 +35,11 @@ const StackHeader: React.FC<StackHeaderProps> = ({image,title, play=false, round
                 
                 headerBlurEffect: 'systemUltraThinMaterialDark',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => ''} >
+            <TouchableOpacity onPress={() => setModalVisible(true)} >
               <Text style={{ color: 'salmon', }}>Scorecard</Text>
+              {teeboxHoles &&
+              <ScoreModal3 modalVisible={modalVisible} setModalVisible={setModalVisible} teeboxHoles={teeboxHoles} roundHoles={roundRef.current.holes} holeNumber={Object.keys(roundRef.current.holes).length} round={roundRef.current} />
+              }
             </TouchableOpacity>
           ),
           headerRight: () => (
