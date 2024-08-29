@@ -139,7 +139,18 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             strat INTEGER NOT NULL,
             FOREIGN KEY (hole_id) REFERENCES hole(id),
             FOREIGN KEY (round_id) REFERENCES round(id)
-        );`)
+        );
+        CREATE TABLE IF NOT EXISTS clubs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE CHECK(name IN ('Driver', '3w','5w','7w','3hyb','4hyb','5hyb','7hyb','1i','2i', '3i', '4i', '5i', '6i', '7i', '8i', '9i', 'Pw', 'Gw', 'Sw', 'Lw')) NOT NULL,
+            hidden BOOLEAN NOT NULL);
+        CREATE TABLE IF NOT EXISTS distances (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            club_id INTEGER NOT NULL,
+            distance INTEGER NOT NULL,
+            contact TEXT CHECK(contact IN ('great', 'good', 'bad', 'shank')) NOT NULL,
+            wind BOOLEAN NOT NULL,
+            FOREIGN KEY (club_id) REFERENCES clubs(id));`)
         
     }  catch (error) {
         console.error("Error setting up tables:", error);

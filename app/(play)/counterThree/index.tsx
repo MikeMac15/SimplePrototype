@@ -17,88 +17,10 @@ import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStor
 import { getRibbonImageSource, MenuGradients } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { initialState, reducer, } from '@/components/DataBase/RoundReducer';
 
 
-interface State {
-  shotData: ShotData;
-  gir: boolean;
-  fir: boolean;
-  shotColors: string[];
-}
 
-type ActionType =
-  | { type: 'ADD_SHOT'; shotType: keyof ShotData }
-  | { type: 'SUBTRACT_SHOT'; shotType: keyof ShotData }
-  | { type: 'SET_GIR'; value: boolean }
-  | { type: 'SET_FIR'; value: boolean }
-  | { type: 'ADD_SHOT_COLOR'; color: string }
-  | { type: 'SUB_SHOT_COLOR'; color: string }
-  | { type: 'RESET' };
-
-  
-const initialState: State = {
-  shotData: {
-    great: 0,
-    good: 0,
-    bad: 0,
-    putt: 0,
-  },
-  gir: false,
-  fir: false,
-  shotColors: [],
-};
-
-const reducer = (state: State, action: ActionType): State => {
-  switch (action.type) {
-    case 'ADD_SHOT':
-      return {
-        ...state,
-        shotData: {
-          ...state.shotData,
-          [action.shotType]: state.shotData[action.shotType] + 1,
-        },
-      };
-    case 'SUBTRACT_SHOT':
-      return {
-        ...state,
-        shotData: {
-          ...state.shotData,
-          [action.shotType]: Math.max(state.shotData[action.shotType] - 1, 0),
-        },
-      };
-    case 'SET_GIR':
-      return {
-        ...state,
-        gir: action.value,
-      };
-    case 'SET_FIR':
-      return {
-        ...state,
-        fir: action.value,
-      };
-    case 'ADD_SHOT_COLOR':
-      return {
-        ...state,
-        shotColors: [...state.shotColors, action.color],
-      };
-    case 'SUB_SHOT_COLOR':
-      const lastColorIdx = state.shotColors.lastIndexOf(action.color);
-      if (lastColorIdx !== -1) {
-        return {
-          ...state,
-          shotColors: [
-            ...state.shotColors.slice(0, lastColorIdx),
-            ...state.shotColors.slice(lastColorIdx + 1),
-          ],
-        };
-      }
-      return state; // Return the original state if color not found
-    case 'RESET':
-      return initialState;
-    default:
-      return state;
-  }
-};
 
 /**
  * CounterThree component.
@@ -417,7 +339,7 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 
 return (
   <>
-    <StackHeader image={image} title={`${courseName}`} play roundRef={roundRef} lastHole={lastHole} nextHole={nextHole}/>
+    <StackHeader image={image} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles}/>
   {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
   <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
     {Marquee}

@@ -107,14 +107,16 @@ export default function Index() {
         ),
       }} />
 
-      <View style={{ justifyContent: 'center', alignItems: 'center', height: 150 }}>
+      <View style={{ justifyContent: 'center', alignItems: 'center', height:150  }}>
 
+      {/* <View style={{ backgroundColor:'rgba(0,0,0,0.6)', borderRadius:20 }}> */}
         <Image
-
+resizeMode="cover"
 style={{ width: 300, height: 200 }}
 source={require('../assets/images/logo.png')}
 />
       </View>
+      {/* </View> */}
 
 
 

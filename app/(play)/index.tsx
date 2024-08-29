@@ -2,9 +2,9 @@ import { openDb, getAllCourses, createCourse, createTeebox, getAllCourseTeeboxes
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, Stack } from "expo-router"
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View, TouchableOpacity, Alert, Modal, Pressable, TextInput, Button, ImageBackground } from "react-native"
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Modal, Pressable, TextInput, Button, ImageBackground, SafeAreaView } from "react-native"
 // import {Picker} from '@react-native-picker/picker';
-import { Picker } from "react-native-ui-lib";
+import { Picker, RenderCustomModalProps } from "react-native-ui-lib";
 
 import { MenuGradients, TeeColors, getRibbonImageSource } from "@/constants/Colors";
 import { Course, CourseAndTees, Teebox } from "@/components/DataBase/Classes";
@@ -109,7 +109,10 @@ export default function Play() {
 
     
     return (
-          <LinearGradient colors={MenuGradients[gradient]} >
+      
+      
+      <LinearGradient colors={MenuGradients[gradient]} >
+            <SafeAreaView>
         <View style={styles.container}>
           
           <Stack.Screen options={{
@@ -137,6 +140,7 @@ export default function Play() {
                 textAlign="center"
                 color={'whitesmoke'}
                 topBarProps={{ title: 'Course' }}>
+                
                 {courses.map((course) => (<Picker.Item key={course.id} label={course.name} value={course.id} />))}
             </Picker>
           </LinearGradient>
@@ -151,7 +155,10 @@ export default function Play() {
                 labelStyle={{fontSize:16, textAlign:'center'}}
                 placeholderTextColor={"whitesmoke"}
                 textAlign="center"
-                color={'whitesmoke'}>
+                color={'whitesmoke'}
+                pickerModalProps={{ title: 'Teebox', height: 300 }}
+                
+                >
                 {chosenCourse?.teeboxes.map((tee) => (
                  <Picker.Item key={tee.id} label={tee.color2>0 ?`${TeeColors[tee.color1]} & ${TeeColors[tee.color2]} combo`: TeeColors[tee.color1]} value={tee.id} />
                   ))}
@@ -218,6 +225,7 @@ export default function Play() {
             </LinearGradient>
           </View>
         </View>
+    </SafeAreaView>
     </LinearGradient>
       );
     };
@@ -302,7 +310,7 @@ export default function Play() {
       },
       playBtnDisabled: {
         backgroundColor: 'grey',
-        padding: 10,
         opacity: 0.5,
+        padding: 10,
       },
     });

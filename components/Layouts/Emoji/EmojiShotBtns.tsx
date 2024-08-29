@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Haptics from 'expo-haptics';
 import React from "react";
 import { ShotData } from "@/components/DataBase/Classes";
+import { Fontisto } from "@expo/vector-icons";
 
 interface BtnsProps {
     addShot: (shotType: keyof ShotData) => void;
@@ -10,8 +11,7 @@ interface BtnsProps {
     addShotColor: (color: string) => void;
     subShotColor: (color: string) => void;
 }
-
-const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, addShotColor, subShotColor}) => {
+const EmojiShotBtns: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, addShotColor, subShotColor}) => {
 
     const addShotGreat =()=> {
       addShot('great');
@@ -60,7 +60,8 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, ad
                 <Text style={styles.BtnCount} >{shotData.great}</Text>
               </View>
   
-              <Text style={[styles.BtnText2, styles.greatText, styles.textShadow]}>Great</Text>
+              {/* <Text style={[styles.BtnText2, styles.greatText, styles.textShadow]}>Great</Text> */}
+              <Fontisto name="smiley" size={24} color="black" />
   
             </View>
           </View>
@@ -168,5 +169,4 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, ad
         fontFamily: 'Arial',
       },
   })
-
-  export default VerticalBtns3;
+export default EmojiShotBtns;

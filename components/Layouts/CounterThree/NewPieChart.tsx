@@ -61,6 +61,8 @@ const NewPieChart: React.FC<ShotPieChartV1Props> = ({ shotData, allShotData }) =
           ? hasAnyHoleShots()
             ? <HolePieChart />
             : <RoundPieChart />
+          : hasAnyHoleShots()
+          ? <HolePieChart />
           : <BlankPieChart />
         }
 

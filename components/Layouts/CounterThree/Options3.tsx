@@ -7,6 +7,7 @@ import RoundModal from "../CounterTwo/Buttons/Modals/RoundModal";
 import ExitModal from "../CounterTwo/Buttons/Modals/ExitModal";
 import ScoreModal3 from "./ScoreModal3";
 import HoleInsightsModal from "../CounterTwo/Buttons/Modals/HoleInsights";
+import ShotTrackerModal from "@/components/Location/ShotTrackerModal";
 
 // import ImagesModal from "../CounterTwo/Buttons/Modals/ImagesModal";
 
@@ -35,8 +36,8 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                       return <Ionicons name='stats-chart-sharp' color={'whitesmoke'} size={25} />
                 case 'dot':
                     return <AntDesign name='dotchart' color={'whitesmoke'} size={25} />
-                // case 'yrd':
-                //   return <MaterialIcons name="share-location" color={'whitesmoke'} size={25} />
+                case 'track':
+                  return <MaterialIcons name="share-location" color={'whitesmoke'} size={25} />
                 // case 'green':
                 //   return <MaterialIcons name="golf-course" color={'whitesmoke'} size={25} />
                 case 'exit':
@@ -51,8 +52,8 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
                     return <RoundModal modalVisible={modalVisible} setModalVisible={setModalVisible} round={round} />
                 case 'dot':
                     return <HoleInsightsModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeID={teeboxHoles[holeNumber-1].id} holePar={teeboxHoles[holeNumber-1].par} holeNumber={teeboxHoles[holeNumber-1].num} />
-                // case 'yrd':
-                //     return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber}  green={false}/>
+                case 'track':
+                    return <ShotTrackerModal modalVisible={modalVisible} setModalVisible={setModalVisible} />;
                 // case 'green':
                 //     return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber} green={true}/>
                 case 'exit':
@@ -104,8 +105,9 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
 
                 <Animated.View style={[styles.animatedView, { height,}, {}]}>
         {/* {OptionBtn2('Yard Book', 'yrd')} */}
+        {OptionBtn2('Track Shot', 'track')}
         {OptionBtn2('HoleHistory', 'dot')}
-        {OptionBtn2('Scorecard', 'score')}
+        {/* {OptionBtn2('Scorecard', 'score')} */}
         {OptionBtn2('RoundStats', 'bar')}
         
         
