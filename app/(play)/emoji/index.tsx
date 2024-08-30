@@ -2,13 +2,19 @@ import { getAllTeeboxHoles } from '@/components/DataBase/API';
 import { Hole, Round, ShotData } from '@/components/DataBase/Classes';
 import { getMenuGradient, getRibbonImage } from '@/components/DataBase/localStorage';
 import EmojiHeader from '@/components/Layouts/Emoji/EmojiHeader';
-import { getRibbonImageSource } from '@/constants/Colors';
-import { router, useLocalSearchParams } from 'expo-router';
+import { getRibbonImageSource, MenuGradients } from '@/constants/Colors';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Text, View, StyleSheet, Alert } from 'react-native'
+import { Text, View, StyleSheet, Alert, SafeAreaView } from 'react-native'
 
 import { initialState, reducer, } from '@/components/DataBase/RoundReducer';
 import EmojiShotBtns from '@/components/Layouts/Emoji/EmojiShotBtns';
+import EmojiShots from '@/components/Layouts/Emoji/EmojiShots';
+import VerticalCheckBoxes from '@/components/PlayComponents/VerticalCheckBoxes';
+import EmojiGIRFIR from '@/components/Layouts/Emoji/EmojiGIRFIR';
+import EmojiHoleNextBack from '@/components/Layouts/Emoji/EmojiHoleNextBack';
+import StackHeader from '@/constants/StackHeader';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface indexProps {
 
@@ -52,7 +58,7 @@ const index: React.FC<indexProps> = ({ }) => {
     }, []);
     const image = useMemo(() => getRibbonImageSource(visualPreferences.ribbonImage), [visualPreferences.ribbonImage]);
 
-//////////////////////////////////// Round Setup ////////////////////////////////////
+    //////////////////////////////////// Round Setup ////////////////////////////////////
     const [teeboxHoles, setTeeboxHoles] = useState<Hole[]>([]);
     const [currentHoleData, setCurrentHoleData] = useState<Hole | null>(null);
     const [holeNumber, setHoleNumber] = useState<number>(1);
@@ -92,7 +98,7 @@ const index: React.FC<indexProps> = ({ }) => {
         }
     }, [teeboxHoles, holeNumber]);
 
-////////////////////////////////////////// Shot Data ////////////////////////////////////
+    ////////////////////////////////////////// Shot Data ////////////////////////////////////
 
     // Reset state for a new hole
     const resetForNewHole = useCallback((): void => {
@@ -118,14 +124,14 @@ const index: React.FC<indexProps> = ({ }) => {
     const setFir = useCallback((value: boolean) => {
         dispatch({ type: 'SET_FIR', value });
     }, [dispatch]);
-    const addShotColor = useCallback((color: string) => {
-        dispatch({ type: 'ADD_SHOT_COLOR', color });
+    const addShotEmoji = useCallback((emoji: string) => {
+        dispatch({ type: 'ADD_SHOT_EMOJI', emoji });
     }, [dispatch]);
-    const subShotColor = useCallback((color: string) => {
-        dispatch({ type: 'SUB_SHOT_COLOR', color });
+    const subShotEmoji = useCallback((emoji: string) => {
+        dispatch({ type: 'SUB_SHOT_EMOJI', emoji });
     }, [dispatch]);
 
-//////////////////////////////////// Round Setup ////////////////////////////////////
+    //////////////////////////////////// Round Setup ////////////////////////////////////
     // Helper function to add hole data to the round
     const addRoundHole = useCallback(() => {
 
@@ -161,12 +167,48 @@ const index: React.FC<indexProps> = ({ }) => {
         }
     }, [addRoundHole]);
 
-    return (
+
+    const Main = () => {
+        if (isLoading) {
+            return <Text>Loading...</Text>;
+        }
+        if (!currentHoleData) {
+            return <Text>No hole data found</Text>;
+        }
+
+        if (currentHoleData && courseName) {
+            return (
+                <View style={styles.container}>
+                    
+                        {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
+
+
+                        <EmojiHeader courseName={String(courseName)} holeNumber={currentHoleData.num} par={currentHoleData.par} distance={currentHoleData.yardage} />
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                            <EmojiShots shotEmojis={state.shotEmojis} par={currentHoleData ? currentHoleData.par : 4} />
+
+                        </View>
+                        <EmojiHoleNextBack nextHole={nextHole} prevHole={lastHole} holeNumber={holeNumber} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                            {currentHoleData ?
+                                <EmojiGIRFIR hole={currentHoleData} fir={state.fir} setFir={setFir} gir={state.gir} setGir={setGir} />
+                                : ''}
+                            <EmojiShotBtns addShot={addShot} subtractShot={subtractShot} addShotEmoji={addShotEmoji} subShotEmoji={subShotEmoji} shotData={state.shotData} />
+                        </View>
+                        <Text>Emoji</Text>
+                    
+                </View>
+            )
+        }
+
+    }
+    return (<LinearGradient colors={MenuGradients[visualPreferences.gradient]}>
         <View style={styles.container}>
-            <EmojiHeader />
-            <EmojiShotBtns addShot={addShot} subtractShot={subtractShot} addShotColor={addShotColor} subShotColor={subShotColor} shotData={state.shotData}/>
-            <Text>Emoji</Text>
-        </View>
+            <StackHeader image={image} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles} />
+
+            <Main />
+        </View></LinearGradient>
     )
 }
 
@@ -176,7 +218,7 @@ export default index;
 
 const styles = StyleSheet.create({
     container: {
-
+        height: '100%',
     },
 
 })

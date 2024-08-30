@@ -8,7 +8,6 @@ import ScoreModal3 from '@/components/Layouts/CounterThree/ScoreModal3';
 interface StackHeaderProps {
     image:any;
     title:string;
-    play?:boolean;
     roundRef?:any;
     teeboxHoles?:Hole[];
     lastHole?: () => void;
@@ -16,7 +15,7 @@ interface StackHeaderProps {
     scorecard?: () => void;
 }
 
-const StackHeader: React.FC<StackHeaderProps> = ({image,title, play=false, roundRef, lastHole, nextHole, scorecard, teeboxHoles}) => {
+const StackHeader: React.FC<StackHeaderProps> = ({image,title, roundRef, lastHole, nextHole, scorecard, teeboxHoles}) => {
     const theme = useTheme();
     if (roundRef && lastHole && nextHole) {
         const [modalVisible, setModalVisible] = useState(false);

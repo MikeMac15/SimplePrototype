@@ -5,6 +5,7 @@ export interface State {
     gir: boolean;
     fir: boolean;
     shotColors: string[];
+    shotEmojis: string[];
   }
   
   export type ActionType =
@@ -14,6 +15,8 @@ export interface State {
     | { type: 'SET_FIR'; value: boolean }
     | { type: 'ADD_SHOT_COLOR'; color: string }
     | { type: 'SUB_SHOT_COLOR'; color: string }
+    | { type: 'ADD_SHOT_EMOJI'; emoji: string }
+    | { type: 'SUB_SHOT_EMOJI'; emoji: string }
     | { type: 'RESET' };
   
     
@@ -27,6 +30,7 @@ export interface State {
     gir: false,
     fir: false,
     shotColors: [],
+    shotEmojis: [],
   };
   
   export const reducer = (state: State, action: ActionType): State => {
@@ -70,6 +74,23 @@ export interface State {
             shotColors: [
               ...state.shotColors.slice(0, lastColorIdx),
               ...state.shotColors.slice(lastColorIdx + 1),
+            ],
+          };
+        }
+        return state; // Return the original state if color not found
+      case 'ADD_SHOT_EMOJI':
+        return {
+          ...state,
+          shotEmojis: [...state.shotEmojis, action.emoji],
+        };
+      case 'SUB_SHOT_EMOJI':
+        const lastEmojiIdx = state.shotEmojis.lastIndexOf(action.emoji);
+        if (lastEmojiIdx !== -1) {
+          return {
+            ...state,
+            shotEmojis: [
+              ...state.shotEmojis.slice(0, lastEmojiIdx),
+              ...state.shotEmojis.slice(lastEmojiIdx + 1),
             ],
           };
         }
