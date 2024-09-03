@@ -6,6 +6,8 @@ import { LinearGradient } from "expo-linear-gradient";
 const { width, height } = Dimensions.get('window');
 
 const PictureModal: React.FC<{ modalVisible: boolean, toggleModal: () => void, imageSource: any }> = ({ modalVisible, toggleModal, imageSource }) => {
+
+
     return (
         <Modal
             animationType="slide"
@@ -30,6 +32,7 @@ const PictureModal: React.FC<{ modalVisible: boolean, toggleModal: () => void, i
 };
 
 const GIR: React.FC<{ gir: boolean, setGIR: React.Dispatch<React.SetStateAction<boolean>> }> = ({ gir, setGIR }) => {
+    
     return (
         <TouchableOpacity onPress={()=> setGIR(!gir)}>
 
@@ -108,12 +111,14 @@ const CheckBoxes2: React.FC<CheckBoxes2Props> = ({ gir, setGIR, fir, setFIR }) =
     const image = require('../../../../assets/images/ggwp.png');
     const image2 = require('../../../../assets/images/retro4.png');
 
+    
+
     return (
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <ShowGreensBook showModal={toggleGreenModal} />
+            {/* <ShowGreensBook showModal={toggleGreenModal} /> */}
             <GIR gir={gir} setGIR={setGIR} />
             <FIR fir={fir} setFIR={setFIR} />
-            <ShowFairwaysBook showModal={toggleFairwaysModal} />
+            {/* <ShowFairwaysBook showModal={toggleFairwaysModal} /> */}
 
             <PictureModal
                 modalVisible={greenModalVisible}

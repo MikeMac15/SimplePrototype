@@ -1,153 +1,156 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import C2Buttons from "@/components/Layouts/CounterTwo/Buttons/Buttons";
 import C2Options2 from "@/components/Layouts/CounterTwo/Buttons/Options2";
-import { Hole, Round } from "@/components/DataBase/Classes";
+import { Hole, Round, ShotData } from "@/components/DataBase/Classes";
 import { getAllTeeboxHoles, saveFullRound, saveHoleStats } from "@/components/DataBase/API";
 import C2Header from "@/components/Layouts/CounterTwo/Header";
 import C2Header2 from "@/components/Layouts/CounterTwo/Header2";
+import StackHeader from "@/constants/StackHeader";
+import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
+import { getRibbonImageSource } from "@/constants/Colors";
+import { initialState, reducer } from "@/components/DataBase/RoundReducer";
+import C3Options3 from "@/components/Layouts/CounterThree/Options3";
 
 const CounterTwo: React.FC = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  
   const params = useLocalSearchParams();
   const { courseID, courseName, teeID, girGoal, puttGoal, firGoal, strokeGoal } = params;
   const [isLoading, setIsLoading] = useState(true);
   const [teeboxHoles, setTeeboxHoles] = useState<Hole[]>([]);
   const [currentHoleData, setCurrentHoleData] = useState<Hole>();
   const [holeNumber, setHoleNumber] = useState<number>(1);
-  const [shotData, setShotData] = useState<{ [key: string]: number }>({
-    great: 0,
-    good: 0,
-    bad: 0,
-    putt: 0,
-  });
-  const [gir, setGir] = useState<boolean>(false);
-  const [fir, setFir] = useState<boolean>(false);
-
-
-  const getTotalShots = () => {
-    return Object.values(shotData).reduce((total, value) => total + value, 0);
-  };
-
-  ////////////////////////////////////////// SetUp ////////////////////////////////////
-  const getHoles = async () => {
-      const holeData = await getAllTeeboxHoles(Number(teeID))
-      if (holeData) {
-          setTeeboxHoles(holeData)
-        }
-    }
-
-    const getCurrentHole = () => {
-        const hole = teeboxHoles.find(hole => hole.num === holeNumber)
-        if (hole)
-        setCurrentHoleData(hole)
-      }
-    
-    useEffect(() => {
-        getHoles();
-        console.log('getting holes')
-    }, [])
-    useEffect(() => {
-        setIsLoading(false);
-        getCurrentHole();
-    }, [teeboxHoles])
-    
-    useEffect(()=> getCurrentHole(),[holeNumber])
-    ////////////////////////////////////////// Save Data ////////////////////////////////////
-    const saveRoundAndHoleStats = async (round: Round) => {
-        const hole = teeboxHoles.find(hole => hole.num === holeNumber)
-        if (hole) {
-          round.addRoundHole(hole, shotData.putt, shotData.pure, shotData.good, shotData.bad, gir, 0, fir);
-        }
-        try {
-          const roundId: number = await saveFullRound(
-            round.teebox_id,
-            round.totalStrokes,
-            round.totalPutts,
-            round.great,
-            round.good,
-            round.bad,
-            round.totalGIR,
-            round.totalFIR,
-            round.eaglesOless,
-            round.birdies,
-            round.pars,
-            round.bogeys,
-            round.doublePlus,
-            round.toPar,
-            round.toPar3,
-            round.toPar4,
-            round.toPar5,
-            round.eighteen,
-          );
-    
-          for (const key in round.holes) {
-            const holeStat = round.holes[key];
-            await saveHoleStats(
-              holeStat.hole.id,
-              roundId,
-              holeStat.putts,
-              holeStat.gir,
-              holeStat.fir,
-              holeStat.hole.par === 3 ? true : false, /// FIR_ELI
-              holeStat.toPar,
-              holeStat.strat ? holeStat.strat : 0 /// if no strat chosen
-            );
-          }
-          console.log('All hole stats saved successfully');
-          Alert.alert('Saved')
-          router.dismissAll()
-    
-        } catch (error) {
-          console.error('Error saving round and hole stats:', error);
-        }
-      };
-    
-      const resetForNewHole = (): void => {
-        setShotData({
-          strokes: 0,
-          great: 0,
-          good: 0,
-          bad: 0,
-          putt: 0
-        });
-        setGir(false);
-        setFir(false);
-        
-    
-      }
-    
-      const nextHole = () => {
-        /// move onto next hole
-        /// save data
-        const hole = teeboxHoles.find(hole => hole.num === holeNumber)
-        if (hole) {
-          round.addRoundHole(hole, shotData.putt, shotData.great, shotData.good, shotData.bad, gir, 0, fir);
-    
-        }
-        /// prep for next hole
-        resetForNewHole();
-        setHoleNumber(holeNumber + 1);
-        console.log(round)
-      }
-    
-
-    ////////////////////////////////////////// Save Data ////////////////////////////////////
-
-
-
-
-
-  const setShot = (shotType: string, num: number) => {
-    setShotData((prevData) => ({
-      ...prevData,
-      [shotType]: num,
-    }));
-  };
 
 
   const roundRef = useRef<Round>(new Round(Number(teeID)));
-  const round = roundRef.current;
+  
+  // const [shotColors, setShotColors] = useState<string[]>([]);
+  
+  const getTotalShots = () => {
+    // return Object.values(shotData).reduce((total, value) => total + value, 0);
+    return Object.values(state.shotData).reduce((total: number, value:any) => total + value, 0);
+
+  };
+
+  ////////////////////////////////////////// SetUp ////////////////////////////////////
+  const getCurrentHole = () => {
+    const hole = teeboxHoles.find(hole => hole.num === holeNumber);
+    if (hole) {
+      setCurrentHoleData(hole);
+    } else {
+      console.error('Current hole not found');
+    }
+  };
+  
+  useEffect(() => {
+    const fetchHoles = async () => {
+      try {
+        setIsLoading(true);
+        const holeData = await getAllTeeboxHoles(Number(teeID));
+        if (holeData) {
+          setTeeboxHoles(holeData);
+        } else {
+          console.error('No hole data found');
+        }
+      } catch (error) {
+        console.error('Error fetching holes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchHoles();
+  }, [teeID]);
+  
+  useEffect(() => {
+    if (teeboxHoles.length > 0) {
+      setIsLoading(true);
+      getCurrentHole();
+      setIsLoading(false);
+    }
+  }, [teeboxHoles, holeNumber]);
+  ////////////////////////////////////////// Save Data ////////////////////////////////////
+  const saveRoundAndHoleStats = async (round: Round) => {
+    try {
+      await round.saveRoundAndHoleStats();
+      Alert.alert('Saved')
+      router.dismissAll()
+    } catch (error) {
+      console.error('Error saving round and hole stats:', error);
+    }
+  };
+  const addRoundHole = () => {
+    console.log('Adding round hole');
+    console.log('State:', state);
+
+    const hole = teeboxHoles.find(hole => hole.num === holeNumber)
+    if (hole) {
+      roundRef.current.addRoundHole(hole, state.shotData.putt, state.shotData.great, state.shotData.good, state.shotData.bad, state.gir, 0, state.fir);
+    }
+  }
+  const nextHole = () => {
+    addRoundHole();
+    resetForNewHole();
+    setHoleNumber(holeNumber + 1);
+  }
+  const lastHole = () => {
+    addRoundHole();
+    saveRoundAndHoleStats(roundRef.current);
+  }
+  ////////////////////////////////////////// Shot Data ////////////////////////////////////
+  const resetForNewHole = (): void => {
+    dispatch({ type: 'RESET' });
+  }
+
+  const getAllShotData = () => {
+    return {
+      putt: roundRef.current.totalPutts,
+      great: roundRef.current.great,
+      good: roundRef.current.good,
+      bad: roundRef.current.bad,
+    };
+  };
+
+  const setShotCount = (shotType: keyof ShotData, count: number) => {
+    dispatch({ type: 'SET_SHOT_COUNT', shotType, count });
+  };  
+  const setGir = (value: boolean) => {
+    dispatch({ type: 'SET_GIR', value });
+  };
+  const setFir = (value: boolean) => {
+    dispatch({ type: 'SET_FIR', value });
+  };
+
+    
+    
+    
+    
+    ////////////////////////////////////////// Visuals ////////////////////////////////////
+    const [gradient, setGradient] = useState('OG-Dark');
+    const [ribbonImage, setRibbonImage] = useState('proud-parent');
+  const getPreferences = useCallback(async () => {
+          try {
+              const [value, ribbonImgTag] = await Promise.all([getMenuGradient(), getRibbonImage()]);
+              setGradient(value);
+              setRibbonImage(ribbonImgTag);
+          } catch (error) {
+              console.error('Failed to fetch preferences:', error);
+          }
+      }, []);
+  useEffect(() => {
+          getPreferences();
+      }, [getPreferences]);
+  const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
+  
+  
+  
+
+
+
+
+
 
 
 
@@ -155,69 +158,40 @@ const CounterTwo: React.FC = () => {
 
   return (
     <View style={{ paddingTop: 20, backgroundColor: '#333', height:'100%' }}>
-      <Stack.Screen options={{ headerShown: false }} />
+      <StackHeader image={image} imageTag={ribbonImage} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles}/>
       {currentHoleData
       ?
-      <C2Header2 courseName={String(courseName)} holeData={currentHoleData} roundToPar={round.toPar} roundGoal={Number(strokeGoal)} getTotalShots={getTotalShots}  />
+      <C2Header2 courseName={String(courseName)} holeData={currentHoleData} roundToPar={roundRef.current.toPar} roundGoal={Number(strokeGoal)} getTotalShots={getTotalShots}  />
       :
 ''
       }
-      { teeboxHoles
+      { teeboxHoles && currentHoleData
       ?
-      <C2Options2 teeboxHoles={teeboxHoles} roundHoles={round.holes} round={round}/>
+      // <C2Options2 teeboxHoles={teeboxHoles} roundHoles={roundRef.current.holes} round={roundRef.current}/>
+      <C3Options3 holeNumber={currentHoleData.num} teeboxHoles={teeboxHoles} roundHoles={roundRef.current.holes} round={roundRef.current}/>
       :
       ''
       }
       <View>
 
         <C2Buttons
-          shotData={shotData}
-          setShot={setShot}
-          gir={gir}
-          fir={fir}
+          shotData={state.shotData}
+          setShot={setShotCount}
+          gir={state.gir}
+          fir={state.fir}
           setGir={setGir}
           setFir={setFir}
           holeNum={holeNumber}
           nextHole={nextHole}
         />
       </View>
-      <View style={{ marginVertical: 10,  }}>
+      {/* <View style={{ marginVertical: 10,  }}>
         <Text style={{color:'white', fontSize:20}}>
             {round.points ? `$${round.points}` : ''}
             </Text>
-      </View>
+      </View> */}
     </View>
   );
 };
 
 export default CounterTwo;
-
-
-
-
-
-
-
-
-// {    "bad": 0,
-//      "birdies": 0,
-//      "bogeys": 0,
-//      "date": "",
-//      "doublePlus": 0,
-//      "eaglesOless": 0,
-//      "eighteen": false,
-//      "good": 0,
-//      "great": 0, 
-//      "holes": {"1": {"bad": 0, "fir": true, "firEligible": true, "gir": true, "good": 1, "hole": [Object], "pure": undefined, "putts": 2, "strat": 0, "toPar": NaN}},
-//      "id": -1,
-//      "pars": 0,
-//      "teebox_id": 1,
-//      "toPar": NaN,
-//      "toPar3": 0,
-//      "toPar4": NaN,
-//      "toPar5": 0,
-//      "totalFIR": 1,
-//      "totalGIR": 1,
-//      "totalPutts": 2,
-//      "totalStrokes": NaN
-// }

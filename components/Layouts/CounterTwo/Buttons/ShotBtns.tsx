@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from "react-native";
 import ShotCount from "./ShotCount";
+import { ShotData } from '@/components/DataBase/Classes';
 
 interface ShotButtonsProps {
-  shotData: { [key: string]: number };
-  setShot: (shotType: string, num: number) => void;
+  shotData: { [key in keyof ShotData]: number };
+  setShot: (shotType: keyof ShotData, num: number) => void;
 }
 
 const ShotBtns: React.FC<ShotButtonsProps> = ({ shotData, setShot }) => {

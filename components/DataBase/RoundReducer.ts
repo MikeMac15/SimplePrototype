@@ -11,6 +11,7 @@ export interface State {
   export type ActionType =
     | { type: 'ADD_SHOT'; shotType: keyof ShotData }
     | { type: 'SUBTRACT_SHOT'; shotType: keyof ShotData }
+    | { type: 'SET_SHOT_COUNT'; shotType: keyof ShotData, count: number }
     | { type: 'SET_GIR'; value: boolean }
     | { type: 'SET_FIR'; value: boolean }
     | { type: 'ADD_SHOT_COLOR'; color: string }
@@ -32,7 +33,6 @@ export interface State {
     shotColors: [],
     shotEmojis: [],
   };
-  
   export const reducer = (state: State, action: ActionType): State => {
     switch (action.type) {
       case 'ADD_SHOT':
@@ -43,14 +43,22 @@ export interface State {
             [action.shotType]: state.shotData[action.shotType] + 1,
           },
         };
-      case 'SUBTRACT_SHOT':
-        return {
-          ...state,
-          shotData: {
-            ...state.shotData,
-            [action.shotType]: Math.max(state.shotData[action.shotType] - 1, 0),
-          },
-        };
+        case 'SUBTRACT_SHOT':
+          return {
+            ...state,
+            shotData: {
+              ...state.shotData,
+              [action.shotType]: Math.max(state.shotData[action.shotType] - 1, 0),
+            },
+          };
+        case 'SET_SHOT_COUNT':
+            return {
+              ...state,
+              shotData: {
+                ...state.shotData,
+                [action.shotType]: action.count,
+              },
+            };
       case 'SET_GIR':
         return {
           ...state,
