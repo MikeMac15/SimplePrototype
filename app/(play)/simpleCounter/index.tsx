@@ -964,7 +964,8 @@ return (
         <Text>Loading</Text>
       </View>
     ) : (
-      <View style={[styles.container, { backgroundColor: '#333' }]}>
+      <View style={styles.container}>
+      <View style={{}}>
         <Stack.Screen
           options={{
             gestureEnabled: false,
@@ -1015,8 +1016,6 @@ return (
           </View>
         </Modal>
 
-
-
           {oldHoleStat
           ?
             <UpdatePastHole hole={oldHoleStat} updateHoleVisible={updateHoleVisible} setUpdateHoleVisible={setUpdateHoleVisible} saveUpdatedHole={saveUpdatedHole}  />
@@ -1024,35 +1023,28 @@ return (
           ''
           }
 
-
-        <View style={{ width: width }}>
+     
 
           <StatMarquee round={round} holeNumber={holeNumber} girGoal={Number(girGoal)} firGoal={Number(firGoal)} puttGoal={Number(puttGoal)} />
-        </View>
+     
 
+       
 
-
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-
-          <View style={{ flex: 1, }}>
+         
 
             <Carousel />
-          </View>
+       
 
 
           {/* StratTag + Modal */}
           {teeboxHoles[holeNumber] ?
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#333', width: width }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#333', width: width, marginVertical:10 }}>
               <Text style={{color:'white'}}>Hole Strategy: </Text>
               <Button title={`${statTag(stratTagId)}`} onPress={() => setStratTagsVisible(!stratTagsVisible)} />
               <StratTags par={teeboxHoles[holeNumber-1].par} visible={stratTagsVisible} setVisible={setStratTagsVisible} holestrategy={stratTagId} setHoleStrategy={setStratTagId} />
             </View>
             : ''
           }
-
-
-
-
 
           <View style={{ backgroundColor: '#333', width: '100%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
             {currentHoleData ?
@@ -1061,15 +1053,9 @@ return (
           :
           ''}
             <VerticalBtns addShot={addShot} subtractShot={subtractShot} shotData={shotData} />
-
-            {/* <ImageBackground source={image}>
-            
-            <CheckBoxes />
-            <ShotBtns />
-            </ImageBackground> */}
-            {/* <Text>{round.toPar}</Text> */}
-          </View>
+        
         </View>
+      </View>
       </View>
     )}
   </>
@@ -1080,13 +1066,11 @@ return (
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: "#888",
+
+    backgroundColor: "#333",
     // paddingTop:10,
     width: '100%',
-
+    height: '100%',
   },
   centeredView: {
     flex: 1,

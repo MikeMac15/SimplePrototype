@@ -3,15 +3,16 @@ import { StyleSheet, View } from "react-native";
 import ShotBtns from "./ShotBtns";
 import CheckBoxes2 from "./CheckBoxes2";
 import HoleBtns from "./HoleBtns";
+import { ShotData } from '@/components/DataBase/Classes';
 
 interface C2ButtonsProps {
-  shotData: { [key: string]: number };
-  setShot: (shotType: string, num: number) => void;
+  shotData: { [key in keyof ShotData]: number };
+  setShot: (shotType: keyof ShotData, num: number) => void;
   gir: boolean;
   fir: boolean;
   setGir: React.Dispatch<React.SetStateAction<boolean>>;
   setFir: React.Dispatch<React.SetStateAction<boolean>>;
-  holeNum:number;
+  holeNum: number;
   nextHole: () => void;
 }
 

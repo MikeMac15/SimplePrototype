@@ -29,6 +29,7 @@ const ExitModal: React.FC<ModalProps> = ({modalVisible, setModalVisible}) => {
 
                
                 <View style={styles.modalView}>
+                <View style={[styles.modalView,{backgroundColor:'#ddd', padding:20, margin:10}]}>
                    <Text>Are You Sure You Want To Quit?</Text>
                    <Text>All Progress Will Be Deleted.</Text>
                    
@@ -42,6 +43,7 @@ const ExitModal: React.FC<ModalProps> = ({modalVisible, setModalVisible}) => {
                     onPress={() => setModalVisible(!modalVisible)}>
                         <Text style={styles.textStyle}>Cancel</Text>
                     </Pressable>
+                </View>
                 </View>
        
            
@@ -71,12 +73,13 @@ const ExitModal: React.FC<ModalProps> = ({modalVisible, setModalVisible}) => {
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 22,
+      
     },
     modalView: {
       margin: 20,
       
       borderRadius: 20,
-      padding:20, 
+      padding:0, 
       backgroundColor:'#333',
 
       alignItems: 'center',

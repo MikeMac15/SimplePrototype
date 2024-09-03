@@ -93,7 +93,7 @@ const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, hol
 
 
     return(
-        <View style={{width:'110%', flexDirection:'row'}}>
+        <View style={{width:'115%', flexDirection:'row', alignItems:'center'}}>
                 <TouchableOpacity style={{ marginLeft:20, marginVertical:5,}} onPress={() => setIsVisible(!isVisible)}>
                    
                     {isVisible ?
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-evenly',
       alignItems: 'center',
       flexDirection: 'row',
-      backgroundColor: '#111',
+      // backgroundColor: '#111',
       width:'80%',
     //   paddingVertical: 10,
       overflow: 'hidden', // Ensure content doesn't overflow when height is 0
