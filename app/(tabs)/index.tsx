@@ -198,7 +198,7 @@ export default function Index() {
 
     return (
         <LinearGradient colors={MenuGradients[gradient]} style={styles.container2}>
-            <StackHeader title='All Stats' image={image} />
+            
             
                 <ScrollView style={{ overflow: 'hidden' }}>
                     <View style={[styles.centered,{marginTop:10}]}>

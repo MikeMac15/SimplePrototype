@@ -1,4 +1,4 @@
-import { deleteDb } from "@/components/DataBase/API";
+import { deleteDb, deleteMostRecentRoundAndHoleStats } from "@/components/DataBase/API";
 import { MenuGradients, getRibbonImageSource } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState, } from "react";
@@ -104,7 +104,8 @@ export default function Settings() {
                 <Button title="emoji" onPress={()=>{setCounterLayoutPref('/emoji')}} />
             </View>
                 <Button title='Save Preferences' onPress={()=> {storeMenuGradient(); storeMenuImage(); storeRibbonImage();storeCounterLayoutPref();}} />
-            <Button title="Delete Database" onPress={() => deleteDb()}/>
+            {/* <Button title="Delete Database" onPress={() => deleteDb()}/> */}
+            {/* <Button title="Delete Most Recent Round" onPress={()=>deleteMostRecentRoundAndHoleStats()} /> */}
         </LinearGradient>
     )
 }

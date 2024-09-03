@@ -3,10 +3,11 @@ import { Stack } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { createTeeHoles, getAllTeeboxHoles, openDb } from "@/components/DataBase/API";
-import { MenuGradients, TeeColors } from "@/constants/Colors";
+import { getRibbonImageSource, MenuGradients, TeeColors } from "@/constants/Colors";
 import CourseScoreCard from "@/components/ScoreCards/CourseScoreCard";
 import { LinearGradient } from "expo-linear-gradient";
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
+import StackHeader from "@/constants/StackHeader";
 
 
 interface Hole {
@@ -129,7 +130,7 @@ export default function Holes() {
     setUserPreferences();
   }, [])
 
-
+const image = getRibbonImageSource(ribbonImage);
 
 
   useEffect(() => { console.log(TeeColors[teeBoxColors[holeColorIndex]]) }, [holeColorIndex])
@@ -284,7 +285,7 @@ export default function Holes() {
 
     return (
       <LinearGradient colors={MenuGradients[gradient]}>
-        <Stack.Screen options={{ title: `${courseName}`, headerBackTitle: 'Courses', headerTitleStyle: { color: 'antiquewhite', fontSize: 20, fontWeight: '800' }, }} />
+        <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} /> 
 
         <ColorSeperator />
 

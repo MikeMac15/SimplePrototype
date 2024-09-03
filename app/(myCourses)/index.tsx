@@ -17,10 +17,11 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert, Modal, Pressable, Text
 import {Picker} from '@react-native-picker/picker';
 import CourseAndTeeView from "@/components/MyCourseComponents/CourseAndTeeView";
 
-import { MenuGradients, getRibbonImageSource } from "@/constants/Colors";
+import { MenuGradients, getRibbonImageSource, useTextColor } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { Teebox, Course, CourseAndTees } from "@/components/DataBase/Classes";
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
+import { MaterialIcons } from "@expo/vector-icons";
 
 
 
@@ -31,6 +32,8 @@ export default function Courses() {
     const [courses, setCourses] = useState<CourseAndTees[]>([]);
     const [gradient, setGradient] = useState('OG-Dark')
     const [ribbonImage, setRibbonImage] = useState('retro')
+
+    const textColor = useTextColor(ribbonImage);
 
     const getPreferences = async() => {
         const value = await getMenuGradient()
@@ -92,17 +95,24 @@ export default function Courses() {
     
     
 
+    const NewCourseBtn = () => {return (
+        <LinearGradient colors={['#5a5a5a', '#333']} style={styles.fullCourseDiv}>
+    <TouchableOpacity style={{alignItems: 'center', borderRadius:10, marginVertical:10, flexDirection:'row'}} onPress={() => setModalVisible(true)}>
+        <MaterialIcons name="add-circle" color={'#aaa'} size={20} />
+        <Text style={{ fontSize: 16, color: "white" }}>Add New Course</Text>
+    </TouchableOpacity>
+              
+            </LinearGradient>)
+            }
+
+
+
     return (
         <LinearGradient colors={MenuGradients[gradient]} style={{ height:'100%'}}>
-        <Stack.Screen options={{ title:`My Courses`, headerBackground: ()=> (
-        <ImageBackground
-      source={image}
-      style={StyleSheet.absoluteFill}
-    />), headerTitleStyle:{fontSize:30, fontWeight:'800'},
-                    
+        <Stack.Screen options={{       
                     headerRight: () => (
                         <TouchableOpacity onPress={()=> setModalVisible(!modalVisible)}>
-                            <Text style={{flex: 1,color: 'lightblue', fontSize: 16, fontWeight:'bold', fontStyle:'italic'}}>Add</Text>
+                            <Text style={{flex: 1,color: textColor, fontSize: 16, fontWeight:'bold', fontStyle:'italic'}}>Add</Text>
                         </TouchableOpacity>
                     ),}}/>
                     <Modal
@@ -157,15 +167,22 @@ export default function Courses() {
                         </View>
                     ))
                 ) : (
+                    <>
                     <Text>Add a Course.</Text>
+                    </>
                 )}
             </ScrollView>
+                <NewCourseBtn />
 
        
       
     </LinearGradient>
     )
 }
+
+
+
+  
 
 
 
@@ -227,5 +244,33 @@ const styles = StyleSheet.create({
           teebox: {
             // flex: 1,
             // backgroundColor:'blue'
-          }
+          },
+
+
+          fullCourseDiv: {
+            flexDirection:'column',
+            justifyContent: 'center',
+                    alignItems: 'center',
+                    margin: 12,
+                    
+                    
+                   borderWidth:1,
+                   borderColor:'#222',
+                    borderRadius:20,
+        
+                    padding:5,
+                    marginBottom:25,
+                  },
+            courseTitleDiv: {
+                  flexDirection:'row',
+                  justifyContent:'space-between',
+                  alignItems:'flex-start',
+                    paddingLeft:10,
+        
+                    width:'100%',
+        
+                    // backgroundColor:'#c7f4fc',
+                    opacity:.9,
+                    paddingVertical:10
+                  },
     });

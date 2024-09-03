@@ -1,10 +1,12 @@
 import { getCourseHoleData, getTeeAllStats, getTeeTimelineScores, getTimelineScores } from "@/components/DataBase/API";
 import { AllStats, CourseHoleData } from "@/components/DataBase/Classes";
+import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import CourseStatView from "@/components/StatComponents/courseStats/CourseStatView";
 import HoleStats from "@/components/StatComponents/courseStats/holeStats/HoleStats";
 import HoleStats2 from "@/components/StatComponents/courseStats/holeStats/HoleStats2";
 
-import { teeTextColor, TeeColors } from "@/constants/Colors";
+import { teeTextColor, TeeColors, getRibbonImageSource } from "@/constants/Colors";
+import StackHeader from "@/constants/StackHeader";
 import { Picker } from "@react-native-picker/picker";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -30,6 +32,20 @@ const CourseStats = () => {
     });
     
 
+    const [gradient, setGradient] = useState('cool-guy')
+    const [ribbonImage, setRibbonImage] = useState('proud-parent')
+    const getPreferences = async () => {
+        const value = await getMenuGradient()
+        setGradient(value)
+        const ribbonImgTag = await getRibbonImage()
+        setRibbonImage(ribbonImgTag)
+    }
+    
+    useEffect(() => {
+        getPreferences();
+    }, [])
+    const image = getRibbonImageSource(ribbonImage)
+    
 
     const [shotTotals, setShotTotals] = useState({ bad: 0, good: 0, great: 0, totalPutts: 0 });
     const [timelineScores, setTimelineScores] = useState<number[]>([])
@@ -124,7 +140,18 @@ const CourseStats = () => {
             //     return <HoleStats title='Fairway In Regulation' data={[0]} />
         }
     }
-
+    const ColorSeperator = () => {
+        return teeColor2.length > 1
+          ?
+          (
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ width: '50%', height: 5, backgroundColor: `${TeeColors[Number(teeColor1)].toLowerCase()}` }} />
+              <View style={{ width: '50%', height: 5, backgroundColor: `${TeeColors[Number(teeColor2)].toLowerCase()}` }} />
+            </View>
+          )
+          :
+          <View style={{ width: '100%', height: 5, backgroundColor: `${TeeColors[Number(teeColor1)].toLowerCase()}` }} />
+      }
 
     const DropDown = () => {
         return (<View>
@@ -140,9 +167,11 @@ const CourseStats = () => {
 
     return (
         <ScrollView>
-            <Stack.Screen options={{ title: `Course Stats`, }} />
+            <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} /> 
+        
+<ColorSeperator />
             <View style={{}}>
-                <Text style={{ textAlign: 'center' }}>{`${String(courseName)} ${TeeColors[Number(teeColor1)]} ${Number(teeColor2) > 0 ? TeeColors[Number(teeColor2)] : ''}`}</Text>
+                {/* <Text style={{ textAlign: 'center' }}>{`${String(courseName)} ${TeeColors[Number(teeColor1)]} ${Number(teeColor2) > 0 ? TeeColors[Number(teeColor2)] : ''}`}</Text> */}
 
             </View>
             <TouchableOpacity style={{ backgroundColor: '#111', paddingVertical:0}} onPress={()=>setShowSelection(!showSelection)}>

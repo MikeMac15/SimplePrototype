@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Haptics from 'expo-haptics';
 import React from "react";
-import { Hole } from "@/app/(play)/simpleCounter";
+import { Hole } from "@/components/DataBase/Classes";
 
 interface CheckBoxProps {
     hole: Hole;
