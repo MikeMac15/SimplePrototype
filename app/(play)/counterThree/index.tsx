@@ -339,7 +339,7 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 
 return (
   <>
-    <StackHeader image={image} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles}/>
+    <StackHeader image={image} imageTag={ribbonImage} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles}/>
   {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
   <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
     {Marquee}

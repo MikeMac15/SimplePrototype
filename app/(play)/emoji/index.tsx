@@ -205,7 +205,7 @@ const index: React.FC<indexProps> = ({ }) => {
     }
     return (<LinearGradient colors={MenuGradients[visualPreferences.gradient]}>
         <View style={styles.container}>
-            <StackHeader image={image} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles} />
+            <StackHeader image={image} imageTag={visualPreferences.ribbonImage} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles} />
 
             <Main />
         </View></LinearGradient>

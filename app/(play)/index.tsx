@@ -9,6 +9,7 @@ import { Picker, RenderCustomModalProps } from "react-native-ui-lib";
 import { MenuGradients, TeeColors, getRibbonImageSource } from "@/constants/Colors";
 import { Course, CourseAndTees, Teebox } from "@/components/DataBase/Classes";
 import { getCounterLayoutPref, getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
+import StackHeader from "@/constants/StackHeader";
 
 
 
@@ -114,8 +115,8 @@ export default function Play() {
       <LinearGradient colors={MenuGradients[gradient]} >
             <SafeAreaView>
         <View style={styles.container}>
-          
-          <Stack.Screen options={{
+          {/* <StackHeader image={ribbonSource} imageTag={`${ribbonImage}`} title="Round Setup" /> */}
+          {/* <Stack.Screen options={{
             title: 'Round Setup',
             headerBackTitle: "Menu",
             headerBackground: () => (
@@ -126,7 +127,7 @@ export default function Play() {
             ),
             headerTitleStyle: { color:'#444', fontSize: 25, fontWeight: '800', },
             headerTintColor:'#444'
-          }} />
+          }} /> */}
     
           <LinearGradient colors={['#4f4f4f', '#333']} style={styles.gradient}>
           <Picker

@@ -696,3 +696,51 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
     
         return holeStatsData;
     }
+
+
+
+    export const deleteMostRecentRoundAndHoleStats = async () => {
+        try {
+            const db = await openDb();
+            // Step 1: Identify the most recent round
+            const mostRecentRoundResult = await db.getFirstAsync<{ id: number }>(
+                `SELECT id FROM round ORDER BY id DESC LIMIT 1;`
+            );
+    
+            // Check if a round was found
+            if (mostRecentRoundResult && mostRecentRoundResult.id) {
+                const roundId = mostRecentRoundResult.id;
+    
+                // Step 2: Delete associated holestats
+                const deleteHolestatsResult = await db.runAsync(
+                    `DELETE FROM holestats WHERE round_id = ?;`,
+                    [roundId]
+                );
+    
+                // Check how many rows were affected
+                if (deleteHolestatsResult.changes > 0) {
+                    console.log(`${deleteHolestatsResult.changes} holestats deleted.`);
+                } else {
+                    console.log('No holestats found for deletion.');
+                }
+    
+                // Step 3: Delete the most recent round
+                const deleteRoundResult = await db.runAsync(
+                    `DELETE FROM round WHERE id = ?;`,
+                    [roundId]
+                );
+    
+                // Check how many rows were affected
+                if (deleteRoundResult.changes > 0) {
+                    console.log(`Successfully deleted round with id ${roundId}.`);
+                } else {
+                    console.log('No round found for deletion.');
+                }
+            } else {
+                console.log('No round found to delete.');
+            }
+        } catch (error) {
+            console.error("Error deleting most recent round and holestats:", error);
+        }
+    };
+    

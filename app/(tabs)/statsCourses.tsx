@@ -60,9 +60,7 @@ const StatsCourse = () => {
         <LinearGradient colors={MenuGradients[gradient]} style={{ height:'100%'}}>
        
            
-       <StackHeader title='Course Stats' image={image}/>
-         
-
+      
             <ScrollView>
                 {courses.length > 0 ? (
                     courses.map((course) => (

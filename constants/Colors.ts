@@ -3,6 +3,8 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+import { useEffect, useMemo, useState } from "react";
+
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
@@ -58,19 +60,18 @@ export const getMenuImageSource = (menuImage: string) => {
     }
   };
       
-      export const getRibbonImageSource = (menuImage: string) => {
-        switch (menuImage) {
-          case 'proud-parent':
-      return require('../assets/images/crayon-skies-ribbon.png');
-    case 'retro':
-      return require('../assets/images/retro-ribbon.png');
-    case 'nasaJW':
-      return require('../assets/images/jw2-ribbon.png');
-    default:
-      return require('../assets/images/ggwp.png');
-  }
-};
-
+  export const getRibbonImageSource = (menuImage: string) => {
+    switch (menuImage) {
+      case 'proud-parent':
+        return require('../assets/images/crayon-skies-ribbon.png');
+      case 'retro':
+        return require('../assets/images/retro-ribbon.png');
+      case 'nasaJW':
+        return require('../assets/images/jw2-ribbon.png');
+      default:
+        return require('../assets/images/ggwp.png');
+    }
+  };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const TeeColors: { [key: number]: string } = {
@@ -161,4 +162,29 @@ export const AvgScoreColors = (data:number, hcp:number = 0, par:number) => {
   } else {
     return 'salmon'
   }
+}
+
+
+
+export function useTextColor(imageTag: string) {
+  const [textColor, setTextColor] = useState('red');
+
+  const textColorMemo = useMemo(() => {
+    switch (imageTag) {
+      case 'proud-parent':
+        return '#222';
+      case 'retro':
+        return '#fff';
+      case 'nasaJW':
+        return '#ddd';
+      default:
+        return 'red';
+    }
+  }, [imageTag]);
+
+  useEffect(() => {
+    setTextColor(textColorMemo);
+  }, [textColorMemo]);
+
+  return textColor;
 }
