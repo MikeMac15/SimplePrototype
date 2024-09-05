@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native'
 import { Hole } from '../DataBase/Classes';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
-import { MenuGradients } from '@/constants/Colors';
+import { MenuGradients, TeeColors } from '@/constants/Colors';
 import { getMenuGradient, getRibbonImage } from '../DataBase/localStorage';
 
 interface CourseScoreCardProps {
@@ -56,7 +56,10 @@ const CourseScoreCard: React.FC<CourseScoreCardProps> = ({ holes }) => {
                 {holes.map((hole, index) => {
                     return (
                         <View key={index}>
-                            <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'center' }}>
+
+                                <View style={{backgroundColor:TeeColors[hole.color].toLowerCase(), width:20, height:20, borderRadius:20}} />
+
                                 <View style={styles.squareHole}>
                                     <Text style={styles.textLabel}>Hole</Text>
                                     <Text style={styles.text}>{hole.num}</Text>
@@ -69,6 +72,7 @@ const CourseScoreCard: React.FC<CourseScoreCardProps> = ({ holes }) => {
                                     <Text style={styles.text}>{hole.yardage}</Text>
                                     <Text style={styles.textYrd}>yrds</Text>
                                 </View>
+                                
                             </View>
                             <Seperator />
                         </View>
