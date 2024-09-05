@@ -127,7 +127,7 @@ const CourseStats = () => {
 
         switch (viewSelection) {
             case 0:
-                return <CourseStatView AllStats={allStatTotals} Subjective={shotTotals} ShotTimeline={timelineScores} />
+                return <CourseStatView AllStats={allStatTotals} ShotTimeline={timelineScores} />
             case 1:
                 return <HoleStats2 data={courseHoleData} />
             // case 2:
@@ -164,24 +164,33 @@ const CourseStats = () => {
              */}
         </View>)
     }
-
+   
     return (
         <ScrollView>
             <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} /> 
         
 <ColorSeperator />
-            <View style={{}}>
-                {/* <Text style={{ textAlign: 'center' }}>{`${String(courseName)} ${TeeColors[Number(teeColor1)]} ${Number(teeColor2) > 0 ? TeeColors[Number(teeColor2)] : ''}`}</Text> */}
+<View style={{flex:1,height:'100%', backgroundColor:'#222'}}>
+               {(timelineScores.length < 1)
+               ? 
+               <View style={{height:'100%', justifyContent:'center', alignItems:'center'}}>
 
-            </View>
+               <Text style={{margin:30}}>no data.. play a round on this course to view your statistics.</Text>
+               </View>
+               :
+               <>
+
             <TouchableOpacity style={{ backgroundColor: '#111', paddingVertical:0}} onPress={()=>setShowSelection(!showSelection)}>
                 {showSelection
                 ? <DropDown />
                 : <Button title={btnTitle} onPress={()=> setShowSelection(!showSelection)} />
-                }
+            }
             </TouchableOpacity>
             {DisplayView()}
 
+            </>
+        }
+            </View>
         </ScrollView>
     )
 

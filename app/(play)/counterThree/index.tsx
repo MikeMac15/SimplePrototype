@@ -222,6 +222,15 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
           puttGoal={Number(puttGoal)}
         />), [holeNumber, girGoal, firGoal, puttGoal]);
 
+  const memoizedC3Options = useMemo(() => (
+    <C3Options3
+      teeboxHoles={teeboxHoles}
+      roundHoles={roundRef.current.holes}
+      round={roundRef.current}
+      holeNumber={holeNumber}
+    />
+  ), [teeboxHoles]);
+
   const MainView = () => {
     if (isLoading) {
       return <Text>Loading...</Text>;
@@ -254,14 +263,7 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
             />
           </View>
         )}
-        {teeboxHoles && (
-          <C3Options3
-            teeboxHoles={teeboxHoles}
-            roundHoles={roundRef.current.holes}
-            round={roundRef.current}
-            holeNumber={holeNumber}
-          />
-        )}
+        {teeboxHoles && memoizedC3Options}
         <View style={{height:'50%', justifyContent:'center'}}>
         <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
           <VerticalCheckBoxes
@@ -343,12 +345,43 @@ return (
   {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
   <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
     {Marquee}
-    {isLoading
+    {isLoading || !teeboxHoles.length || !currentHoleData
     ? <Text>Loading...</Text>
     :
     <>
-    {/* <Carousel /> */}
-    <MainView />
+    <View style={{  height:'100%', justifyContent:'flex-start', marginTop:10}}>
+        {currentHoleData && (
+          <View>
+            <C3Header3
+              courseName={''}
+              holeData={currentHoleData}
+              shotColors={state.shotColors}
+              getTotalShots={getTotalShots}
+              shotData={state.shotData}
+              allShotData={getAllShotData()}
+            />
+          </View>
+        )}
+        {teeboxHoles && memoizedC3Options}
+        <View style={{height:'50%', justifyContent:'center'}}>
+        <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+          <VerticalCheckBoxes
+            hole={currentHoleData}
+            gir={state.gir}
+            setGir={setGir}
+            fir={state.fir}
+            setFir={setFir}
+          />
+          <VerticalBtns3
+            addShot={addShot}
+            subtractShot={subtractShot}
+            shotData={state.shotData}
+            addShotColor={addShotColor}
+            subShotColor={subShotColor}
+          />
+        </View>
+        </View>
+      </View>
     </>
   }
   </LinearGradient>

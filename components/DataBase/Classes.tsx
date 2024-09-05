@@ -510,3 +510,17 @@ export type ClubName =
 export const clubNames: ClubName[] = [
     'Driver', '3w', '5w', '7w', '3hyb', '4hyb', '5hyb', '7hyb', '1i', '2i', '3i', '4i', '5i', '6i', '7i', '8i', '9i', 'Pw', 'Gw', 'Sw', 'Lw'
 ];
+
+export interface HoleStatsExtra {
+  id :number,
+  hole_id :number,
+  round_id :number,
+  putts :number,
+  great :number,
+  good :number,
+  bad :number,
+  GIR :number,
+  FIR :number,
+  toPar:number, 
+  strat:number
+}

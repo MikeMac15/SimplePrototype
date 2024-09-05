@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native"
+import { Dimensions, Text, View } from "react-native"
 import { LineChart } from "react-native-gifted-charts";
 
 
@@ -7,13 +7,13 @@ import { LineChart } from "react-native-gifted-charts";
 const Timeline = ({data1}:{data1:number[]}) => {
     const [sections,setSections] = useState(4)
     const [stepValue,setStepValue] = useState(30)
-   
+    const width = Dimensions.get('window').width;
         
         
         const xAxis: string[] = []
         data1.map((value)=>(xAxis.push((String(value)))))
         return (
-            <View style={{}}>
+            <View style={{width:'100%'}}>
         {/* <Text style={{color:'whitesmoke', fontSize:20, textAlign:'center', marginVertical:10}}>Scoring Timeline</Text> */}
         <LineChart
         areaChart
@@ -26,7 +26,7 @@ const Timeline = ({data1}:{data1:number[]}) => {
         endOpacity={0.3}
         stepValue={stepValue}
         stepHeight={30}
-        
+        width={width * .8}
         scrollToEnd
         curved
         noOfSections={sections}

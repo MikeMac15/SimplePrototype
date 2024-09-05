@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { Course, Teebox, Hole, Round, HoleStats, MostRecentRound, TimelineStats, AllStats, CourseHoleData, HoleInsights } from './Classes';
+import { Course, Teebox, Hole, Round, HoleStats, MostRecentRound, TimelineStats, AllStats, CourseHoleData, HoleInsights, HoleStatsExtra } from './Classes';
 
 
 export const openDb = async() => {
@@ -309,7 +309,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
                 FROM round
                 JOIN teebox ON teebox.id = round.teebox_id
                 JOIN course ON course.id = teebox.course_id
-                ORDER BY round.date DESC;
+                ORDER BY round.date DESC, round.id DESC;
             `);
     
             // Map the result to the RecentRoundTitleInfo type
@@ -345,7 +345,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
                 FROM round
                 JOIN teebox ON teebox.id = round.teebox_id
                 JOIN course ON course.id = teebox.course_id
-                ORDER BY round.date DESC
+                ORDER BY round.date DESC, round.id DESC
                 LIMIT 5;
             `);
     
@@ -380,7 +380,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
            FROM round
            JOIN teebox ON teebox.id = round.teebox_id
            JOIN course ON course.id = teebox.course_id
-           ORDER BY round.date DESC
+           ORDER BY round.date DESC, round.id DESC
            LIMIT 1;`
         );
       
@@ -432,10 +432,10 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
         }
       };
 
-      export const getAllRoundHoles = async (round_id: number): Promise<HoleStats[] | undefined> => {
+      export const getAllRoundHoles = async (round_id: number): Promise<HoleStatsExtra[] | undefined> => {
         try {
         const db = await openDb();
-        const holes: HoleStats[] = await db.getAllAsync('SELECT * FROM holestats WHERE round_id = $roundID',{$roundID : round_id});
+        const holes: HoleStatsExtra[] = await db.getAllAsync('SELECT * FROM holestats WHERE round_id = $roundID',{$roundID : round_id});
         
         return holes
         }

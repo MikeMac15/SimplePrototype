@@ -55,6 +55,10 @@ export const getMenuImageSource = (menuImage: string) => {
       return require('../assets/images/retro4.png');
     case 'nasaJW':
       return require('../assets/images/nasaJW1.png');
+    case 'palms':
+      return require('../assets/images/palms.png');
+    case 'balls':
+      return require('../assets/images/balls1.png');
     default:
       return require('../assets/images/ggwp.png');
     }
@@ -68,8 +72,14 @@ export const getMenuImageSource = (menuImage: string) => {
         return require('../assets/images/retro-ribbon.png');
       case 'nasaJW':
         return require('../assets/images/jw2-ribbon.png');
+      case 'meadow':
+        return require('../assets/images/meadow.png');
+      case 'metal':
+        return require('../assets/images/metal.png');
+      case 'balls':
+        return require('../assets/images/balls.png');
       default:
-        return require('../assets/images/ggwp.png');
+        return require('../assets/images/metal.png');
     }
   };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

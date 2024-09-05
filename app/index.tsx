@@ -59,21 +59,22 @@ export default function Index() {
 
 
 
-  const MenuLink = ({ hurl, title }: { hurl: string, title: string }) => {
+  // const MenuLink = ({ hurl, title }: { hurl: string, title: string }) => {
+  const MenuLink = ({ title }: { title: string }) => {
 
 
     return (
       <View style={{ transform: 'scale(.95)' }}>
 
-        <Link href={hurl} asChild>
+        {/* <Link href={hurl} asChild> */}
 
-          <TouchableOpacity activeOpacity={0.6}>
-            <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+        <TouchableOpacity activeOpacity={0.6}>
+          <LinearGradient colors={['#444', '#222']} style={styles.Links}>
 
-              <Text style={styles.LinkText}>{title}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </Link>
+            <Text style={styles.LinkText}>{title}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+        {/* </Link> */}
       </View>
     )
   }
@@ -107,43 +108,16 @@ export default function Index() {
         ),
       }} />
 
-      <View style={{ justifyContent: 'center', alignItems: 'center', height:150  }}>
+      <View style={{ justifyContent: 'center', alignItems: 'center', height: 150 }}>
 
-      {/* <View style={{ backgroundColor:'rgba(0,0,0,0.6)', borderRadius:20 }}> */}
+        {/* <View style={{ backgroundColor:'rgba(0,0,0,0.6)', borderRadius:20 }}> */}
         <Image
-resizeMode="cover"
-style={{ width: 300, height: 200 }}
-source={require('../assets/images/logo.png')}
-/>
+          resizeMode="cover"
+          style={{ width: 300, height: 200 }}
+          source={require('../assets/images/logo.png')}
+        />
       </View>
-      {/* </View> */}
 
-
-
-      {/*///////////////////////////////////////////////// Old /////////////////////////////////////////////////¿ */}
-      {/* <View
-          style={{
-            // paddingBottom:50,
-            marginTop:20,
-            justifyContent: "center",
-            flexDirection:'row',
-            alignItems: "center",
-            }}
-            >
-            <View>
-            
-            <MenuLink hurl="(play)" title="Play a Round" />
-            <MenuLink hurl='(myCourses)' title="My Courses"/>
-            </View>
-            <View>
-            
-            <MenuLink hurl='(tabs)' title="Stat Lounge"/>
-            
-            <MenuLink hurl='(settings)' title="Settings"/>
-            </View>
-            
-            
-            </View> */}
 
       <View
         style={{
@@ -153,11 +127,55 @@ source={require('../assets/images/logo.png')}
           flexDirection: 'row',
           alignItems: "center",
         }}
-        >
+      >
         <View>
-          <MenuLink hurl="(play)" title="Play a Round" />
-          <MenuLink hurl='(myCourses)' title="My Courses" />
-          <MenuLink hurl='(tabs)' title="Stat Lounge" />
+
+
+
+
+          <View style={{ transform: 'scale(.95)' }}>
+
+            <Link href={'/(play)'} asChild>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+
+                  <Text style={styles.LinkText}>{"Play A Round"}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Link>
+          </View>
+
+          <View style={{ transform: 'scale(.95)' }}>
+
+            <Link href={'/(myCourses)'} asChild>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+
+                  <Text style={styles.LinkText}>{"My Courses"}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Link>
+          </View>
+
+          <View style={{ transform: 'scale(.95)' }}>
+
+            <Link href={'/(tabs)'} asChild>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+
+                  <Text style={styles.LinkText}>{"Statistics"}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Link>
+          </View>
+
+
+   
+        
+
         </View>
       </View>
 
@@ -165,7 +183,7 @@ source={require('../assets/images/logo.png')}
 
       <View style={{ height: 200, alignItems: 'center', transform: 'translateY(-30px)' }}>
         <View style={{ transform: 'scaleY(0.75)' }}>
-  
+
 
 
           <HomeRecentRound />

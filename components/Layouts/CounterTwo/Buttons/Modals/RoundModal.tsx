@@ -18,10 +18,22 @@ export const RoundView = ({round}:{round:Round}) => {
             }
         }
     }
-    
-    return (<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
-        <View>
+    const HoleTitle = () => {
+        return (
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#222', paddingVertical: 3}}>
+            <Text style={{ color: 'whitesmoke', fontSize: 20, fontFamily: 'papyrus' }}>Round Insights</Text>
+    
+          </View>
+        );
+      }
+    
+    return (
+    
+    
+    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+       
         {/* <View style={{width:350, paddingRight:0, transform:'scaleX(.8)'}}>
             {data.length > 2
             ?
@@ -41,32 +53,40 @@ export const RoundView = ({round}:{round:Round}) => {
             :''
         }
         </View> */}
-        </View>
+      
+            <View>
 
+            
+        <HoleTitle />
 
         <View style={{ flexDirection: 'row', marginVertical:10 }}>
             
             <View style={styles.leftStatFull}>
+                
+                <View style={{marginBottom:20, justifyContent:'center', alignItems:'center'}}>
+                    <Text style={styles.rightStatLabel}>To Par</Text>
+                    <Text style={[styles.rightStatNum]}>{round.toPar > 0 ? '+': ''}{round.toPar}</Text>
+                </View>
+                <View style={{marginBottom:20, justifyContent:'center', alignItems:'center'}}>
+                    <Text style={styles.rightStatLabel}>Strokes</Text>
+                    <Text style={[styles.rightStatNum]}>{round.totalStrokes}</Text>
+                </View>
 
+                <View style={{marginBottom:20, justifyContent:'center', alignItems:'center'}}>
+                    <Text style={styles.rightStatLabel}>Total Putts</Text>
+                    <Text style={[styles.rightStatNum,{color: round.totalPutts > 0 ? 'antiquewhite' : 'whitesmoke'}]}>{round.totalPutts}</Text>
+                </View>
                 <View style={styles.leftStat}>
                     <Text style={styles.rightStatLabel}>Great: </Text>
-                    <Text style={styles.rightStatNum}>{round.great}</Text>
+                    <Text style={[styles.rightStatNum,{color: round.great > 0 ? 'skyblue' : 'whitesmoke'}]}>{round.great}</Text>
                 </View>
                 <View style={styles.leftStat}>
                     <Text style={styles.rightStatLabel}>Good: </Text>
-                    <Text style={styles.rightStatNum}>{round.good}</Text>
+                    <Text style={[styles.rightStatNum,{color: round.good > 0 ? 'yellowgreen' : 'whitesmoke'}]}>{round.good}</Text>
                 </View>
                 <View style={styles.leftStat}>
                     <Text style={styles.rightStatLabel}>Bad: </Text>
-                    <Text style={styles.rightStatNum}>{round.bad}</Text>
-                </View>
-                <View style={styles.leftStat}>
-                    <Text style={styles.rightStatLabel}>Putts: </Text>
-                    <Text style={styles.rightStatNum}>{round.totalPutts}</Text>
-                </View>
-                <View style={styles.leftStat}>
-                    <Text style={styles.rightStatLabel}>Strokes: </Text>
-                    <Text style={styles.rightStatNum}>{round.totalStrokes}</Text>
+                    <Text style={[styles.rightStatNum,{color: round.bad > 0 ? 'salmon' : 'whitesmoke'}]}>{round.bad}</Text>
                 </View>
 
 
@@ -76,18 +96,18 @@ export const RoundView = ({round}:{round:Round}) => {
 
             <View style={{justifyContent:'center', alignItems:'center', width:225}}>
             <View style={styles.circle}>
-                <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar3}</Text>
+                <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar3 > 0 ? '+' : ''}{round.toPar3}</Text>
                 <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 3's</Text>
             </View>
             
             <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
 
             <View style={styles.circle}>
-            <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar4}</Text>
+            <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar4 > 0 ? '+' : ''}{round.toPar4}</Text>
             <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 4's</Text>
             </View>
             <View style={styles.circle}>
-            <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar5}</Text>
+            <Text style={{ fontSize: 40, color: 'whitesmoke' }}>{round.toPar5 > 0 ? '+' : ''}{round.toPar5}</Text>
             <Text style={{ fontSize: 10, color: 'whitesmoke' }}>Par 5's</Text>
             </View>
             </View>
@@ -125,30 +145,31 @@ export const RoundView = ({round}:{round:Round}) => {
         <View style={styles.boxStatFull}>
 
                 <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                    <Text style={styles.boxStatLabel}>Eagles(-): </Text>
-                    <Text style={styles.boxStatNum}>{round.eaglesOless}</Text>
+                    <Text style={[styles.boxStatLabel,{color: round.eaglesOless > 0 ? 'skyblue' : 'whitesmoke'}]}>Eagles(-): </Text>
+                    <Text style={[styles.boxStatNum,{color: round.eaglesOless > 0 ? 'skyblue' : 'whitesmoke'}]}>{round.eaglesOless}</Text>
                 </LinearGradient>
                 <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                    <Text style={styles.boxStatLabel}>Birdies: </Text>
-                    <Text style={styles.boxStatNum}>{round.birdies}</Text>
+                    <Text style={[styles.boxStatLabel,{color: round.birdies > 0 ? 'skyblue' : 'whitesmoke'}]}>Birdies: </Text>
+                    <Text style={[styles.boxStatNum,{color: round.birdies > 0 ? 'skyblue' : 'whitesmoke'}]}>{round.birdies}</Text>
                 </LinearGradient>
                 <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                    <Text style={styles.boxStatLabel}>Pars: </Text>
-                    <Text style={styles.boxStatNum}>{round.pars}</Text>
+                    <Text style={[styles.boxStatLabel,{color: round.pars > 0 ? 'yellowgreen' : 'whitesmoke'}]}>Pars: </Text>
+                    <Text style={[styles.boxStatNum,{color: round.pars > 0 ? 'yellowgreen' : 'whitesmoke'}]}>{round.pars}</Text>
                 </LinearGradient>
                 <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                    <Text style={styles.boxStatLabel}>Bogeys: </Text>
-                    <Text style={styles.boxStatNum}>{round.bogeys}</Text>
+                    <Text style={[styles.boxStatLabel,{color: round.bogeys > 5 ? 'salmon' : 'whitesmoke'}]}>Bogeys: </Text>
+                    <Text style={[styles.boxStatNum,{color: round.bogeys > 5 ? 'salmon' : 'whitesmoke'}]}>{round.bogeys}</Text>
                 </LinearGradient>
                 <LinearGradient colors={['#444','#393939']} style={styles.boxStat}>
-                    <Text style={styles.boxStatLabel}>Dbl(+): </Text>
-                    <Text style={styles.boxStatNum}>{round.doublePlus}</Text>
+                    <Text style={[styles.boxStatLabel,{color: round.doublePlus > 0 ? 'salmon' : 'whitesmoke'}]}>Dbl(+): </Text>
+                    <Text style={[styles.boxStatNum,{color: round.doublePlus > 0 ? 'salmon' : 'whitesmoke'}]}>{round.doublePlus}</Text>
                 </LinearGradient>
 
 
             </View>
 
- 
+            </View>
+      
 
     </View>)
 }
@@ -209,7 +230,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         margin: 20,
-
+transform:'scale(.95)',
         borderRadius: 20,
         padding: 20,
         backgroundColor: '#333',

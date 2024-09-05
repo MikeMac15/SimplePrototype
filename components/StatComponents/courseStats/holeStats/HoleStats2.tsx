@@ -139,6 +139,7 @@ export default HoleStats2;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#222',
+        paddingBottom:40
     },
     square: {
         width: 60,

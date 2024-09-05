@@ -72,7 +72,7 @@ export default function Settings() {
             
           }} />
             <Text>Settings</Text>
-        <View style={{flexDirection:'row'}}>
+        <View style={{flexDirection:'row', marginBottom:50}}>
             <View>
                 <Text>Menu Gradient</Text>
                 <Button title="cool-guy" onPress={()=> setGradient('cool-guy')} />
@@ -88,21 +88,26 @@ export default function Settings() {
                 <Button title="sunset" onPress={()=> setMenuImage('sunset')} />
                 <Button title="retro" onPress={()=> setMenuImage('retro')} />
                 <Button title="JamesWebb" onPress={()=> setMenuImage('nasaJW')} />
+                <Button title="palms" onPress={()=> setMenuImage('palms')} />
+                <Button title="balls" onPress={()=> setMenuImage('balls')} />
             </View>
             <View>
                 <Text>Ribbon Image</Text>
                 <Button title="proud-parent" onPress={()=> setRibbonImage('proud-parent')} />
                 <Button title="retro" onPress={()=> setRibbonImage('retro')} />
                 <Button title="JamesWebb" onPress={()=> setRibbonImage('nasaJW')} />
+                <Button title="meadow" onPress={()=> setRibbonImage('meadow')} />
+                <Button title="metal" onPress={()=> setRibbonImage('metal')} />
+                <Button title="balls" onPress={()=> setRibbonImage('balls')} />
             </View>
         </View>
-            <View>
+            {/* <View>
                 <Text>Counter Layout</Text>
                 <Button title="counterV1" onPress={()=>{setCounterLayoutPref('/simpleCounter')}} />
                 <Button title="counterV2" onPress={()=>{setCounterLayoutPref('/counterTwo')}} />
                 <Button title="counterV3" onPress={()=>{setCounterLayoutPref('/counterThree')}} />
                 <Button title="emoji" onPress={()=>{setCounterLayoutPref('/emoji')}} />
-            </View>
+            </View> */}
                 <Button title='Save Preferences' onPress={()=> {storeMenuGradient(); storeMenuImage(); storeRibbonImage();storeCounterLayoutPref();}} />
             {/* <Button title="Delete Database" onPress={() => deleteDb()}/> */}
             {/* <Button title="Delete Most Recent Round" onPress={()=>deleteMostRecentRoundAndHoleStats()} /> */}

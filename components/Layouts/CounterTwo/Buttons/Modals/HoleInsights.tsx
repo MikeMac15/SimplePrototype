@@ -148,7 +148,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
     return (
       <View style={title2 ? { flexDirection: "row", justifyContent: 'center', alignItems: 'center' } : { flexDirection: "row", }}>
         <View style={{ justifyContent: 'center', alignItems: 'center', width: 70 }}>
-          <Text style={StylesInsights.text}>{title}</Text>
+          <Text style={[StylesInsights.text,{textAlign:'center'}]}>{title}</Text>
           {title2 ? <Text style={StylesInsights.text}>{title2}</Text>
             : ''}
         </View>
@@ -160,7 +160,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
   }
   const AllPastHoleStats = () => {
     return (
-      <View style={[StylesInsights.columns, {}]}>
+      <View style={[StylesInsights.columns, {alignItems:'flex-start'}]}>
 
         <PastHoleStats title="Avg" title2="Score" dataStr={`${averageOut(holeInsight.scores).toFixed(1)}`} />
         <PastHoleStats title="Avg" title2="Putts" dataStr={`${averageOut(holeInsight.pph).toFixed(1)}`} />
@@ -345,11 +345,12 @@ const StylesInsights = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
+    transform: 'scale(.90)',
     margin: 20,
 
     borderRadius: 20,
     padding: 20,
-    backgroundColor: '#111',
+    backgroundColor: '#3f3f3f',
 
     alignItems: 'center',
     shadowColor: '#000',

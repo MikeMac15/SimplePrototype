@@ -9,11 +9,12 @@ import { AllStats, ShotData } from "@/components/DataBase/Classes";
 
 interface CourseStatProps {
     AllStats: AllStats,
-    Subjective: ShotData,
+    // Subjective: ShotData,
     ShotTimeline: number[],
 }
 
-const CourseStatView: React.FC<CourseStatProps> = ({AllStats,Subjective,ShotTimeline}) => {
+// const CourseStatView: React.FC<CourseStatProps> = ({AllStats,Subjective,ShotTimeline}) => {
+const CourseStatView: React.FC<CourseStatProps> = ({AllStats,ShotTimeline}) => {
     
     const ParsOrLess = AllStats.eaglesOless + AllStats.birdies + AllStats.pars;
     const BogeysOrWorse = AllStats.bogies + AllStats.doublePlus;

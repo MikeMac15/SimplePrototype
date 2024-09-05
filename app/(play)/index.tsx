@@ -1,6 +1,6 @@
 import { openDb, getAllCourses, createCourse, createTeebox, getAllCourseTeeboxes } from "@/components/DataBase/API"
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, Stack } from "expo-router"
+import { Link, router, Stack } from "expo-router"
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Modal, Pressable, TextInput, Button, ImageBackground, SafeAreaView } from "react-native"
 // import {Picker} from '@react-native-picker/picker';
@@ -109,6 +109,47 @@ export default function Play() {
     const ribbonSource = getRibbonImageSource(ribbonImage);
 
     
+    const PlayBtn = () => {
+      return (
+      <TouchableOpacity
+      disabled={!goodToGo}
+      onPress={() => {
+        if (!goodToGo) {
+          Alert.alert(
+            'Set your goals for the round.',
+            'No goals + No prep = No progress',
+            [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+          );
+        } else {
+          // Use router.push for navigation
+          router.push({
+            pathname: '/(play)/counterThree',
+            params: {
+              courseID: chosenCourse?.id,
+              courseName,
+              teeID,
+              girGoal: gir,
+              puttGoal: putts,
+              firGoal: fir,
+              strokeGoal: strokes,
+            },
+          });
+        }
+      }}
+    >
+      <LinearGradient
+        colors={goodToGo ? ['yellowgreen', 'darkgreen'] : ['#4f4f4f', '#333']}
+        style={[goodToGo ? styles.playBtn : styles.playBtnDisabled, {marginVertical:20}]}
+      >
+        <Text style={{ color: goodToGo ? 'whitesmoke' : '#888' }}>
+          {goodToGo
+            ? `Play ${chosenCourse?.name} ${teeName} tee's`
+            : 'Play'}
+        </Text>
+      </LinearGradient>
+    </TouchableOpacity>
+    )}
+    
     return (
       
       
@@ -201,31 +242,10 @@ export default function Play() {
           ))}
       
       </View>
+      <PlayBtn />
+      </View>
     
-          <View style={styles.buttonContainer}>
-              <LinearGradient colors={goodToGo ? ['yellowgreen','darkgreen'] : ['#4f4f4f', '#333']} style={goodToGo ? styles.playBtn : styles.playBtnDisabled} >
-            <TouchableOpacity 
-              
-              onPress={() => {
-                if (!goodToGo) {
-                  Alert.alert('Set your goals for the round.', 'No goals + No prep = No progress', [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                  ]);
-                }
-              }}
-              >
-
-              {goodToGo ? (
-                <Link push href={{ pathname: counterLayoutPref, params: { courseID: chosenCourse?.id, courseName, teeID, girGoal: gir, puttGoal: putts, firGoal: fir, strokeGoal: strokes } }}>
-                  <Text style={{color:'whitesmoke'}}>Play {chosenCourse?.name} {teeName} tee's</Text>
-                </Link>
-              ) : (
-                <Text>Play</Text>
-              )}
-            </TouchableOpacity>
-            </LinearGradient>
-          </View>
-        </View>
+  
     </SafeAreaView>
     </LinearGradient>
       );
