@@ -1,5 +1,6 @@
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage"
 import { getRibbonImageSource } from "@/constants/Colors"
+import StackOptions from "@/constants/StackOptions"
 // import StackHeader from "@/constants/StackHeader"
 // import StackOptions from "@/constants/StackOptions"
 import { Stack } from "expo-router"

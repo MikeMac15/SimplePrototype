@@ -5,14 +5,17 @@ import CourseStatView from "@/components/StatComponents/courseStats/CourseStatVi
 import HoleStats from "@/components/StatComponents/courseStats/holeStats/HoleStats";
 import HoleStats2 from "@/components/StatComponents/courseStats/holeStats/HoleStats2";
 
-import { teeTextColor, TeeColors, getRibbonImageSource } from "@/constants/Colors";
+import { teeTextColor, TeeColors, getRibbonImageSource, MenuGradients } from "@/constants/Colors";
 import StackHeader from "@/constants/StackHeader";
 import { Picker } from "@react-native-picker/picker";
+import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { Button, Dimensions, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
 
 const CourseStats = () => {
+    const height = Dimensions.get('window').height;
+
     const params = useLocalSearchParams();
     const { teeID, courseName, teeColor1, teeColor2 } = params;
 
@@ -68,6 +71,7 @@ const CourseStats = () => {
         totalPutts: 0,
         avgGIR: 0,
         avgFIR: 0,
+        firEligible: 0,
     });
 
     useEffect(() => {
@@ -93,7 +97,8 @@ const CourseStats = () => {
                     bad: roundStats.bad,
                     totalPutts: roundStats.totalPutts,
                     avgGIR: roundStats.avgGIR,
-                    avgFIR: roundStats.avgFIR
+                    avgFIR: roundStats.avgFIR,
+                    firEligible: roundStats.firEligible,
                 };
                 const Shots = {
                     great: roundStats.great,
@@ -127,9 +132,15 @@ const CourseStats = () => {
 
         switch (viewSelection) {
             case 0:
-                return <CourseStatView AllStats={allStatTotals} ShotTimeline={timelineScores} />
+                return (<ScrollView>
+                    <CourseStatView AllStats={allStatTotals} ShotTimeline={timelineScores} />
+                    </ScrollView>
+                    )
             case 1:
-                return <HoleStats2 data={courseHoleData} />
+                return (
+                <ScrollView>
+                    <HoleStats2 data={courseHoleData} />
+                </ScrollView>)
             // case 2:
             //     return <HoleStats title='Total Score' data={courseHoleData.totalScores} />
             // case 3:
@@ -166,16 +177,16 @@ const CourseStats = () => {
     }
    
     return (
-        <ScrollView>
+<LinearGradient colors={MenuGradients[gradient]} style={{flex:1}}>
+       
             <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} /> 
         
 <ColorSeperator />
-<View style={{flex:1,height:'100%', backgroundColor:'#222'}}>
                {(timelineScores.length < 1)
                ? 
-               <View style={{height:'100%', justifyContent:'center', alignItems:'center'}}>
+               <View style={{height:height, justifyContent:'center', alignItems:'center'}}>
 
-               <Text style={{margin:30}}>no data.. play a round on this course to view your statistics.</Text>
+               <Text style={{margin:30, color: 'whitesmoke'}}>no data.. play a round on this course to view your statistics.</Text>
                </View>
                :
                <>
@@ -190,8 +201,8 @@ const CourseStats = () => {
 
             </>
         }
-            </View>
-        </ScrollView>
+            </LinearGradient>
+      
     )
 
 }

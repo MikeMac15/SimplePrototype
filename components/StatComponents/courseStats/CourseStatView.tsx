@@ -27,7 +27,7 @@ const CourseStatView: React.FC<CourseStatProps> = ({AllStats,ShotTimeline}) => {
         {/* Timeline                                                                                            30                            40 */}
         <Timeline data1={ShotTimeline}/>
         {/* Averages */}
-        <CourseAveragesView avgScore={AllStats.avgStrokes} avgPPR={AllStats.totalPutts/AllStats.count} avgGIR={(AllStats.avgGIR/18)*100} avgFIR={(AllStats.avgFIR/14)*100} count={AllStats.count} best={AllStats.minScore} worst={AllStats.maxScore} />
+        <CourseAveragesView avgScore={AllStats.avgStrokes} avgPPR={AllStats.totalPutts/AllStats.count} avgGIR={(AllStats.avgGIR/18)*100} avgFIR={(AllStats.avgFIR/AllStats.firEligible)*100} count={AllStats.count} best={AllStats.minScore} worst={AllStats.maxScore} />
         {/* ToPar Breakdown */}
         <ToParBreakdown toPar3={AllStats.toPar3} toPar4={AllStats.toPar4} toPar5={AllStats.toPar5} />
    

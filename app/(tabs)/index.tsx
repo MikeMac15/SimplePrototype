@@ -41,6 +41,7 @@ export default function Index() {
         totalPutts: 0,
         avgGIR: 0,
         avgFIR: 0,
+        firEligible: 0,
     });
 
     const [par3Data, setPar3Data] = useState<QuickStats>({totalPutts:0,totalGIR:0,totalFIR:0,totalScore:0,avgScore:0,count:0,eaglesOrLess:0,birdies:0,pars:0,bogeys:0,doublePlus:0})
@@ -157,34 +158,36 @@ export default function Index() {
 
     const fetchRoundData = useCallback(async () => {
         try {
-            const [roundStats, timelineScoreArray] = await Promise.all([getRoundAllStats(), getTimelineScores()]);
-            const totals = {
-                count: roundStats.count,
-                minScore: roundStats.minScore,
-                maxScore: roundStats.maxScore,
-                avgStrokes: roundStats.avgStrokes,
-                eaglesOless: roundStats.eaglesOless,
-                birdies: roundStats.birdies,
-                pars: roundStats.pars,
-                bogies: roundStats.bogies,
-                doublePlus: roundStats.doublePlus,
-                toPar3: roundStats.toPar3,
-                toPar4: roundStats.toPar4,
-                toPar5: roundStats.toPar5,
-                great: roundStats.great,
-                good: roundStats.good,
-                bad: roundStats.bad,
-                totalPutts: roundStats.totalPutts,
-                avgGIR: roundStats.avgGIR,
-                avgFIR: roundStats.avgFIR,
-            };
-            setShotTotals({ great: roundStats.great, good: roundStats.good, bad: roundStats.bad, totalPutts: roundStats.totalPutts });
-            setRoundStatTotals(totals);
-            setTimelineScores(timelineScoreArray);
+          const [roundStats, timelineScoreArray] = await Promise.all([getRoundAllStats(), getTimelineScores()]);
+          const totals = {
+            count: roundStats.count,
+            minScore: roundStats.minScore,
+            maxScore: roundStats.maxScore,
+            avgStrokes: roundStats.avgStrokes,
+            eaglesOless: roundStats.eaglesOless,
+            birdies: roundStats.birdies,
+            pars: roundStats.pars,
+            bogies: roundStats.bogies,
+            doublePlus: roundStats.doublePlus,
+            toPar3: roundStats.toPar3,
+            toPar4: roundStats.toPar4,
+            toPar5: roundStats.toPar5,
+            great: roundStats.great,
+            good: roundStats.good,
+            bad: roundStats.bad,
+            totalPutts: roundStats.totalPutts,
+            avgGIR: roundStats.avgGIR,
+            avgFIR: roundStats.avgFIR,
+            firEligible: roundStats.firEligible, // Add this line
+          };
+          setShotTotals({ great: roundStats.great, good: roundStats.good, bad: roundStats.bad, totalPutts: roundStats.totalPutts });
+          setRoundStatTotals(totals);
+          setTimelineScores(timelineScoreArray);
         } catch (error) {
-            console.error('Error fetching round data:', error);
+          console.error('Error fetching round data:', error);
         }
-    }, []);
+      }, []);
+      
 
     useEffect(() => {
         getPreferences();
@@ -217,7 +220,7 @@ export default function Index() {
                                 worst={roundStatTotals.maxScore}
                                 avgScore={roundStatTotals.avgStrokes}
                                 avgGIR={(roundStatTotals.avgGIR / 18) * 100}
-                                avgFIR={(roundStatTotals.avgFIR / 14) * 100}
+                                avgFIR={(roundStatTotals.avgFIR / roundStatTotals.firEligible) * 100}
                                 avgPPR={roundStatTotals.totalPutts / roundStatTotals.count}
                                 count={roundStatTotals.count}
                             />

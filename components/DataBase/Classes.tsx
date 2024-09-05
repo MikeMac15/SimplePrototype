@@ -466,6 +466,7 @@ export interface AllStats {
   totalPutts: number,
   avgGIR: number,
   avgFIR: number,
+  firEligible: number
 }
 
 export interface TimelineStats {

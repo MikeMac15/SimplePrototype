@@ -491,60 +491,109 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
     export async function getRoundAllStats(): Promise<AllStats> {
         const db = await openDb();
         const data: AllStats | null = await db.getFirstAsync(
-            `SELECT count(*) as count, min(totalStrokes) as minScore, max(totalStrokes) as maxScore, avg(totalStrokes) as avgStrokes, sum(pars) as pars, sum(birdies) as birdies, sum(bogies) as bogies, sum(doublePlus) as doublePlus, sum(eaglesOless) as eaglesOless, avg(toPar3) as toPar3, avg(toPar4) as toPar4, avg(toPar5) as toPar5, sum(great) as great, sum(good) as good, sum(bad) as bad, sum(totalPutts) as totalPutts, avg(totalGIR) as avgGIR, avg(totalFIR) as avgFIR FROM round;`);
-        let totals:AllStats = {
-            count: 0,
-            minScore: 0,
-            maxScore: 0,
-            avgStrokes: 0,
-            eaglesOless: 0,
-            birdies: 0,
-            pars: 0,
-            bogies: 0,
-            doublePlus: 0,
-            toPar3: 0,
-            toPar4: 0,
-            toPar5: 0,
-            great: 0,
-            good: 0,
-            bad: 0,
-            totalPutts: 0,
-            avgGIR: 0,
-            avgFIR: 0,
-
+          ` SELECT 
+                COUNT(*) AS count, 
+                MIN(totalStrokes) AS minScore, 
+                MAX(totalStrokes) AS maxScore, 
+                AVG(totalStrokes) AS avgStrokes, 
+                SUM(pars) AS pars, 
+                SUM(birdies) AS birdies, 
+                SUM(bogies) AS bogies, 
+                SUM(doublePlus) AS doublePlus, 
+                SUM(eaglesOless) AS eaglesOless, 
+                AVG(toPar3) AS avgToPar3, 
+                AVG(toPar4) AS avgToPar4, 
+                AVG(toPar5) AS avgToPar5, 
+                SUM(great) AS great, 
+                SUM(good) AS good, 
+                SUM(bad) AS bad, 
+                SUM(totalPutts) AS totalPutts, 
+                AVG(totalGIR) AS avgGIR, 
+                AVG(totalFIR) AS avgFIR, 
+                (SELECT COUNT(par) 
+                FROM hole 
+                WHERE par > 3 
+                AND teebox_id = (SELECT teebox_id FROM round LIMIT 1)
+                ) AS firEligible
+            FROM round;`
+        );
+        let totals: AllStats = {
+          count: 0,
+          minScore: 0,
+          maxScore: 0,
+          avgStrokes: 0,
+          eaglesOless: 0,
+          birdies: 0,
+          pars: 0,
+          bogies: 0,
+          doublePlus: 0,
+          toPar3: 0,
+          toPar4: 0,
+          toPar5: 0,
+          great: 0,
+          good: 0,
+          bad: 0,
+          totalPutts: 0,
+          avgGIR: 0,
+          avgFIR: 0,
+          firEligible: 0, // Add this line
         };
-
+      
         if (data) {
-            totals = {
-                count: data.count,
-                minScore: data.minScore,
-                maxScore: data.maxScore,
-                avgStrokes: data.avgStrokes,
-                eaglesOless: data.eaglesOless,
-                birdies: data.birdies,
-                pars: data.pars,
-                bogies: data.bogies,
-                doublePlus: data.doublePlus,
-                toPar3: data.toPar3,
-                toPar4: data.toPar4,
-                toPar5: data.toPar5,
-                great: data.great,
-                good: data.good,
-                bad: data.bad,
-                totalPutts: data.totalPutts,
-                avgGIR: data.avgGIR,
-                avgFIR: data.avgFIR
-            };
+          totals = {
+            count: data.count,
+            minScore: data.minScore,
+            maxScore: data.maxScore,
+            avgStrokes: data.avgStrokes,
+            eaglesOless: data.eaglesOless,
+            birdies: data.birdies,
+            pars: data.pars,
+            bogies: data.bogies,
+            doublePlus: data.doublePlus,
+            toPar3: data.toPar3,
+            toPar4: data.toPar4,
+            toPar5: data.toPar5,
+            great: data.great,
+            good: data.good,
+            bad: data.bad,
+            totalPutts: data.totalPutts,
+            avgGIR: data.avgGIR,
+            avgFIR: data.avgFIR,
+            firEligible: data.firEligible,
+          };
         }
-
-        return totals
-
-    }
+      
+        return totals;
+      }
+      
 
     export async function getTeeAllStats(teebox_id:number): Promise<AllStats> {
         const db = await openDb();
         const data: AllStats | null = await db.getFirstAsync(
-            'SELECT count(*) as count, min(totalStrokes) as minScore, max(totalStrokes) as maxScore, avg(totalStrokes) as avgStrokes, sum(pars) as pars, sum(birdies) as birdies, sum(bogies) as bogies, sum(doublePlus) as doublePlus, sum(eaglesOless) as eaglesOless, avg(toPar3) as toPar3, avg(toPar4) as toPar4, avg(toPar5) as toPar5, sum(great) as great, sum(good) as good, sum(bad) as bad, sum(totalPutts) as totalPutts, avg(totalGIR) as avgGIR, avg(totalFIR) as avgFIR FROM round WHERE teebox_id = $teeboxID',{$teeboxID : teebox_id});
+            `SELECT count(*) as count, 
+                min(totalStrokes) as minScore, 
+                max(totalStrokes) as maxScore, 
+                avg(totalStrokes) as avgStrokes, 
+                sum(pars) as pars, 
+                sum(birdies) as birdies, 
+                sum(bogies) as bogies, 
+                sum(doublePlus) as doublePlus, 
+                sum(eaglesOless) as eaglesOless, 
+                avg(toPar3) as toPar3, 
+                avg(toPar4) as toPar4, 
+                avg(toPar5) as toPar5, 
+                sum(great) as great, 
+                sum(good) as good, 
+                sum(bad) as bad, 
+                sum(totalPutts) as totalPutts, 
+                avg(totalGIR) as avgGIR, 
+                avg(totalFIR) as avgFIR,
+                (SELECT COUNT(par) 
+                FROM hole 
+                WHERE par > 3 
+                AND teebox_id = $teeboxID
+                ) AS firEligible
+            FROM round WHERE teebox_id = $teeboxID`,{$teeboxID : teebox_id});
         let totals:AllStats = {
             count: 0,
             minScore: 0,
@@ -564,7 +613,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             totalPutts: 0,
             avgGIR: 0,
             avgFIR: 0,
-
+            firEligible: 0,
         };
 
         if (data) {
@@ -586,7 +635,8 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
                 bad: data.bad,
                 totalPutts: data.totalPutts,
                 avgGIR: data.avgGIR,
-                avgFIR: data.avgFIR
+                avgFIR: data.avgFIR,
+                firEligible: data.firEligible,
             };
         }
 

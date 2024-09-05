@@ -10,6 +10,7 @@ import { MenuGradients, TeeColors, getRibbonImageSource } from "@/constants/Colo
 import { Course, CourseAndTees, Teebox } from "@/components/DataBase/Classes";
 import { getCounterLayoutPref, getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import StackHeader from "@/constants/StackHeader";
+import StackOptions from "@/constants/StackOptions";
 
 
 
@@ -154,21 +155,11 @@ export default function Play() {
       
       
       <LinearGradient colors={MenuGradients[gradient]} >
+       
             <SafeAreaView>
         <View style={styles.container}>
           {/* <StackHeader image={ribbonSource} imageTag={`${ribbonImage}`} title="Round Setup" /> */}
-          {/* <Stack.Screen options={{
-            title: 'Round Setup',
-            headerBackTitle: "Menu",
-            headerBackground: () => (
-              <ImageBackground
-              source={ribbonSource}
-              style={StyleSheet.absoluteFill}
-              />
-            ),
-            headerTitleStyle: { color:'#444', fontSize: 25, fontWeight: '800', },
-            headerTintColor:'#444'
-          }} /> */}
+          <Stack.Screen options={StackOptions({image:ribbonSource, imageTag:ribbonImage, title:'Round Setup'})} />
     
           <LinearGradient colors={['#4f4f4f', '#333']} style={styles.gradient}>
           <Picker

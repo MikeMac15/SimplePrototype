@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, router, useFocusEffect } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import { getCounterLayoutPref, getMenuGradient, getMenuImage, getRibbonImage } from "@/components/DataBase/localStorage";
+import StackOptions from "@/constants/StackOptions";
+import StackHeader from "@/constants/StackHeader";
 
 
 
@@ -59,18 +61,11 @@ export default function Settings() {
         setUserPreferences();
     },[])
 
+    const image = getRibbonImageSource(ribbonImage);
 
     return (
         <LinearGradient colors={MenuGradients[gradient]} style={{height:'100%'}}>
-            <Stack.Screen options={{
-            title: 'Settings',
-            headerBackTitle:'Menu',
-            headerBackground: ()=>(
-                <ImageBackground source={getRibbonImageSource(ribbonImage)} style={[StyleSheet.absoluteFill,{flex:1}]}/>
-            ),
-            headerTitleStyle: { fontSize: 25, fontWeight: '800', },
-            
-          }} />
+            <StackHeader title="Settings" image={image} imageTag={ribbonImage}/>
             <Text>Settings</Text>
         <View style={{flexDirection:'row', marginBottom:50}}>
             <View>
