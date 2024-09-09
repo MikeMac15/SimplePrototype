@@ -174,43 +174,29 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 
 
 
-  const exitAlert = () => {
-    Alert.alert(
-      "Exit Confirmation",
-      "Are you sure you want to exit? \n This will delete all shot data.",
-      [
-        {
-          text: "Cancel",
 
-        },
-        { text: "OK", onPress: () => router.dismissAll() }
-      ],
-      { cancelable: false }
-    );
-  };
-
-  const StackScreen = () => {
-    return (
-      <Stack.Screen
-        options={{
-          gestureEnabled: false,
-          title: `${courseName}`,
-          headerStyle: { backgroundColor: "#444" },
-          headerTitleStyle: { color: 'whitesmoke', fontSize: 20, fontWeight: '800', fontFamily: 'Papyrus' },
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => exitAlert()} >
-              <Text style={{ color: 'salmon', }}>Exit</Text>
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            Object.keys(roundRef.current.holes).length == 17
-              ? <Button title='Finish' onPress={() => lastHole()} />
-              : <Button title='Next >' onPress={() => nextHole()} />
-            ),
-          }}
-          />
-        );
-      };
+  // const StackScreen = () => {
+  //   return (
+  //     <Stack.Screen
+  //       options={{
+  //         gestureEnabled: false,
+  //         title: `${courseName}`,
+  //         headerStyle: { backgroundColor: "#444" },
+  //         headerTitleStyle: { color: 'whitesmoke', fontSize: 20, fontWeight: '800', fontFamily: 'Papyrus' },
+  //         headerLeft: () => (
+  //           <TouchableOpacity onPress={() => exitAlert()} >
+  //             <Text style={{ color: 'salmon', }}>Exit</Text>
+  //           </TouchableOpacity>
+  //         ),
+  //         headerRight: () => (
+  //           Object.keys(roundRef.current.holes).length == 17
+  //             ? <Button title='Finish' onPress={() => lastHole()} />
+  //             : <Button title='Next >' onPress={() => nextHole()} />
+  //           ),
+  //         }}
+  //         />
+  //       );
+  //     };
 
   ////////////////////////////////////////// Main View ////////////////////////////////////
   const Marquee = useMemo(() => (
@@ -229,7 +215,7 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
       round={roundRef.current}
       holeNumber={holeNumber}
     />
-  ), [teeboxHoles]);
+  ), [teeboxHoles, holeNumber]);
 
   const MainView = () => {
     if (isLoading) {

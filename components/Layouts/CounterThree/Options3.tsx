@@ -102,34 +102,39 @@ const C3Options3: React.FC<OptionsProps> = ({ teeboxHoles, roundHoles, round, ho
     );
   };
 
-  const [height] = useState(new Animated.Value(0)); // Initialize height as 0
-  const animationDuration = 300; // Animation duration in milliseconds
-  const [isVisible, setIsVisible] = useState(false);
+  // const [height] = useState(new Animated.Value(0)); // Initialize height as 0
+  // const animationDuration = 300; // Animation duration in milliseconds
+  // const [isVisible, setIsVisible] = useState(true);
   
-  useEffect(() => {
-    Animated.timing(height, {
-      toValue: isVisible ? 55 : 0, // Target height: 55 when visible, 0 when hidden
-      duration: animationDuration,
-      useNativeDriver: false, // Set to false because height is a non-transform property
-    }).start();
-  }, [isVisible, height]);
+  // useEffect(() => {
+  //   Animated.timing(height, {
+  //     toValue: isVisible ? 55 : 0, // Target height: 55 when visible, 0 when hidden
+  //     duration: animationDuration,
+  //     useNativeDriver: false, // Set to false because height is a non-transform property
+  //   }).start();
+  // }, [isVisible, height]);
 
+  
   return (
-    <View style={{ width: '115%', flexDirection: 'row', alignItems: 'center' }}>
-      <TouchableOpacity style={{ marginLeft: 20, marginVertical: 5 }} onPress={() => setIsVisible(!isVisible)}>
+    // <View style={{ width: '115%', flexDirection: 'row', alignItems: 'center' }}>
+    <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}>
+      {/* <TouchableOpacity style={{ marginLeft: 20, marginVertical: 5 }} onPress={() => setIsVisible(!isVisible)}>
         {isVisible ? (
           <AntDesign name="caretcircleoup" color={'whitesmoke'} size={20} />
         ) : (
           <Ionicons name="caret-down-circle-outline" color={'whitesmoke'} size={20} />
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
-      <Animated.View style={[styles.animatedView, { height }]}>
-        {OptionBtn2('Track Shot', 'track')}
+      {/* <Animated.View style={[styles.animatedView, { height }]}> */}
+      <View style={[styles.animatedView,{width:'100%'}]}>
+        {/* {OptionBtn2('Track Shot', 'track')} */}
+        {OptionBtn2('Scorecard', 'score')}
         {OptionBtn2('HoleHistory', 'dot')}
         {OptionBtn2('RoundStats', 'bar')}
         {OptionBtn2('Exit Round', 'exit')}
-      </Animated.View>
+      </View>
+      {/* </Animated.View> */}
     </View>
   );
 };

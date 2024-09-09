@@ -24,7 +24,7 @@ const DefaultModal: React.FC<DefaultModalProps> = ({modalVisible,setModalVisible
 
                     <Pressable
                       style={[styles.button, styles.buttonCancel, {marginTop: 20}]}
-                      onPress={() => setModalVisible(!modalVisible)}>
+                      onPress={() => setModalVisible(false)}>
                           <Text style={styles.textStyle}>Cancel</Text>
                       </Pressable>
                   </View>

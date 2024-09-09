@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { Course, Teebox, Hole, Round, HoleStats, MostRecentRound, TimelineStats, AllStats, CourseHoleData, HoleInsights, HoleStatsExtra } from './Classes';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 
 export const openDb = async() => {
@@ -79,6 +80,7 @@ export const deleteDb = async() => {
 //         FOREIGN KEY (round_id) REFERENCES round(id)
 //     );`)
 
+    interface id {'id':number}
 export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
     try {
         await db.execAsync(`
@@ -93,7 +95,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             course_id INTEGER NOT NULL,
             color1 INTEGER NOT NULL,
             color2 INTEGER NOT NULL,
-            FOREIGN KEY (course_id) REFERENCES course(id)
+            FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE
         );
         CREATE TABLE IF NOT EXISTS hole (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -102,7 +104,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             num INTEGER NOT NULL,
             par INTEGER NOT NULL,
             yardage INTEGER NOT NULL,
-            FOREIGN KEY (teebox_id) REFERENCES teebox(id)
+            FOREIGN KEY (teebox_id) REFERENCES teebox(id) ON DELETE CASCADE
         );
         CREATE TABLE IF NOT EXISTS round (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -125,7 +127,7 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             toPar4 INTEGER NOT NULL,
             toPar5 INTEGER NOT NULL,
             eighteen BOOLEAN NOT NULL,
-            FOREIGN KEY (teebox_id) REFERENCES teebox(id)
+            FOREIGN KEY (teebox_id) REFERENCES teebox(id) ON DELETE CASCADE
         );
         CREATE TABLE IF NOT EXISTS holestats (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -137,8 +139,8 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             FIR_ELIGIBLE BOOLEAN NOT NULL, 
             toPar INTEGER NOT NULL,
             strat INTEGER NOT NULL,
-            FOREIGN KEY (hole_id) REFERENCES hole(id),
-            FOREIGN KEY (round_id) REFERENCES round(id)
+            FOREIGN KEY (hole_id) REFERENCES hole(id) ON DELETE CASCADE,
+            FOREIGN KEY (round_id) REFERENCES round(id) ON DELETE CASCADE
         );
         CREATE TABLE IF NOT EXISTS clubs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -150,11 +152,63 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             distance INTEGER NOT NULL,
             contact TEXT CHECK(contact IN ('great', 'good', 'bad', 'shank')) NOT NULL,
             wind BOOLEAN NOT NULL,
-            FOREIGN KEY (club_id) REFERENCES clubs(id));`)
+            FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE CASCADE);
+        `)
         
-    }  catch (error) {
-        console.error("Error setting up tables:", error);
+            const result = await db.getFirstAsync(`SELECT id FROM course WHERE name = 'Just Play'`);
+
+            if (!result) {
+                // Insert course
+                await db.execAsync(`
+                INSERT INTO course (name) VALUES ('Just Play');
+                `);
+        
+                // Get the new course ID
+                const courseId:number|null = await getJustPlayCourse();
+                
+                // Insert teebox for the course
+                if (courseId) {
+                const newTee = await db.runAsync('INSERT INTO teebox (course_id, color1, color2) VALUES (?,?,?)', courseId, 8, 0)
+                // Get the new teebox ID
+               const teeId = newTee.lastInsertRowId; 
+               
+    
+                // Insert holes
+                await db.execAsync(`
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${teeId}, 8, 1, 3, 0);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${teeId}, 8, 2, 4, 0);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${teeId}, 8, 3, 5, 0);
+                `);
+            }}
+        } catch (error) {
+            console.error("Error setting up tables:", error);
+        }
     }
+    export const getJustPlayCourse = async (): Promise<number|null> => {
+        try {
+            const db = await openDb();
+            const result:id|null = await db.getFirstAsync(`SELECT id FROM course WHERE name = 'Just Play'`);
+            if (result) {
+                return result.id;
+            }
+                return null;
+            
+        } catch (error) {
+            console.error('Error fetching course:', error);
+            throw error;
+        }   
+    }
+
+
+    export const DeleteCourse = async (courseID: number) => {
+        try {
+            const db = await openDb();
+            await db.runAsync('DELETE FROM course WHERE id = $courseID', { $courseID: courseID });
+            console.log('Deleted course');
+        } catch (error) {
+            console.error('Error deleting course:', error);
+            throw error;
+        }
     }
     
     export const getAllCourses = async (): Promise<Course[]> => {

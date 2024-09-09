@@ -93,6 +93,7 @@ export const TeeColors: { [key: number]: string } = {
   5: 'Gold',
   6: 'Silver',
   7: 'Green',
+  8: 'Antiquewhite',
 }
 
 export const teeTextColor = (color:number) : string => {
@@ -117,6 +118,9 @@ export const teeTextColor = (color:number) : string => {
     
     case 7:
       return 'yellowgreen';
+    
+    case 8:
+      return 'antiquewhite';
         
     default:
       return 'grey'

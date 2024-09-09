@@ -25,6 +25,7 @@ const PlayLayout: React.FC = () => {
             
             {/* <Stack.Screen name="index" options={StackOptions({ image, imageTag: ribbonImage, title: "Simple Counter" })} /> */}
             <Stack.Screen name="counterThree/index" options={{ headerShown: false }} />
+            
             {/* <Stack.Screen name="counterTwo/index" options={{ headerShown: false }} />
             <Stack.Screen name="emoji/index" options={{ headerShown: false }} />
             <Stack.Screen name="simpleCounter/index" options={{ headerShown: false }} /> */}

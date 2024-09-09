@@ -12,7 +12,7 @@ interface ModalProps {
     round: Round;
   }
 
-const ScoreModal3: React.FC<ModalProps> = ({modalVisible, setModalVisible, teeboxHoles, roundHoles, holeNumber, round}) => {
+const ScoreModal3: React.FC<ModalProps> = ({modalVisible, setModalVisible, teeboxHoles, holeNumber, round}) => {
 
 
     return(

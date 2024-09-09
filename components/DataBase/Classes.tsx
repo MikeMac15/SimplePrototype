@@ -303,6 +303,47 @@ export class Round {
         console.error('Error saving round and hole stats:', error);
       }
     }
+    async saveRoundAndHoleStatsEarlyQuit(this: Round) : Promise<void> {
+      
+      try {
+        const roundId: number = await saveFullRound(
+          this.teebox_id,
+          this.totalStrokes,
+          this.totalPutts,
+          this.great,
+          this.good,
+          this.bad,
+          this.totalGIR,
+          this.totalFIR,
+          this.eaglesOless,
+          this.birdies,
+          this.pars,
+          this.bogeys,
+          this.doublePlus,
+          this.toPar,
+          this.toPar3,
+          this.toPar4,
+          this.toPar5,
+          false,
+        );
+  
+        for (const key in this.holes) {
+          const holeStat = this.holes[key];
+          await saveHoleStats(
+            holeStat.hole.id,
+            roundId,
+            holeStat.putts,
+            holeStat.gir,
+            holeStat.fir,
+            holeStat.hole.par === 3 ? true : false, /// FIR_ELI
+            holeStat.toPar,
+            holeStat.strat ? holeStat.strat : 0 /// if no strat chosen
+          );
+        }
+      } catch (error) {
+        console.error('Error saving round and hole stats:', error);
+      }
+    }
   }
 
 

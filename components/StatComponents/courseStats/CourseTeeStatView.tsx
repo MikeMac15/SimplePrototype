@@ -12,7 +12,7 @@ import { TeeColors, teeTextColor } from "@/constants/Colors";
 export default function CourseTeeStatView({course}:{course:CourseAndTees}) {
     
     const teeboxes = course.teeboxes;
-    
+    const courseID = course.id;
 
 
 
