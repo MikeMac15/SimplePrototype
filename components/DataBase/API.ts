@@ -301,6 +301,18 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
             return -1; // 
         }
     }
+
+    export const updateHole = async (holeID: number, par: number, yardage: number): Promise<number> => {
+        try {
+            const db = await openDb();
+            const updated = await db.runAsync('UPDATE hole SET par = ?, yardage = ? WHERE id = ?',  par, yardage, holeID);
+            console.log('Updated hole');
+            return updated.lastInsertRowId;
+        } catch (error) {
+            console.error('Error updating hole:', error);
+            throw error;
+        }
+    }
     
     //Rounds and HoleStats
 
@@ -633,9 +645,9 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
                 sum(bogies) as bogies, 
                 sum(doublePlus) as doublePlus, 
                 sum(eaglesOless) as eaglesOless, 
-                avg(toPar3) as toPar3, 
-                avg(toPar4) as toPar4, 
-                avg(toPar5) as toPar5, 
+                sum(toPar3) as toPar3, 
+                sum(toPar4) as toPar4, 
+                sum(toPar5) as toPar5, 
                 sum(great) as great, 
                 sum(good) as good, 
                 sum(bad) as bad, 

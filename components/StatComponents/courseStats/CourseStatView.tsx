@@ -3,7 +3,7 @@ import CourseAveragesView from "./overview/CourseAveragesView";
 import Timeline from "./overview/Timeline";
 import WhoUp from "./overview/WhoUp";
 import { LinearGradient } from "expo-linear-gradient";
-import ToParBreakdown from "./overview/ToParBreakdown";
+import ToParBreakdown2 from "./overview/ToParBreakdown2";
 import ScoringView from "./overview/ScoringView";
 import { AllStats, ShotData } from "@/components/DataBase/Classes";
 
@@ -29,7 +29,7 @@ const CourseStatView: React.FC<CourseStatProps> = ({AllStats,ShotTimeline}) => {
         {/* Averages */}
         <CourseAveragesView avgScore={AllStats.avgStrokes} avgPPR={AllStats.totalPutts/AllStats.count} avgGIR={(AllStats.avgGIR/18)*100} avgFIR={(AllStats.avgFIR/AllStats.firEligible)*100} count={AllStats.count} best={AllStats.minScore} worst={AllStats.maxScore} />
         {/* ToPar Breakdown */}
-        <ToParBreakdown toPar3={AllStats.toPar3} toPar4={AllStats.toPar4} toPar5={AllStats.toPar5} />
+        <ToParBreakdown2 toPar3={AllStats.toPar3} toPar4={AllStats.toPar4} toPar5={AllStats.toPar5} rounds={AllStats.count}/>
    
         {/* Who's Winning? */}
         <WhoUp parOrLess={ParsOrLess} bogeyOrWorse={BogeysOrWorse} />

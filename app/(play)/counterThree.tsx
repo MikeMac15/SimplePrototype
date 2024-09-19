@@ -18,6 +18,9 @@ import { getRibbonImageSource, MenuGradients, TeeColors } from "@/constants/Colo
 import { LinearGradient } from "expo-linear-gradient";
 
 import { initialState, reducer, } from '@/components/DataBase/RoundReducer';
+import StratTags from "@/components/PlayComponents/OGscreens/StratTags";
+import SummaryModal from "@/components/RoundSummary/SummaryModal";
+import useTheme from "@/constants/Theme";
 
 
 
@@ -36,7 +39,7 @@ const CounterThree: React.FC = () => {
   const [teeboxHoles, setTeeboxHoles] = useState<Hole[]>([]);
   const [currentHoleData, setCurrentHoleData] = useState<Hole>();
   const [holeNumber, setHoleNumber] = useState<number>(1);
- 
+  const [summaryModal, setSummaryModal] = useState(false);
 
   const [gradient, setGradient] = useState('OG-Dark');
   const [ribbonImage, setRibbonImage] = useState('proud-parent');
@@ -65,9 +68,9 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 
   
   const roundRef = useRef<Round>(new Round(Number(teeID)));
-  
+  roundRef.current.date = new Date().toLocaleDateString();
   // const [shotColors, setShotColors] = useState<string[]>([]);
-  
+  const theme = useTheme();
   const getTotalShots = () => {
     // return Object.values(shotData).reduce((total, value) => total + value, 0);
     return Object.values(state.shotData).reduce((total: number, value:any) => total + value, 0);
@@ -116,7 +119,7 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
     try {
       await round.saveRoundAndHoleStats();
       Alert.alert('Saved')
-      router.dismissAll()
+      setSummaryModal(true);
     } catch (error) {
       console.error('Error saving round and hole stats:', error);
     }
@@ -124,10 +127,11 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
   const addRoundHole = () => {
     console.log('Adding round hole');
     console.log('State:', state);
+    console.log('Strat:', Number(strategy));
 
     const hole = teeboxHoles.find(hole => hole.num === holeNumber)
     if (hole) {
-      roundRef.current.addRoundHole(hole, state.shotData.putt, state.shotData.great, state.shotData.good, state.shotData.bad, state.gir, 0, state.fir);
+      roundRef.current.addRoundHole(hole, state.shotData.putt, state.shotData.great, state.shotData.good, state.shotData.bad, state.gir, Number(strategy), state.fir);
     }
   }
   const nextHole = () => {
@@ -142,6 +146,7 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
   ////////////////////////////////////////// Shot Data ////////////////////////////////////
   const resetForNewHole = (): void => {
     dispatch({ type: 'RESET' });
+    setStrategy('0');
   }
 
   const getAllShotData = () => {
@@ -167,11 +172,27 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
   const addShotColor = (color: string) => {
     dispatch({ type: 'ADD_SHOT_COLOR', color });
   };
-
+  
   const subShotColor = (color: string) => {
     dispatch({ type: 'SUB_SHOT_COLOR', color });
   };
-
+  
+  ///////////////////////////////////////////////////////Strats///////////////////////////////////////////////////////
+  const [strategy, setStrategy] = useState('0');
+  const [showStrat, setShowStrat] = useState(false);
+  
+  const WhatStrat: {[key:string]:string} = {
+    '0': 'No Strategy',
+    '1': 'Conservative',
+    '2': 'Aggressive',
+    '3': 'Pin Hunting',
+    '4': 'Middle green',
+    '5': 'Green in 1',
+    '6': 'Green in 2',
+    '7': 'Green in 3',
+    '8': 'No driver',
+    '9': 'Layup to fav club',
+  };
 
 
 
@@ -216,67 +237,6 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
       holeNumber={holeNumber}
     />
   ), [teeboxHoles, holeNumber]);
-
-  const MainView = () => {
-    if (isLoading) {
-      return <Text>Loading...</Text>;
-    }
-  
-    if (!teeboxHoles.length || !currentHoleData) {
-      return <Text>No hole data available.</Text>;
-    }
-  
-    return (
-      <View style={{}}>
-        {/* <StatMarquee
-          round={roundRef.current}
-          holeNumber={holeNumber}
-          girGoal={Number(girGoal)}
-          firGoal={Number(firGoal)}
-          puttGoal={Number(puttGoal)}
-        /> */}
-        
-      <View style={{  height:'100%', justifyContent:'flex-start', marginTop:10}}>
-        {currentHoleData && (
-          <View>
-            <C3Header3
-              courseName={''}
-              holeData={currentHoleData}
-              shotColors={state.shotColors}
-              getTotalShots={getTotalShots}
-              shotData={state.shotData}
-              allShotData={getAllShotData()}
-            />
-          </View>
-        )}
-        {teeboxHoles && memoizedC3Options}
-        <View style={{height:'50%', justifyContent:'center'}}>
-        <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-          <VerticalCheckBoxes
-            hole={currentHoleData}
-            gir={state.gir}
-            setGir={setGir}
-            fir={state.fir}
-            setFir={setFir}
-          />
-          <VerticalBtns3
-            addShot={addShot}
-            subtractShot={subtractShot}
-            shotData={state.shotData}
-            addShotColor={addShotColor}
-            subShotColor={subShotColor}
-          />
-        </View>
-        </View>
-      </View>
-      </View>
-    );
-  };
-
-
-
-
-
 ///////////////////////////////////////////////////////Create Own Folder When Finished///////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////Carousel///////////////////////////////////////////////////////
@@ -323,11 +283,13 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 
 
 
-
 return (
   <>
     <StackHeader image={image} imageTag={ribbonImage} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles}/>
   {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
+  {summaryModal &&
+  <SummaryModal round={roundRef.current} course={String(courseName)} tee={TeeColors[Number(teeID)]} />
+  }
   <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
     {currentHoleData && <View style={{ height: 5, backgroundColor: `${TeeColors[currentHoleData.color].toLowerCase()}` }} /> }
     {Marquee}
@@ -351,13 +313,27 @@ return (
         {teeboxHoles && memoizedC3Options}
         <View style={{height:'50%', justifyContent:'center'}}>
         <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+          <View style={{justifyContent:'center', alignItems:'center'}}>
+          <TouchableOpacity onPress={() => setShowStrat(true)} style={{width:100, backgroundColor:'rgba(50,50,50,.15)', borderRadius:10, padding:5}}>
+            <Text style={{ color: theme.color, fontSize: 16, textAlign: 'center' }}>Strategy:</Text>
+    <Text
+      numberOfLines={1} // Ensures single-line text
+      ellipsizeMode="tail" // Truncate text at the end
+     style={{ color: theme.color, fontSize: 16, textAlign: 'center'}}
+    >
+      {WhatStrat[strategy]}
+    </Text>
+  </TouchableOpacity>
+        <StratTags par={currentHoleData.par} setHoleStrategy={setStrategy} holestrategy={strategy} setVisible={setShowStrat} visible={showStrat} />
+
           <VerticalCheckBoxes
             hole={currentHoleData}
             gir={state.gir}
             setGir={setGir}
             fir={state.fir}
             setFir={setFir}
-          />
+            />
+            </View>
           <VerticalBtns3
             addShot={addShot}
             subtractShot={subtractShot}
@@ -373,6 +349,7 @@ return (
   </LinearGradient>
   </>
 );
+
 };
 
 export default CounterThree;

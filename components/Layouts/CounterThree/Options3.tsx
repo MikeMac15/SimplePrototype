@@ -8,7 +8,7 @@ import ExitModal from "../CounterTwo/Buttons/Modals/ExitModal";
 import ScoreModal3 from "./ScoreModal3";
 import HoleInsightsModal from "../CounterTwo/Buttons/Modals/HoleInsights";
 import ShotTrackerModal from "@/components/Location/ShotTrackerModal";
-
+import useTheme from "@/constants/Theme";
 // import ImagesModal from "../CounterTwo/Buttons/Modals/ImagesModal";
 interface OptionsProps {
   teeboxHoles: Hole[];
@@ -21,6 +21,7 @@ interface OptionsProps {
 type IconType = 'score' | 'bar' | 'dot' | 'track' | 'exit';
 
 const C3Options3: React.FC<OptionsProps> = ({ teeboxHoles, roundHoles, round, holeNumber }) => {
+  const theme = useTheme();
   const [modalVisibility, setModalVisibility] = useState<{
     [key in IconType]: boolean;
   }>({
@@ -30,45 +31,45 @@ const C3Options3: React.FC<OptionsProps> = ({ teeboxHoles, roundHoles, round, ho
     track: false,
     exit: false,
   });
-
+  
   const toggleModal = (icon: IconType) => {
     setModalVisibility((prev) => ({
       ...prev,
       [icon]: !prev[icon],
     }));
   };
-
+  
   const OptionBtn2 = (title: string, icon: IconType) => {
     const Icon = () => {
       switch (icon) {
         case 'score':
-          return <Entypo name="document" color={'whitesmoke'} size={25} />;
-        case 'bar':
-          return <Ionicons name="stats-chart-sharp" color={'whitesmoke'} size={25} />;
-        case 'dot':
-          return <AntDesign name="dotchart" color={'whitesmoke'} size={25} />;
-        case 'track':
-          return <MaterialIcons name="share-location" color={'whitesmoke'} size={25} />;
-        case 'exit':
-          return <MaterialCommunityIcons name="exit-run" color={'whitesmoke'} size={25} />;
-      }
-    };
-
-    const Modal = () => {
-      switch (icon) {
-        case 'score':
-          return (
-            <ScoreModal3
-              modalVisible={modalVisibility[icon]}
-              setModalVisible={() => toggleModal(icon)}
-              teeboxHoles={teeboxHoles}
-              roundHoles={roundHoles}
-              holeNumber={holeNumber}
-              round={round}
-            />
-          );
-        case 'bar':
-          return <RoundModal modalVisible={modalVisibility[icon]} setModalVisible={() => toggleModal(icon)} round={round} />;
+          return <Entypo name="document" color={theme.color} size={25} />;
+          case 'bar':
+            return <Ionicons name="stats-chart-sharp" color={theme.color} size={25} />;
+            case 'dot':
+              return <AntDesign name="dotchart" color={theme.color} size={25} />;
+              case 'track':
+                return <MaterialIcons name="share-location" color={theme.color} size={25} />;
+                case 'exit':
+                  return <MaterialCommunityIcons name="exit-run" color={theme.color} size={25} />;
+                }
+              };
+              
+              const Modal = () => {
+                switch (icon) {
+                  case 'score':
+                    return (
+                      <ScoreModal3
+                      modalVisible={modalVisibility[icon]}
+                      setModalVisible={() => toggleModal(icon)}
+                      teeboxHoles={teeboxHoles}
+                      roundHoles={roundHoles}
+                      holeNumber={holeNumber}
+                      round={round}
+                      />
+                    );
+                    case 'bar':
+                      return <RoundModal modalVisible={modalVisibility[icon]} setModalVisible={() => toggleModal(icon)} round={round} />;
         case 'dot':
           return (
             <HoleInsightsModal
@@ -96,7 +97,7 @@ const C3Options3: React.FC<OptionsProps> = ({ teeboxHoles, roundHoles, round, ho
           {modalVisibility[icon] ? Modal() : null}
         </View>
         <View>
-          <Text style={{ color: 'whitesmoke', fontSize: 10 }}>{title}</Text>
+          <Text style={{ color: theme.color, fontSize: 10 }}>{title}</Text>
         </View>
       </TouchableOpacity>
     );

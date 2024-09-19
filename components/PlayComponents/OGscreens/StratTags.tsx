@@ -1,6 +1,7 @@
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
+import useTheme from "@/constants/Theme";
 
 interface StratTagsProps {
     par: number;
@@ -13,7 +14,7 @@ interface StratTagsProps {
 
 const StratTags: React.FC<StratTagsProps> = ({ par, visible, setVisible, holestrategy, setHoleStrategy }) => {
     const [localStrategy, setLocalStrategy] = useState(holestrategy);
-
+    const theme = useTheme();
     const handleSave = () => {
         setHoleStrategy(localStrategy);
         setVisible(false);

@@ -46,3 +46,24 @@ export const getCounterLayoutPref = async(): Promise<string> => {
         return '/simpleCounter';
     }
 }
+
+export const setHCP = async (hcp: number|string) => {
+    try {
+      await AsyncStorage.setItem('HCP', hcp.toString())
+      console.log('set HCP to: ', hcp)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const getHCP = async (): Promise<number | null> => {
+    try {
+        const value = await AsyncStorage.getItem('HCP');
+        if (value !== null) {
+          return parseFloat(value);
+        }
+        return null;
+      } catch (e) {
+        return null;
+      }
+}

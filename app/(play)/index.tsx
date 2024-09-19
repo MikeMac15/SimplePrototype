@@ -1,63 +1,50 @@
-import { openDb, getAllCourses, createCourse, createTeebox, getAllCourseTeeboxes, getJustPlayCourse } from "@/components/DataBase/API"
+import { getAllCourses,getAllCourseTeeboxes} from "@/components/DataBase/API";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, router, Stack } from "expo-router"
-import { useEffect, useRef, useState } from "react"
-import { StyleSheet, Text, View, TouchableOpacity, Alert, Modal, Pressable, TextInput, Button, ImageBackground, SafeAreaView, Keyboard } from "react-native"
-// import {Picker} from '@react-native-picker/picker';
-import { Picker, RenderCustomModalProps } from "react-native-ui-lib";
+import { router, Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Alert, TextInput } from "react-native";
+import { Picker } from "react-native-ui-lib";
 
 import { MenuGradients, TeeColors, getRibbonImageSource } from "@/constants/Colors";
 import { Course, CourseAndTees, Teebox } from "@/components/DataBase/Classes";
-import { getCounterLayoutPref, getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
-import StackHeader from "@/constants/StackHeader";
+import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
+
 import StackOptions from "@/constants/StackOptions";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import DefaultModal from "@/components/Modals/DefaultModal";
-
-
-
 
 
 export default function Play() {
   const [courses, setCourses] = useState<CourseAndTees[]>([]);
-  const [courseModalVisible, setCourseModalVisible] = useState(false)
-  const [teeModalVisible, setTeeModalVisible] = useState(false)
-  const [courseID, setCourseID] = useState(-1)
-  const [courseName, setCourseName] = useState('')
-  const [teeID, setTeeID] = useState(-1)
-  const [teeName, setTeeName] = useState('')
-  const [chosenCourse, setChosenCourse] = useState<CourseAndTees>()
-  const [gradient, setGradient] = useState('cool-guy')
-  const [ribbonImage, setRibbonImage] = useState('proud-parent')
-
+  const [courseID, setCourseID] = useState(-1);
+  const [courseName, setCourseName] = useState('');
+  const [teeID, setTeeID] = useState(-1);
+  const [teeName, setTeeName] = useState('');
+  const [chosenCourse, setChosenCourse] = useState<CourseAndTees|null>();
+  const [gradient, setGradient] = useState('cool-guy');
+  const [ribbonImage, setRibbonImage] = useState('proud-parent');
 
   const [roundType, setRoundType] = useState('');
-
-  const [gir, setGIR] = useState('7')
-  const [fir, setFIR] = useState('7')
-  const [strokes, setStrokes] = useState('75')
-  const [putts, setPutts] = useState('36')
-  const [goodToGo, setGTG] = useState(false)
+  const [gir, setGIR] = useState('7');
+  const [fir, setFIR] = useState('7');
+  const [strokes, setStrokes] = useState('75');
+  const [putts, setPutts] = useState('36');
+  const [goodToGo, setGTG] = useState(false);
 
   const getPreferences = async () => {
-    const value = await getMenuGradient()
-    setGradient(value)
-    const ribbonImgTag = await getRibbonImage()
-    setRibbonImage(ribbonImgTag)
-
-  }
+    const value = await getMenuGradient();
+    setGradient(value);
+    const ribbonImgTag = await getRibbonImage();
+    setRibbonImage(ribbonImgTag);
+  };
 
   useEffect(() => {
     getPreferences();
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (gir != '' && fir != '' && strokes != '' && putts != '' && teeName != '' && courseName != '') {
-      setGTG(true)
+    if (gir && fir && strokes && putts && teeName && courseName) {
+      setGTG(true);
     }
   }, [gir, fir, strokes, putts, teeName, courseName]);
-
-
 
   const getCourses = async () => {
     const coursesData: Course[] = await getAllCourses();
@@ -66,315 +53,295 @@ export default function Play() {
       return { ...course, teeboxes: teeData };
     }));
     setCourses(coursesWithTeeboxes);
-  }
+  };
 
   const getCourseByID = (course_id: number) => {
-    const selectedCourse = courses.find((course => course.id === course_id));
-    if (selectedCourse) {
-      return selectedCourse;
-    }
-
-  }
+    return courses.find((course) => course.id === course_id);
+  };
 
   useEffect(() => {
     getCourses();
-    const ribbonSource = getRibbonImage()
   }, []);
 
   useEffect(() => {
-    if (courseID) {
+    if (courseID !== -1) {
       const selectedCourse = getCourseByID(courseID);
       if (selectedCourse) {
-        setCourseName(selectedCourse.name)
-        setChosenCourse(selectedCourse)
+        setCourseName(selectedCourse.name);
+        setChosenCourse(selectedCourse);
       }
     }
-  }, [courseID])
+  }, [courseID]);
 
   useEffect(() => {
-    if (teeID) {
-      if (chosenCourse) {
-        const tee = chosenCourse.teeboxes.find(tee => tee.id === teeID)
-        if (tee) {
-          if (tee.color2 > 0) {
-            setTeeName(`${TeeColors[tee.color1]}&${TeeColors[tee.color2]}`)
-          } else {
-            setTeeName(TeeColors[tee.color1])
-          }
-        }
-
+    if (teeID !== -1 && chosenCourse) {
+      const tee = chosenCourse.teeboxes.find(tee => tee.id === teeID);
+      if (tee) {
+        setTeeName(tee.color2 > 0 ? `${TeeColors[tee.color1]}&${TeeColors[tee.color2]}` : TeeColors[tee.color1]);
       }
     }
-  }, [teeID])
+  }, [teeID]);
 
-  // const image = require('../../assets/images/retro-ribbon.png');
-  // const image = require('../../assets/images/crayon-skies-ribbon.png');
   const ribbonSource = getRibbonImageSource(ribbonImage);
 
-
-  const PlayBtn = () => {
-    return (
-      <TouchableOpacity
-        disabled={!goodToGo}
-        onPress={() => {
-          if (!goodToGo) {
-            Alert.alert(
-              'Set your goals for the round.',
-              'No goals + No prep = No progress',
-              [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-            );
-          } else {
-            // Use router.push for navigation
-            router.push({
-              pathname: '/(play)/counterThree',
-              params: {
-                courseID: chosenCourse?.id,
-                courseName,
-                teeID,
-                girGoal: gir,
-                puttGoal: putts,
-                firGoal: fir,
-                strokeGoal: strokes,
-              },
-            });
-          }
-        }}
+  const PlayBtn = () => (
+    <TouchableOpacity
+      disabled={!goodToGo}
+      onPress={() => {
+        if (!goodToGo) {
+          Alert.alert('Set your goals for the round.', 'No goals + No prep = No progress', [{ text: 'OK' }]);
+        } else {
+          router.push({
+            pathname: '/(play)/counterThree',
+            params: {
+              courseID: chosenCourse?.id,
+              courseName,
+              teeID,
+              girGoal: gir,
+              puttGoal: putts,
+              firGoal: fir,
+              strokeGoal: strokes,
+            },
+          });
+        }
+      }}
+    >
+      <LinearGradient
+        colors={goodToGo ? ['yellowgreen', 'darkgreen'] : ['#4f4f4f', '#333']}
+        style={[goodToGo ? styles.playBtn : styles.playBtnDisabled, { marginVertical: 20 }]}
       >
-        <LinearGradient
-          colors={goodToGo ? ['yellowgreen', 'darkgreen'] : ['#4f4f4f', '#333']}
-          style={[goodToGo ? styles.playBtn : styles.playBtnDisabled, { marginVertical: 20 }]}
-        >
-          <Text style={{ color: goodToGo ? 'whitesmoke' : '#888' }}>
-            {goodToGo
-              ? `Play ${chosenCourse?.name} ${teeName} tee's`
-              : 'Play'}
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    )
-  }
-
-  const JustPlayBtn = () => {
-    const JustPlay = async () => {
-      // Get Just Play course ID
-      const justPlayId: number | null = await getJustPlayCourse();
-      if (justPlayId) {
-        setCourseID(justPlayId);
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // router.push({
-        //   pathname: '/(play)/counterThree',
-        //   params: {
-        //     courseID: chosenCourse?.id,
-        //     courseName,
-        //     teeID,
-        //     girGoal: gir,
-        //     puttGoal: putts,
-        //     firGoal: fir,
-        //     strokeGoal: strokes,
-        //   },
-        // });
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      }
-    }
-
-    return (
-      <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-
-        <TouchableOpacity
-          onPress={() => {
-            // Use router.push for navigation
-            JustPlay();
-          }}
-        >
-          <LinearGradient
-            colors={['#4f4f4f', '#333']}
-            style={[styles.playBtn, { marginTop: 0 }]}
-          >
-            <Text style={{ color: 'whitesmoke' }}>
-              Just Play
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-
-
-        <Text style={{ color: 'whitesmoke', }}>
-          (non course-specific round)
+        <Text style={{ color: goodToGo ? 'whitesmoke' : '#888' }}>
+          {goodToGo ? `Play ${chosenCourse?.name} ${teeName} tee's` : 'Play'}
         </Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  );
 
-      </View>
-    )
-  }
-  const SkinsSetup = () => {
-    const [players, setPlayers] = useState([
-      { name: 'Mike', buyIn: '50', color: 'aqua' },
-      { name: 'Jamie', buyIn: '20', color: 'orange' },
-      { name: 'Kelsey', buyIn: '20', color: 'violet' },
-      { name: 'Grant', buyIn: '100', color: 'gold' },
-    ]);
-    const [playerCount, setPlayerCount] = useState(4);
-    const [gameLength, setGameLength] = useState(18);
-    const [serializedPlayers, setSerializedPlayers] = useState('');
+//   const JustPlayBtn = () => {
+//     const JustPlay = async () => {
+//       // Get Just Play course ID
+//       const justPlayId: number | null = await getJustPlayCourse();
+//       if (justPlayId) {
+//         setCourseID(justPlayId);
+//         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//         // router.push({
+//         //   pathname: '/(play)/counterThree',
+//         //   params: {
+//         //     courseID: chosenCourse?.id,
+//         //     courseName,
+//         //     teeID,
+//         //     girGoal: gir,
+//         //     puttGoal: putts,
+//         //     firGoal: fir,
+//         //     strokeGoal: strokes,
+//         //   },
+//         // });
+//         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//       }
+//     }
 
-    // Update serialized players when players or playerCount change
-    useEffect(() => {
-      const selectedPlayers = players.slice(0, playerCount);
-      setSerializedPlayers(JSON.stringify(selectedPlayers));
-    }, [players, playerCount]);
+//     return (
+//       <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+
+//         <TouchableOpacity
+//           onPress={() => {
+//             // Use router.push for navigation
+//             JustPlay();
+//           }}
+//         >
+//           <LinearGradient
+//             colors={['#4f4f4f', '#333']}
+//             style={[styles.playBtn, { marginTop: 0 }]}
+//           >
+//             <Text style={{ color: 'whitesmoke' }}>
+//               Just Play
+//             </Text>
+//           </LinearGradient>
+//         </TouchableOpacity>
+
+
+//         <Text style={{ color: 'whitesmoke', }}>
+//           (non course-specific round)
+//         </Text>
+
+//       </View>
+//     )
+//   }
+//   const SkinsSetup = () => {
+//     const [players, setPlayers] = useState([
+//       { name: '', buyIn: '0', color: 'aqua' },
+//       { name: '', buyIn: '0', color: 'orange' },
+//       { name: '', buyIn: '0', color: 'violet' },
+//       { name: '', buyIn: '0', color: 'gold' },
+//       // { name: 'Mike', buyIn: '50', color: 'aqua' },
+//       // { name: 'Jamie', buyIn: '20', color: 'orange' },
+//       // { name: 'Kelsey', buyIn: '20', color: 'violet' },
+//       // { name: 'Grant', buyIn: '100', color: 'gold' },
+//     ]);
+//     const [playerCount, setPlayerCount] = useState(4);
+//     const [gameLength, setGameLength] = useState(18);
+//     const [serializedPlayers, setSerializedPlayers] = useState('');
+
+//     // Update serialized players when players or playerCount change
+//     useEffect(() => {
+//       const selectedPlayers = players.slice(0, playerCount);
+//       setSerializedPlayers(JSON.stringify(selectedPlayers));
+//     }, [players, playerCount]);
     
-    const handlePlayerChange = (index: number, key: keyof typeof players[0], value: string | number) => {
-      setPlayers((prevPlayers) => {
-        const updatedPlayers = [...prevPlayers];
-        updatedPlayers[index] = { ...updatedPlayers[index], [key]: value };
-        return updatedPlayers;
-      });
-    };
+//     const handlePlayerChange = (index: number, key: keyof typeof players[0], value: string | number) => {
+//       setPlayers((prevPlayers) => {
+//         const updatedPlayers = [...prevPlayers];
+//         updatedPlayers[index] = { ...updatedPlayers[index], [key]: value };
+//         return updatedPlayers;
+//       });
+//     };
     
-    const SkinsPlayBtn = () => {
-      return (
-        <Link href={{
-          pathname: '/(play)/skins',
-          params: {
-            players: serializedPlayers, // passing serialized players
-            gameLength,
-          },
-        }}
-        asChild>
-          <TouchableOpacity style={[skinstyles.button, skinstyles.buttonSave, { marginTop: 20 }]}>
-            <Text style={[skinstyles.textStyle, { color: '#111' }]}>Play Skins Match</Text>
-          </TouchableOpacity>
-        </Link>
-      );
-    };
+//     const SkinsPlayBtn = () => {
+//       return (
+//         <Link href={{
+//           pathname: '/(play)/skins',
+//           params: {
+//             players: serializedPlayers, // passing serialized players
+//             gameLength,
+//           },
+//         }}
+//         asChild>
+//           <TouchableOpacity style={[skinstyles.button, skinstyles.buttonSave, { marginTop: 20 }]}>
+//             <Text style={[skinstyles.textStyle, { color: '#111' }]}>Play Skins Match</Text>
+//           </TouchableOpacity>
+//         </Link>
+//       );
+//     };
 
-    return (
-      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={styles.title}>Skins Game</Text>
-        <Text style={{ color: 'whitesmoke' }}>How many holes?</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          {[9, 18].map((count) => (
-            <TouchableOpacity
-              key={count}
-              onPress={() => setGameLength(count)}
-              style={{
-                backgroundColor: gameLength === count ? 'yellowgreen' : '#333',
-                padding: 10,
-                margin: 5,
-                borderRadius: 5,
-              }}>
-              <Text style={{ color: gameLength === count ? 'whitesmoke' : '#888' }}>{count}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+//     return (
+//       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+//         <Text style={styles.title}>Skins Game</Text>
+//         <Text style={{ color: 'whitesmoke' }}>How many holes?</Text>
+//         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+//           {[9, 18].map((count) => (
+//             <TouchableOpacity
+//               key={count}
+//               onPress={() => setGameLength(count)}
+//               style={{
+//                 backgroundColor: gameLength === count ? 'yellowgreen' : '#333',
+//                 padding: 10,
+//                 margin: 5,
+//                 borderRadius: 5,
+//               }}>
+//               <Text style={{ color: gameLength === count ? 'whitesmoke' : '#888' }}>{count}</Text>
+//             </TouchableOpacity>
+//           ))}
+//         </View>
         
-        <Text style={{ color: 'whitesmoke' }}>How many players?</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          {[2, 3, 4].map((count) => (
-            <TouchableOpacity
-              key={count}
-              onPress={() => setPlayerCount(count)}
-              style={{
-                backgroundColor: playerCount === count ? 'yellowgreen' : '#333',
-                padding: 10,
-                margin: 5,
-                borderRadius: 5,
-              }}>
-              <Text style={{ color: playerCount === count ? 'whitesmoke' : '#888' }}>{count}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+//         <Text style={{ color: 'whitesmoke' }}>How many players?</Text>
+//         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+//           {[2, 3, 4].map((count) => (
+//             <TouchableOpacity
+//               key={count}
+//               onPress={() => setPlayerCount(count)}
+//               style={{
+//                 backgroundColor: playerCount === count ? 'yellowgreen' : '#333',
+//                 padding: 10,
+//                 margin: 5,
+//                 borderRadius: 5,
+//               }}>
+//               <Text style={{ color: playerCount === count ? 'whitesmoke' : '#888' }}>{count}</Text>
+//             </TouchableOpacity>
+//           ))}
+//         </View>
 
-        {players.slice(0, playerCount).map((player, index) => (
-          <View key={index} style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-              <Text style={{ color: player.color, marginRight: 5 }}>Player {index + 1}:</Text>
-              <TextInput
-                placeholder="Player Name"
-                placeholderTextColor="#aaa"
-                value={player.name}
-                onChangeText={(text) => handlePlayerChange(index, 'name', text)}
-                style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
-              />
-              <Text style={{ marginLeft: 5, color: 'whitesmoke' }}>$</Text>
-              <TextInput
-                placeholder="Buy In"
-                placeholderTextColor="#aaa"
-                keyboardType="numeric"
-                value={player.buyIn.toString()}
-                onChangeText={(text) => handlePlayerChange(index, 'buyIn', parseFloat(text) || 0)}
-                style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
-              />
-            </View>
-          </View>
-        ))}
-        <SkinsPlayBtn />
-      </View>
-    );
-};
-
-
+//         {players.slice(0, playerCount).map((player, index) => (
+//           <View key={index} style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
+//             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+//               <Text style={{ color: player.color, marginRight: 5 }}>Player {index + 1}:</Text>
+//               <TextInput
+//                 placeholder="Player Name"
+//                 placeholderTextColor="#aaa"
+//                 value={player.name}
+//                 onChangeText={(text) => handlePlayerChange(index, 'name', text)}
+//                 style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
+//               />
+//               <Text style={{ marginLeft: 5, color: 'whitesmoke' }}>$</Text>
+//               <TextInput
+//                 placeholder="Buy In"
+//                 placeholderTextColor="#aaa"
+//                 keyboardType="numeric"
+//                 value={player.buyIn.toString()}
+//                 onChangeText={(text) => handlePlayerChange(index, 'buyIn', parseFloat(text) || 0)}
+//                 style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
+//               />
+//             </View>
+//           </View>
+//         ))}
+//         {/* <SkinsPlayBtn /> */}
+//       </View>
+//     );
+// };
 
 
 
 
 
 
-  const skinstyles = StyleSheet.create({
-    centeredView: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 22,
-    },
-    modalView: {
-      width: '90%',
-      margin: 20,
-      backgroundColor: '#444',
-      borderRadius: 20,
-      padding: 35,
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-    },
-    button: {
-      borderRadius: 20,
-      padding: 10,
-      elevation: 2,
-      marginTop: 10
-    },
-    buttonCancel: {
-      backgroundColor: 'salmon',
-      width: 80
-    },
-    buttonSave: {
-      backgroundColor: 'yellowgreen',
+
+
+//   const skinstyles = StyleSheet.create({
+//     centeredView: {
+//       flex: 1,
+//       justifyContent: 'center',
+//       alignItems: 'center',
+//       marginTop: 22,
+//     },
+//     modalView: {
+//       width: '90%',
+//       margin: 20,
+//       backgroundColor: '#444',
+//       borderRadius: 20,
+//       padding: 35,
+//       alignItems: 'center',
+//       shadowColor: '#000',
+//       shadowOffset: {
+//         width: 0,
+//         height: 2,
+//       },
+//       shadowOpacity: 0.25,
+//       shadowRadius: 4,
+//       elevation: 5,
+//     },
+//     button: {
+//       borderRadius: 20,
+//       padding: 10,
+//       elevation: 2,
+//       marginTop: 10
+//     },
+//     buttonCancel: {
+//       backgroundColor: 'salmon',
+//       width: 80
+//     },
+//     buttonSave: {
+//       backgroundColor: 'yellowgreen',
       
-    },
-    buttonIncomplete: {
-      backgroundColor: '#888',
-      width: 80
-    },
-    textStyle: {
-      color: 'white',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
-    },
-    textInputBox: {
-      backgroundColor: '#ccc',
-      paddingVertical: 5,
-      paddingHorizontal: 10,
-      borderRadius: 20
-    }
-  });
+//     },
+//     buttonIncomplete: {
+//       backgroundColor: '#888',
+//       width: 80
+//     },
+//     textStyle: {
+//       color: 'white',
+//       fontWeight: 'bold',
+//       textAlign: 'center',
+//     },
+//     modalText: {
+//       marginBottom: 15,
+//       textAlign: 'center',
+//     },
+//     textInputBox: {
+//       backgroundColor: '#ccc',
+//       paddingVertical: 5,
+//       paddingHorizontal: 10,
+//       borderRadius: 20
+//     }
+//   });
 
 
 
@@ -382,49 +349,49 @@ export default function Play() {
 
 
 
-  const Goals = () => {
-    return (
+  // const Goals = () => {
+  //   return (
 
-      <View>
-        <Text style={styles.title}>Goals for this Round</Text>
+  //     <View>
+  //       <Text style={styles.title}>Goals for this Round</Text>
 
-        <View style={{ flexDirection: 'row' }}>
+  //       <View style={{ flexDirection: 'row' }}>
 
-          {['Total Strokes', 'Total Putts'].map((goal, index) => (
-            <LinearGradient key={index} colors={['#4f4f4f', '#333']} style={styles.inputTable} >
-              <Text style={styles.inputTitle}>{goal}</Text>
-              <TextInput
-                style={styles.goalInput}
-                onChangeText={goal === 'Total Strokes' ? setStrokes : setPutts}
-                value={goal === 'Total Strokes' ? strokes : putts}
-                placeholder={goal === 'Total Strokes' ? "75" : "36"}
-                keyboardType="numeric"
-              />
-            </LinearGradient>
-          ))}
+  //         {['Total Strokes', 'Total Putts'].map((goal, index) => (
+  //           <LinearGradient key={index} colors={['#4f4f4f', '#333']} style={styles.inputTable} >
+  //             <Text style={styles.inputTitle}>{goal}</Text>
+  //             <TextInput
+  //               style={styles.goalInput}
+  //               onChangeText={goal === 'Total Strokes' ? setStrokes : setPutts}
+  //               value={goal === 'Total Strokes' ? strokes : putts}
+  //               placeholder={goal === 'Total Strokes' ? "75" : "36"}
+  //               keyboardType="numeric"
+  //             />
+  //           </LinearGradient>
+  //         ))}
 
-        </View>
+  //       </View>
 
 
-        <View style={{ flexDirection: 'row' }}>
-          {["Green's In Reg", "Fwy's In Reg"].map((goal, index) => (
-            <LinearGradient key={index} colors={['#4f4f4f', '#333']} style={styles.inputTable} >
-              <Text style={styles.inputTitle}>{goal}</Text>
-              <TextInput
-                style={styles.goalInput}
-                onChangeText={goal === 'GIR' ? setGIR : setFIR}
-                value={goal === 'GIR' ? gir : fir}
-                placeholder={goal === 'GIR' ? "9/18" : "7/14"}
-                keyboardType="numeric"
-              />
-            </LinearGradient>
-          ))}
+  //       <View style={{ flexDirection: 'row' }}>
+  //         {["Green's In Reg", "Fwy's In Reg"].map((goal, index) => (
+  //           <LinearGradient key={index} colors={['#4f4f4f', '#333']} style={styles.inputTable} >
+  //             <Text style={styles.inputTitle}>{goal}</Text>
+  //             <TextInput
+  //               style={styles.goalInput}
+  //               onChangeText={goal === 'GIR' ? setGIR : setFIR}
+  //               value={goal === 'GIR' ? gir : fir}
+  //               placeholder={goal === 'GIR' ? "9/18" : "7/14"}
+  //               keyboardType="numeric"
+  //             />
+  //           </LinearGradient>
+  //         ))}
 
-        </View>
-      </View>
-    )
+  //       </View>
+  //     </View>
+  //   )
 
-  }
+  // }
 
 
 
@@ -462,9 +429,13 @@ export default function Play() {
           pickerModalProps={{ title: 'Teebox', height: 300 }}
 
         >
-          {chosenCourse?.teeboxes.map((tee) => (
+          {/* {chosenCourse?.teeboxes.map((tee) => (
             <Picker.Item key={tee.id} label={tee.color2 > 0 ? `${TeeColors[tee.color1]} & ${TeeColors[tee.color2]} combo` : TeeColors[tee.color1]} value={tee.id} />
-          ))}
+          ))} */}
+          {chosenCourse?.teeboxes?.map((tee) => (
+  <Picker.Item key={tee.id} label={tee.color2 > 0 ? `${TeeColors[tee.color1]} & ${TeeColors[tee.color2]} combo` : TeeColors[tee.color1]} value={tee.id} />
+))}
+
         </Picker>
       </LinearGradient>
     </>
@@ -511,7 +482,7 @@ export default function Play() {
     <LinearGradient colors={MenuGradients[gradient]} >
       <Stack.Screen options={StackOptions({ image: ribbonSource, imageTag: ribbonImage, title: 'Round Setup' })} />
 
-      <SafeAreaView>
+      
         <View style={styles.container}>
           {/* <StackHeader image={ribbonSource} imageTag={`${ribbonImage}`} title="Round Setup" /> */}
 
@@ -520,23 +491,23 @@ export default function Play() {
           {roundType === 'Keep Stats' &&
             <>
               <CourseTeeSelector />
-              <Goals />
+              {/* <Goals /> */}
 
               <PlayBtn />
-              <JustPlayBtn />
+              {/* <JustPlayBtn /> */}
             </>
           }
-
+{/* 
           {roundType === 'Skins/Match' &&
             <>
             <SkinsSetup />
             
             </>
-          }
+          } */}
         </View>
 
 
-      </SafeAreaView>
+   
     </LinearGradient>
   );
 };

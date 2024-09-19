@@ -8,7 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { getMenuImageSource } from "@/constants/Colors";
 
 import HomeRecentRound from "@/components/HomeComponents/HomeRecentRound";
-import { getMenuImage } from "@/components/DataBase/localStorage";
+import { getHCP, getMenuImage, setHCP } from "@/components/DataBase/localStorage";
 import { ThemeProvider } from "@react-navigation/native";
 
 
@@ -23,38 +23,27 @@ export default function Index() {
   const setUserPreferences = async () => {
     const menuImgTag = await getMenuImage()
     setMenuImage(menuImgTag)
+    const hcp = await getHCP();
+    if (hcp === null) {
+      setHCP(5);
+      console.log('Play Welcome Screen')
+      console.log('HCP set to 5')
+    }
   }
-  useEffect(() => {
-    setUserPreferences();
-  }, [])
-
-
+ 
+  
+  
   const setUpDB = async () => {
     const db = await openDb();
     await tableSetUp(db);
   }
-
-
+  
+  
   useEffect(() => {
     setUpDB();
-
+    setUserPreferences();
+    
   }, []);
-
-  // const image = require('../assets/images/ggwp.png');
-
-
-
-
-
-  useFocusEffect(
-    useCallback(() => {
-      setUserPreferences()
-
-      return () => {
-
-      };
-    }, [])
-  );
 
 
 
@@ -92,7 +81,7 @@ export default function Index() {
       <Stack.Screen options={{
         headerTransparent: true, headerRight: () => (
           <TouchableOpacity onPress={() => ''} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: 'rgba(20,20,20,0.6)', padding: 2, borderRadius: 30 }}>
-            <FontAwesome5 name="user-friends" size={30} color="white" />
+            <FontAwesome5 name="users" size={30} color="white" />
             <Text style={{ color: 'white', marginHorizontal: 5, fontSize: 10 }}>Social</Text>
           </TouchableOpacity>
         ),
@@ -135,7 +124,7 @@ export default function Index() {
 
           <View style={{ transform: 'scale(.95)' }}>
 
-            <Link href={'/(play)'} asChild>
+            <Link push href={'/(play)'} asChild>
 
               <TouchableOpacity activeOpacity={0.6}>
                 <LinearGradient colors={['#444', '#222']} style={styles.Links}>
@@ -148,7 +137,7 @@ export default function Index() {
 
           <View style={{ transform: 'scale(.95)' }}>
 
-            <Link href={'/(myCourses)'} asChild>
+            <Link push href={'/(myCourses)/'} asChild>
 
               <TouchableOpacity activeOpacity={0.6}>
                 <LinearGradient colors={['#444', '#222']} style={styles.Links}>
@@ -172,6 +161,18 @@ export default function Index() {
             </Link>
           </View>
 
+          {/* <View style={{ transform: 'scale(.95)' }}>
+
+            <Link href={'/summaryTest'} asChild>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+
+                  <Text style={styles.LinkText}>{"Summary"}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Link>
+          </View> */}
 
    
         

@@ -2,13 +2,14 @@ import { deleteDb, deleteMostRecentRoundAndHoleStats } from "@/components/DataBa
 import { MenuGradients, getRibbonImageSource } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState, } from "react";
-import { Button, View, Text, ImageBackground, StyleSheet } from "react-native";
+import { Button, View, Text, ImageBackground, StyleSheet, TextInput } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, router, useFocusEffect } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
-import { getCounterLayoutPref, getMenuGradient, getMenuImage, getRibbonImage } from "@/components/DataBase/localStorage";
+import { getCounterLayoutPref, getHCP, getMenuGradient, getMenuImage, getRibbonImage, setHCP } from "@/components/DataBase/localStorage";
 import StackOptions from "@/constants/StackOptions";
 import StackHeader from "@/constants/StackHeader";
+import useTheme from "@/constants/Theme";
 
 
 
@@ -18,6 +19,12 @@ export default function Settings() {
     const [ribbonImage, setRibbonImage] = useState('proud-parent')
     const [counterLayoutPref, setCounterLayoutPref] = useState('/simpleCounter')
 
+    const [currHCP, setCurrHCP] = useState<number>();  // state for the current handicap
+    const [newHCP, setNewHCP] = useState<number>();  // state for the new handicap input
+
+    const theme = useTheme();
+
+    
     
     const storeMenuGradient = async () => {
         try {
@@ -45,39 +52,53 @@ export default function Settings() {
         try { await AsyncStorage.setItem('CounterLayoutPref', counterLayoutPref);}
         catch (e) {console.error(e)}
     }
-    
-    const setUserPreferences = async() => {
-        const value = await getMenuGradient()
-        const menuImgTag = await getMenuImage()
-        const ribbonImgTag = await getRibbonImage()
-        const layout = await getCounterLayoutPref()
-        setGradient(value)
-        setMenuImage(menuImgTag)
-        setRibbonImage(ribbonImgTag)
-        setCounterLayoutPref(layout)
-    }
+    const setUserPreferences = async () => {
+        const value = await getMenuGradient();
+        const menuImgTag = await getMenuImage();
+        const ribbonImgTag = await getRibbonImage();
+        const layout = await getCounterLayoutPref();
+        const h = await getHCP();
+        
+        setGradient(value);
+        setMenuImage(menuImgTag);
+        setRibbonImage(ribbonImgTag);
+        setCounterLayoutPref(layout);
 
-    useEffect(()=>{
+        if (typeof h === "number") {
+            setCurrHCP(h);
+        }
+    };
+
+    useEffect(() => {
         setUserPreferences();
-    },[])
+    }, []);
+
+    const handleChangeHCP = () => {
+        if (typeof newHCP === 'number') {
+            setCurrHCP(newHCP);  // Update the state with the new handicap
+            setHCP(newHCP);  // Store the new handicap in AsyncStorage
+        } else {
+            console.error("Invalid handicap value");
+        }
+    };
 
     const image = getRibbonImageSource(ribbonImage);
 
     return (
         <LinearGradient colors={MenuGradients[gradient]} style={{height:'100%'}}>
             <StackHeader title="Settings" image={image} imageTag={ribbonImage}/>
-            <Text>Settings</Text>
-        <View style={{flexDirection:'row', marginBottom:50}}>
-            <View>
-                <Text>Menu Gradient</Text>
+        
+        <View style={{flexDirection:'row', marginBottom:50, justifyContent:'center'}}>
+            <View style={{alignItems:'center', backgroundColor:'rgba(20,20,20,0.75)', borderRadius:20, marginTop:20, marginHorizontal:2}}>
+                <Text style={{color:theme.color, paddingTop:10}}>Menu Gradient</Text>
                 <Button title="cool-guy" onPress={()=> setGradient('cool-guy')} />
                 <Button title="sunset" onPress={()=> setGradient('sunset')} />
                 <Button title="morning-dew" onPress={()=> setGradient('morning-dew')} />
                 <Button title="OG-Dark" onPress={()=> setGradient('OG-Dark')} />
                 <Button title="OG-Light" onPress={()=> setGradient('OG-Light')} />
             </View>
-            <View>
-                <Text>Menu Image</Text>
+            <View style={{alignItems:'center', backgroundColor:'rgba(20,20,20,0.75)', borderRadius:20, marginTop:20, marginHorizontal:2}}>
+                <Text style={{color:theme.color, paddingTop:10}}>Menu Image</Text>
                 <Button title="proud-parent" onPress={()=> setMenuImage('proud-parent')} />
                 <Button title="ocean" onPress={()=> setMenuImage('ocean')} />
                 <Button title="sunset" onPress={()=> setMenuImage('sunset')} />
@@ -86,8 +107,8 @@ export default function Settings() {
                 <Button title="palms" onPress={()=> setMenuImage('palms')} />
                 <Button title="balls" onPress={()=> setMenuImage('balls')} />
             </View>
-            <View>
-                <Text>Ribbon Image</Text>
+            <View style={{alignItems:'center', backgroundColor:'rgba(20,20,20,0.75)', borderRadius:20, marginTop:20, marginHorizontal:2}}>
+                <Text style={{color:theme.color, paddingTop:10}}>Ribbon Image</Text>
                 <Button title="proud-parent" onPress={()=> setRibbonImage('proud-parent')} />
                 <Button title="retro" onPress={()=> setRibbonImage('retro')} />
                 <Button title="JamesWebb" onPress={()=> setRibbonImage('nasaJW')} />
@@ -103,6 +124,19 @@ export default function Settings() {
                 <Button title="counterV3" onPress={()=>{setCounterLayoutPref('/counterThree')}} />
                 <Button title="emoji" onPress={()=>{setCounterLayoutPref('/emoji')}} />
             </View> */}
+            <View style={{ alignItems: 'center' }}>
+                <Text style={{color:theme.color}}> Current Handicap: {currHCP}</Text>
+                <View style={{ margin: 10, alignItems: 'center', backgroundColor: 'rgba(20,20,20,0.25)', padding: 20 }}>
+                    <TextInput
+                        style={{ backgroundColor: 'rgba(200,200,200,0.5)', padding: 10, margin: 5 }}
+                        returnKeyType="done"
+                        placeholder="New Handicap"
+                        keyboardType="numeric"
+                        onChangeText={(text) => setNewHCP(parseInt(text))}  // Store the input as a number
+                    />
+                    <Button title="Change HCP" onPress={handleChangeHCP} />  
+                </View>
+            </View>
                 <Button title='Save Preferences' onPress={()=> {storeMenuGradient(); storeMenuImage(); storeRibbonImage();storeCounterLayoutPref();}} />
             {/* <Button title="Delete Database" onPress={() => deleteDb()}/> */}
             {/* <Button title="Delete Most Recent Round" onPress={()=>deleteMostRecentRoundAndHoleStats()} /> */}

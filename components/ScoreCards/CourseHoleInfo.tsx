@@ -1,16 +1,16 @@
-import { Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native'
 import { Hole } from '../DataBase/Classes';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { MenuGradients, TeeColors } from '@/constants/Colors';
 import { getMenuGradient, getRibbonImage } from '../DataBase/localStorage';
 
-interface CourseScoreCardProps {
+interface CourseHoleInfoProps {
     holes: Hole[];
-
+    allowEdit?: boolean;
 }
 
-const CourseScoreCard: React.FC<CourseScoreCardProps> = ({ holes }) => {
+const CourseHoleInfo: React.FC<CourseHoleInfoProps> = ({ holes, allowEdit=false }) => {
     
 
     const Headers = ({ inOut }: { inOut: string }) => {
@@ -55,8 +55,8 @@ const CourseScoreCard: React.FC<CourseScoreCardProps> = ({ holes }) => {
                 <Headers inOut={inOut} />
                 {holes.map((hole, index) => {
                     return (
-                        <View key={index}>
-                            <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'center' }}>
+                        <View key={index} >
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'center' }}>
 
                                 <View style={{backgroundColor:TeeColors[hole.color].toLowerCase(), width:20, height:20, borderRadius:20}} />
 
@@ -72,10 +72,13 @@ const CourseScoreCard: React.FC<CourseScoreCardProps> = ({ holes }) => {
                                     <Text style={styles.text}>{hole.yardage}</Text>
                                     <Text style={styles.textYrd}>yrds</Text>
                                 </View>
-                                
+                                {allowEdit && <View style={{backgroundColor:'red', width:20, height:20, borderRadius:20}} >
+                                    <Text>{hole.id}</Text>
+                                    </View>}
                             </View>
-                            <Seperator />
-                        </View>
+                                    <Seperator />
+                            </View>
+                       
                     )
                 })}
                 <Footers
@@ -118,7 +121,7 @@ const CourseScoreCard: React.FC<CourseScoreCardProps> = ({ holes }) => {
     )
 }
 
-export default CourseScoreCard;
+export default CourseHoleInfo;
 
 
 
@@ -127,15 +130,15 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        height: '100%',
-        paddingBottom: 100,
+        
+        
     },
     scorecard: {
         backgroundColor: 'rgba(234,234,234,0.9)',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 15,
-        marginVertical: 10,
+        marginVertical: 5,
         borderRadius: 30,
     },
     square: {

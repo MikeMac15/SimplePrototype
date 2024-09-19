@@ -77,7 +77,7 @@ export default function Index() {
                 setPar3Data(data);
         } catch (error) {
             console.error("Failed to fetch Par 3 data", error);
-            throw error;
+            
         }
     }
     async function getAllPar4Data(): Promise<void> {
@@ -105,7 +105,7 @@ export default function Index() {
                 setPar4Data(data);
         } catch (error) {
             console.error("Failed to fetch Par 4 data", error);
-            throw error;
+            
         }
     }
     async function getAllPar5Data(): Promise<void> {
@@ -134,7 +134,7 @@ export default function Index() {
             setPar5Data(data);
         } catch (error) {
             console.error("Failed to fetch Par 5 data", error);
-            throw error;
+            
         }
     }
 
@@ -199,10 +199,19 @@ export default function Index() {
 
     const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 
+    const delayedLoading = () => {
+        setTimeout(() => {
+         return <Text style={{color:'whitesmoke', fontSize:20}}>No rounds played yet</Text> 
+        }, 500);
+    }
+
+    if (roundStatTotals.count === 0) {return <LinearGradient colors={MenuGradients[gradient]} style={styles.container2}></LinearGradient>}
     return (
         <LinearGradient colors={MenuGradients[gradient]} style={styles.container2}>
             
-            
+            {roundStatTotals.count === 0 ?
+            <View style={styles.centered}><Text style={{color:'whitesmoke', fontSize:20}}>No rounds played yet.</Text><Text style={{color:'whitesmoke', fontSize:20}}>Come back after a few rounds to view your statistics.</Text></View>
+        :
                 <ScrollView style={{ overflow: 'hidden' }}>
                     <View style={[styles.centered,{marginTop:10}]}>
                         <BigStats
@@ -210,7 +219,7 @@ export default function Index() {
                             roundsPlayed={roundStatTotals.count}
                             holesPlayed={roundStatTotals.count * 18}
                             bestRound={roundStatTotals.minScore}
-                        />
+                            />
                     </View>
                     <Text style={styles.title}>Scoring Overview</Text>
                     <View style={styles.container}>
@@ -223,7 +232,7 @@ export default function Index() {
                                 avgFIR={(roundStatTotals.avgFIR / roundStatTotals.firEligible) * 100}
                                 avgPPR={roundStatTotals.totalPutts / roundStatTotals.count}
                                 count={roundStatTotals.count}
-                            />
+                                />
                         </View>
                         <View>
                             <Text style={styles.title}>Avg Par Score</Text>
@@ -240,7 +249,7 @@ export default function Index() {
 
                                     {/* <View style={{justifyContent:'center', alignItems:'center'}}>
                                         <AllShotPieChart shotTotals={shotTotals} />
-                                    </View> */}
+                                        </View> */}
                                 </View>
                                 
                             </View>
@@ -250,6 +259,7 @@ export default function Index() {
                         <RecentRoundStatList />
                     </View>
                 </ScrollView>
+        }
             
         </LinearGradient>
     );
