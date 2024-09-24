@@ -1,4 +1,25 @@
-WORKING ON EMOJI LAYOUT
+# Golf Gooder ⛳️
+
+Golf Gooder is a comprehensive golf tracking application designed to help golfers analyze and improve their game. Available on both iOS and Android, this app provides advanced statistics, a dynamic scorecard, and strategic insights tailored to your home course and playing style.
+
+![Golf Gooder Banner](./git_gifs/GG_backgrounds.gif) <!-- Add a banner image of your app here -->
+
+## Features
+
+### 📊 Advanced Statistical Analysis
+- **Course & Hole Specific Stats:** Track your performance over time with detailed metrics for each round.
+- **Shot Accuracy & Distance:** Measure and analyze shot accuracy and distance to optimize your game.
+
+### 📝 Dynamic Scorecard
+- **Real-time Data Recording:** Record each shot as you play, with immediate feedback and visualizations.
+- **Customizable Layout:** A scorecard that adapts to your needs, providing a streamlined and intuitive experience.
+
+### 🎯 Strategic Decision-Making
+- **Smart Caddy:** Get tailored advice for key decisions on the course, helping you lower your scores.
+- **Performance Insights:** Understand your strengths and areas for improvement with easy-to-read graphs and summaries.
+
+![Screenshot1](./images/screenshot1.png) <!-- Add a screenshot of the app in use -->
+![Screenshot2](./images/screenshot2.png) <!-- Add another relevant screenshot -->
 
 
 License Agreement
@@ -23,20 +44,3 @@ License Agreement
     npx expo start
    ```
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-
-
-
-colors: {
-   cool-guy: ['#3b705d', '#01383b'],
-   sunset: ['#ff859b', '#ffbb33'],
-   morning-dew: ['#82f3ff', '#fce674','#f5d33b'],
-   OG-Dark: ['#222', '#111'],
-   ugly-light: ['whitesmoke','#e3e2de'],
-}
