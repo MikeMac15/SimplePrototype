@@ -2,7 +2,7 @@
 
 Golf Gooder is a comprehensive golf tracking application designed to help golfers analyze and improve their game. Available on both iOS and Android, this app provides advanced statistics, a dynamic scorecard, and strategic insights tailored to your home course and playing style.
 
-![Golf Gooder Banner](https://raw.githubusercontent.com/MikeMac15/SimplePrototype/tree/marketing/git_gifs/GG_backgrounds.gif) <!-- Add a banner image of your app here -->
+![Golf Gooder Banner](./git_gifs/GG_backgrounds.gif) <!-- Add a banner image of your app here -->
 
 ## Features
 
@@ -18,24 +18,8 @@ Golf Gooder is a comprehensive golf tracking application designed to help golfer
 - **Smart Caddy:** Get tailored advice for key decisions on the course, helping you lower your scores.
 - **Performance Insights:** Understand your strengths and areas for improvement with easy-to-read graphs and summaries.
 
-![Screenshot1](./images/screenshot1.png) <!-- Add a screenshot of the app in use -->
-![Screenshot2](./images/screenshot2.png) <!-- Add another relevant screenshot -->
-
-## Getting Started
-
-### Prerequisites
-To build and run Golf Gooder locally, you will need:
-
-- **Node.js & npm**: For managing dependencies and running scripts.
-- **React Native CLI**: To develop and run the app on simulators or physical devices.
-- **Xcode/Android Studio**: For building and testing the app on iOS and Android.
-
-### Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/golf-gooder.git
-
+![Screenshot1](./git_gifs/GG_play_vid.gif) <!-- Add a screenshot of the app in use -->
+![Screenshot2](./git_gifs/GG_stats.gif) <!-- Add another relevant screenshot -->
 
 
 License Agreement
@@ -59,3 +43,4 @@ License Agreement
    ```bash
     npx expo start
    ```
+
