@@ -18,8 +18,8 @@ Golf Gooder is a comprehensive golf tracking application designed to help golfer
 - **Smart Caddy:** Get tailored advice for key decisions on the course, helping you lower your scores.
 - **Performance Insights:** Understand your strengths and areas for improvement with easy-to-read graphs and summaries.
 
-![Screenshot1](./images/screenshot1.png) <!-- Add a screenshot of the app in use -->
-![Screenshot2](./images/screenshot2.png) <!-- Add another relevant screenshot -->
+![Screenshot1](./git_gifs/GG_play_vid.gif) <!-- Add a screenshot of the app in use -->
+![Screenshot2](./git_gifs/GG_stats.gif) <!-- Add another relevant screenshot -->
 
 
 License Agreement
