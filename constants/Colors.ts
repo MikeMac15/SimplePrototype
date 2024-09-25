@@ -60,7 +60,7 @@ export const getMenuImageSource = (menuImage: string) => {
     case 'balls':
       return require('../assets/images/balls1.png');
     default:
-      return require('../assets/images/ggwp.png');
+      return require('../assets/images/ocean.png');
     }
   };
       
@@ -102,7 +102,9 @@ export const teeTextColor = (color:number) : string => {
       return '#888';
         
     case 2:
-      return 'skyblue';
+      return '#407fd6';
+      // return '#1e589e';
+      // return 'skyblue';
 
     case 3:
       return 'whitesmoke';

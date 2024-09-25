@@ -1,6 +1,6 @@
 import { getAllCourses,getAllCourseTeeboxes} from "@/components/DataBase/API";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, Stack } from "expo-router";
+import { Link, router, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert, TextInput } from "react-native";
 import { Picker } from "react-native-ui-lib";
@@ -167,181 +167,181 @@ export default function Play() {
 //       </View>
 //     )
 //   }
-//   const SkinsSetup = () => {
-//     const [players, setPlayers] = useState([
-//       { name: '', buyIn: '0', color: 'aqua' },
-//       { name: '', buyIn: '0', color: 'orange' },
-//       { name: '', buyIn: '0', color: 'violet' },
-//       { name: '', buyIn: '0', color: 'gold' },
-//       // { name: 'Mike', buyIn: '50', color: 'aqua' },
-//       // { name: 'Jamie', buyIn: '20', color: 'orange' },
-//       // { name: 'Kelsey', buyIn: '20', color: 'violet' },
-//       // { name: 'Grant', buyIn: '100', color: 'gold' },
-//     ]);
-//     const [playerCount, setPlayerCount] = useState(4);
-//     const [gameLength, setGameLength] = useState(18);
-//     const [serializedPlayers, setSerializedPlayers] = useState('');
+  const SkinsSetup = () => {
+    const [players, setPlayers] = useState([
+      { name: '', buyIn: '0', color: 'aqua' },
+      { name: '', buyIn: '0', color: 'orange' },
+      { name: '', buyIn: '0', color: 'violet' },
+      { name: '', buyIn: '0', color: 'gold' },
+      // { name: 'Mike', buyIn: '50', color: 'aqua' },
+      // { name: 'Jamie', buyIn: '20', color: 'orange' },
+      // { name: 'Kelsey', buyIn: '20', color: 'violet' },
+      // { name: 'Grant', buyIn: '100', color: 'gold' },
+    ]);
+    const [playerCount, setPlayerCount] = useState(4);
+    const [gameLength, setGameLength] = useState(18);
+    const [serializedPlayers, setSerializedPlayers] = useState('');
 
-//     // Update serialized players when players or playerCount change
-//     useEffect(() => {
-//       const selectedPlayers = players.slice(0, playerCount);
-//       setSerializedPlayers(JSON.stringify(selectedPlayers));
-//     }, [players, playerCount]);
+    // Update serialized players when players or playerCount change
+    useEffect(() => {
+      const selectedPlayers = players.slice(0, playerCount);
+      setSerializedPlayers(JSON.stringify(selectedPlayers));
+    }, [players, playerCount]);
     
-//     const handlePlayerChange = (index: number, key: keyof typeof players[0], value: string | number) => {
-//       setPlayers((prevPlayers) => {
-//         const updatedPlayers = [...prevPlayers];
-//         updatedPlayers[index] = { ...updatedPlayers[index], [key]: value };
-//         return updatedPlayers;
-//       });
-//     };
+    const handlePlayerChange = (index: number, key: keyof typeof players[0], value: string | number) => {
+      setPlayers((prevPlayers) => {
+        const updatedPlayers = [...prevPlayers];
+        updatedPlayers[index] = { ...updatedPlayers[index], [key]: value };
+        return updatedPlayers;
+      });
+    };
     
-//     const SkinsPlayBtn = () => {
-//       return (
-//         <Link href={{
-//           pathname: '/(play)/skins',
-//           params: {
-//             players: serializedPlayers, // passing serialized players
-//             gameLength,
-//           },
-//         }}
-//         asChild>
-//           <TouchableOpacity style={[skinstyles.button, skinstyles.buttonSave, { marginTop: 20 }]}>
-//             <Text style={[skinstyles.textStyle, { color: '#111' }]}>Play Skins Match</Text>
-//           </TouchableOpacity>
-//         </Link>
-//       );
-//     };
+    const SkinsPlayBtn = () => {
+      return (
+        <Link href={{
+          pathname: '/(play)/skins',
+          params: {
+            players: serializedPlayers, // passing serialized players
+            gameLength,
+          },
+        }}
+        asChild>
+          <TouchableOpacity style={[skinstyles.button, skinstyles.buttonSave, { marginTop: 20 }]}>
+            <Text style={[skinstyles.textStyle, { color: '#111' }]}>Play Skins Match</Text>
+          </TouchableOpacity>
+        </Link>
+      );
+    };
 
-//     return (
-//       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-//         <Text style={styles.title}>Skins Game</Text>
-//         <Text style={{ color: 'whitesmoke' }}>How many holes?</Text>
-//         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-//           {[9, 18].map((count) => (
-//             <TouchableOpacity
-//               key={count}
-//               onPress={() => setGameLength(count)}
-//               style={{
-//                 backgroundColor: gameLength === count ? 'yellowgreen' : '#333',
-//                 padding: 10,
-//                 margin: 5,
-//                 borderRadius: 5,
-//               }}>
-//               <Text style={{ color: gameLength === count ? 'whitesmoke' : '#888' }}>{count}</Text>
-//             </TouchableOpacity>
-//           ))}
-//         </View>
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={styles.title}>Skins Game</Text>
+        <Text style={{ color: 'whitesmoke' }}>How many holes?</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          {[9, 18].map((count) => (
+            <TouchableOpacity
+              key={count}
+              onPress={() => setGameLength(count)}
+              style={{
+                backgroundColor: gameLength === count ? 'yellowgreen' : '#333',
+                padding: 10,
+                margin: 5,
+                borderRadius: 5,
+              }}>
+              <Text style={{ color: gameLength === count ? 'whitesmoke' : '#888' }}>{count}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         
-//         <Text style={{ color: 'whitesmoke' }}>How many players?</Text>
-//         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-//           {[2, 3, 4].map((count) => (
-//             <TouchableOpacity
-//               key={count}
-//               onPress={() => setPlayerCount(count)}
-//               style={{
-//                 backgroundColor: playerCount === count ? 'yellowgreen' : '#333',
-//                 padding: 10,
-//                 margin: 5,
-//                 borderRadius: 5,
-//               }}>
-//               <Text style={{ color: playerCount === count ? 'whitesmoke' : '#888' }}>{count}</Text>
-//             </TouchableOpacity>
-//           ))}
-//         </View>
+        <Text style={{ color: 'whitesmoke' }}>How many players?</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          {[2, 3, 4].map((count) => (
+            <TouchableOpacity
+              key={count}
+              onPress={() => setPlayerCount(count)}
+              style={{
+                backgroundColor: playerCount === count ? 'yellowgreen' : '#333',
+                padding: 10,
+                margin: 5,
+                borderRadius: 5,
+              }}>
+              <Text style={{ color: playerCount === count ? 'whitesmoke' : '#888' }}>{count}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-//         {players.slice(0, playerCount).map((player, index) => (
-//           <View key={index} style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
-//             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-//               <Text style={{ color: player.color, marginRight: 5 }}>Player {index + 1}:</Text>
-//               <TextInput
-//                 placeholder="Player Name"
-//                 placeholderTextColor="#aaa"
-//                 value={player.name}
-//                 onChangeText={(text) => handlePlayerChange(index, 'name', text)}
-//                 style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
-//               />
-//               <Text style={{ marginLeft: 5, color: 'whitesmoke' }}>$</Text>
-//               <TextInput
-//                 placeholder="Buy In"
-//                 placeholderTextColor="#aaa"
-//                 keyboardType="numeric"
-//                 value={player.buyIn.toString()}
-//                 onChangeText={(text) => handlePlayerChange(index, 'buyIn', parseFloat(text) || 0)}
-//                 style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
-//               />
-//             </View>
-//           </View>
-//         ))}
-//         {/* <SkinsPlayBtn /> */}
-//       </View>
-//     );
-// };
-
-
+        {players.slice(0, playerCount).map((player, index) => (
+          <View key={index} style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+              <Text style={{ color: player.color, marginRight: 5 }}>Player {index + 1}:</Text>
+              <TextInput
+                placeholder="Player Name"
+                placeholderTextColor="#aaa"
+                value={player.name}
+                onChangeText={(text) => handlePlayerChange(index, 'name', text)}
+                style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
+              />
+              <Text style={{ marginLeft: 5, color: 'whitesmoke' }}>$</Text>
+              <TextInput
+                placeholder="Buy In"
+                placeholderTextColor="#aaa"
+                keyboardType="numeric"
+                value={player.buyIn.toString()}
+                onChangeText={(text) => handlePlayerChange(index, 'buyIn', parseFloat(text) || 0)}
+                style={{ backgroundColor: '#555', color: 'whitesmoke', padding: 10, borderRadius: 5 }}
+              />
+            </View>
+          </View>
+        ))}
+        {/* <SkinsPlayBtn /> */}
+      </View>
+    );
+};
 
 
 
 
 
 
-//   const skinstyles = StyleSheet.create({
-//     centeredView: {
-//       flex: 1,
-//       justifyContent: 'center',
-//       alignItems: 'center',
-//       marginTop: 22,
-//     },
-//     modalView: {
-//       width: '90%',
-//       margin: 20,
-//       backgroundColor: '#444',
-//       borderRadius: 20,
-//       padding: 35,
-//       alignItems: 'center',
-//       shadowColor: '#000',
-//       shadowOffset: {
-//         width: 0,
-//         height: 2,
-//       },
-//       shadowOpacity: 0.25,
-//       shadowRadius: 4,
-//       elevation: 5,
-//     },
-//     button: {
-//       borderRadius: 20,
-//       padding: 10,
-//       elevation: 2,
-//       marginTop: 10
-//     },
-//     buttonCancel: {
-//       backgroundColor: 'salmon',
-//       width: 80
-//     },
-//     buttonSave: {
-//       backgroundColor: 'yellowgreen',
+
+
+  const skinstyles = StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    modalView: {
+      width: '90%',
+      margin: 20,
+      backgroundColor: '#444',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+      marginTop: 10
+    },
+    buttonCancel: {
+      backgroundColor: 'salmon',
+      width: 80
+    },
+    buttonSave: {
+      backgroundColor: 'yellowgreen',
       
-//     },
-//     buttonIncomplete: {
-//       backgroundColor: '#888',
-//       width: 80
-//     },
-//     textStyle: {
-//       color: 'white',
-//       fontWeight: 'bold',
-//       textAlign: 'center',
-//     },
-//     modalText: {
-//       marginBottom: 15,
-//       textAlign: 'center',
-//     },
-//     textInputBox: {
-//       backgroundColor: '#ccc',
-//       paddingVertical: 5,
-//       paddingHorizontal: 10,
-//       borderRadius: 20
-//     }
-//   });
+    },
+    buttonIncomplete: {
+      backgroundColor: '#888',
+      width: 80
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+    textInputBox: {
+      backgroundColor: '#ccc',
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+      borderRadius: 20
+    }
+  });
 
 
 
@@ -497,13 +497,13 @@ export default function Play() {
               {/* <JustPlayBtn /> */}
             </>
           }
-{/* 
+
           {roundType === 'Skins/Match' &&
             <>
             <SkinsSetup />
             
             </>
-          } */}
+          }
         </View>
 
 

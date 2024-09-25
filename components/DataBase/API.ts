@@ -156,6 +156,76 @@ export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
         `)
         
             const result = await db.getFirstAsync(`SELECT id FROM course WHERE name = 'Just Play'`);
+            const ridge = await db.getFirstAsync(`SELECT id FROM course WHERE name = 'Snoqualmie Ridge'`);
+            if (!ridge) {
+                // Insert course
+                await db.execAsync(`
+                INSERT INTO course (name) VALUES ('Snoqualmie Ridge');
+                `);
+        
+                // Get the new course ID
+                const courseId:id|null = await db.getFirstAsync(`SELECT id FROM course WHERE name = 'Snoqualmie Ridge'`);
+                
+                // Insert teebox for the course
+                if (courseId) {
+
+                try{
+
+                
+                const goldTee = await db.runAsync('INSERT INTO teebox (course_id, color1, color2) VALUES (?,?,?)', courseId.id, 5, 0);
+                const blueTee = await db.runAsync('INSERT INTO teebox (course_id, color1, color2) VALUES (?,?,?)', courseId.id, 2, 0);
+                // Get the new teebox ID
+               const goldTeeId = goldTee.lastInsertRowId; 
+               const blueTeeId = blueTee.lastInsertRowId;
+               console.log('gold teebox id', goldTeeId)
+               console.log('blue teebox id', blueTeeId)
+    
+                // Insert holes
+                await db.execAsync(`
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 1, 5, 530);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 2, 4, 388);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 3, 4, 439);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 4, 4, 400);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 5, 4, 445);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 6, 3, 207);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 7, 4, 354);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 8, 5, 518);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 9, 3, 196);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 10, 4, 324);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 11, 4, 455);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 12, 4, 412);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 13, 3, 181);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 14, 4, 431);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 15, 5, 557);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 16, 4, 368);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 17, 3, 186);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${goldTeeId}, 5, 18, 5, 482);
+                `);
+                // Insert holes
+                await db.execAsync(`
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 1, 5, 514);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 2, 4, 372);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 3, 4, 424);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 4, 4, 376);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 5, 4, 413);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 6, 3, 189);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 7, 4, 336);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 8, 5, 507);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 9, 3, 180);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 10, 4, 283);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 11, 4, 427);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 12, 4, 395);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 13, 3, 156);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 14, 4, 410);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 15, 5, 526);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 16, 4, 352);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 17, 3, 174);
+                INSERT INTO hole (teebox_id, color, num, par, yardage) VALUES (${blueTeeId}, 2, 18, 5, 460);
+                `);}
+                catch (error) {
+                    console.error("Error setting up tables:", error);
+                }
+            }}
 
             if (!result) {
                 // Insert course

@@ -1,11 +1,10 @@
-import { Scorecard } from '@/app/(myCourses)/(holes)/Holes';
-import {  getAllRounds, getLastFiveRounds, RecentRoundTitleInfo } from '@/components/DataBase/API'
-import { Round } from '../DataBase/Classes';
-import { useSQLiteContext } from 'expo-sqlite';
+
+import {  getLastFiveRounds, RecentRoundTitleInfo } from '@/components/DataBase/API'
+
 import { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert, Pressable} from 'react-native'
 import PreviousScore9 from './PreviousScore9';
-import { LinearGradient } from 'expo-linear-gradient';
+
 import { TeeColors, teeTextColor } from '@/constants/Colors';
 
 export default function RecentRoundStatList() {
@@ -44,7 +43,7 @@ export default function RecentRoundStatList() {
 
     const RoundList = () => {
         return (
-            <View style={{marginTop:30}}>
+            <View style={{marginTop:0}}>
 
 
         <Modal

@@ -91,30 +91,30 @@ export default function Settings() {
         <View style={{flexDirection:'row', marginBottom:50, justifyContent:'center'}}>
             <View style={{alignItems:'center', backgroundColor:'rgba(20,20,20,0.75)', borderRadius:20, marginTop:20, marginHorizontal:2}}>
                 <Text style={{color:theme.color, paddingTop:10}}>Menu Gradient</Text>
+                <Button title="OG-Dark" onPress={()=> setGradient('OG-Dark')} />
+                <Button title="OG-Light" onPress={()=> setGradient('OG-Light')} />
                 <Button title="cool-guy" onPress={()=> setGradient('cool-guy')} />
                 <Button title="sunset" onPress={()=> setGradient('sunset')} />
                 <Button title="morning-dew" onPress={()=> setGradient('morning-dew')} />
-                <Button title="OG-Dark" onPress={()=> setGradient('OG-Dark')} />
-                <Button title="OG-Light" onPress={()=> setGradient('OG-Light')} />
             </View>
             <View style={{alignItems:'center', backgroundColor:'rgba(20,20,20,0.75)', borderRadius:20, marginTop:20, marginHorizontal:2}}>
                 <Text style={{color:theme.color, paddingTop:10}}>Menu Image</Text>
                 <Button title="proud-parent" onPress={()=> setMenuImage('proud-parent')} />
-                <Button title="ocean" onPress={()=> setMenuImage('ocean')} />
-                <Button title="sunset" onPress={()=> setMenuImage('sunset')} />
                 <Button title="retro" onPress={()=> setMenuImage('retro')} />
                 <Button title="JamesWebb" onPress={()=> setMenuImage('nasaJW')} />
-                <Button title="palms" onPress={()=> setMenuImage('palms')} />
                 <Button title="balls" onPress={()=> setMenuImage('balls')} />
+                <Button title="ocean" onPress={()=> setMenuImage('ocean')} />
+                <Button title="sunset" onPress={()=> setMenuImage('sunset')} />
+                <Button title="palms" onPress={()=> setMenuImage('palms')} />
             </View>
             <View style={{alignItems:'center', backgroundColor:'rgba(20,20,20,0.75)', borderRadius:20, marginTop:20, marginHorizontal:2}}>
                 <Text style={{color:theme.color, paddingTop:10}}>Ribbon Image</Text>
                 <Button title="proud-parent" onPress={()=> setRibbonImage('proud-parent')} />
                 <Button title="retro" onPress={()=> setRibbonImage('retro')} />
                 <Button title="JamesWebb" onPress={()=> setRibbonImage('nasaJW')} />
+                <Button title="balls" onPress={()=> setRibbonImage('balls')} />
                 <Button title="meadow" onPress={()=> setRibbonImage('meadow')} />
                 <Button title="metal" onPress={()=> setRibbonImage('metal')} />
-                <Button title="balls" onPress={()=> setRibbonImage('balls')} />
             </View>
         </View>
             {/* <View>

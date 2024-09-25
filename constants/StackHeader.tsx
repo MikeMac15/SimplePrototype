@@ -69,12 +69,12 @@ const StackHeader: React.FC<StackHeaderProps> = ({ image, imageTag, title, round
             style={[StyleSheet.absoluteFill, { flex: 1 }]}
           />
         ),
-        headerTitleStyle: { color: textColor, fontSize: 25, fontWeight: 'bold', fontFamily: 'Papyrus' },
+        headerTitleStyle: { color: "whitesmoke", fontSize: 25, fontWeight: 'bold', fontFamily: 'Papyrus' },
 
         headerBlurEffect: 'systemUltraThinMaterialDark',
         headerLeft: () => (
           <TouchableOpacity onPress={() => exitAlert()} >
-            <Text style={{ color: 'salmon', }}>Exit</Text>
+            <Text style={{ color: 'salmon', fontSize:16 }}>Exit</Text>
             
           </TouchableOpacity>
         ),

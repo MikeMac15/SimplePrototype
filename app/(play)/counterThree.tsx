@@ -14,7 +14,7 @@ import VerticalBtns3 from "@/components/Layouts/CounterThree/VerticalShotBtns3";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import StackHeader from "@/constants/StackHeader";
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
-import { getRibbonImageSource, MenuGradients, TeeColors } from "@/constants/Colors";
+import { getRibbonImageSource, MenuGradients, TeeColors, teeTextColor } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { initialState, reducer, } from '@/components/DataBase/RoundReducer';
@@ -195,7 +195,6 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
   };
 
 
-
   // const StackScreen = () => {
   //   return (
   //     <Stack.Screen
@@ -286,12 +285,12 @@ const image = useMemo(() => getRibbonImageSource(ribbonImage), [ribbonImage]);
 return (
   <>
     <StackHeader image={image} imageTag={ribbonImage} title={`${courseName}`} roundRef={roundRef} lastHole={lastHole} nextHole={nextHole} teeboxHoles={teeboxHoles}/>
-  {/* <View style={{ backgroundColor: '#333', height: '100%' }}> */}
+
   {summaryModal &&
   <SummaryModal round={roundRef.current} course={String(courseName)} tee={TeeColors[Number(teeID)]} />
   }
   <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
-    {currentHoleData && <View style={{ height: 5, backgroundColor: `${TeeColors[currentHoleData.color].toLowerCase()}` }} /> }
+    {currentHoleData && <View style={{ height: 5, backgroundColor: `${teeTextColor(currentHoleData.color)}` }} /> }
     {Marquee}
     {isLoading || !teeboxHoles.length || !currentHoleData
     ? <Text>Loading...</Text>

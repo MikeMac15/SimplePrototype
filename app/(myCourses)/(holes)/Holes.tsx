@@ -235,15 +235,33 @@ const image = getRibbonImageSource(ribbonImage);
       :
       <View style={{ width: '100%', height: 5, backgroundColor: `${TeeColors[teeBoxColors[0]].toLowerCase()}` }} />
   }
-
-  const AddHoleInfoBtn = () => {
-    return (<View>
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const AddHoleInfoBtn = () => {
+  return (<View>
 
     {
       newHoleNumber <= 18
       ?
-      <View style={[styles.newHoleBtn, { width: '100%', height: 100, justifyContent: 'space-evenly', alignItems: 'center', backgroundColor: '#aaa' }]}>
-          <Text style={styles.text}>Hole {newHoleNumber}</Text>
+      <View style={[styles.newHoleBtn, { width: '100%', height: 100, justifyContent: 'space-evenly', backgroundColor: '#aaa' }]}>
+          <View style={{alignItems:'center'}}>
+            <Text style={[styles.text,{fontSize:20, textAlign:'center'}]}>Hole</Text>
+            <Text style={[styles.text,{fontSize:20, textAlign:'center'}]}> {newHoleNumber}</Text>
+          </View>
+
+          <View style={styles.newHoleColumn}>
+            <Text style={styles.text}>Par:</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {/* <Button title="-" onPress={() => setNewPar((prev) => prev > 3 ? prev - 1 : prev)} />
+              <Text style={styles.text}>{newPar}</Text>
+              <Button title="+" onPress={() => setNewPar((prev) => prev < 5 ? prev + 1 : prev)} /> */}
+              <TouchableOpacity style={[styles.parChoiceBtn, {backgroundColor: newPar == 3 ? 'yellowgreen' : '#888'}]} onPress={() => setNewPar(3)}><Text style={[styles.text,{fontSize:20}]}>3</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.parChoiceBtn, {backgroundColor: newPar == 4 ? 'yellowgreen' : '#888'}]} onPress={() => setNewPar(4)}><Text style={[styles.text,{fontSize:20}]}>4</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.parChoiceBtn, {backgroundColor: newPar == 5 ? 'yellowgreen' : '#888'}]} onPress={() => setNewPar(5)}><Text style={[styles.text,{fontSize:20}]}>5</Text></TouchableOpacity>
+              
+
+
+            </View>
+          </View>
 
           <View style={styles.newHoleColumn}>
 
@@ -251,14 +269,6 @@ const image = getRibbonImageSource(ribbonImage);
             <TextInput style={styles.textInputBox} value={newYardage} placeholder="400" onChangeText={(text) => setNewYardage(text)} keyboardType="numeric" />
           </View>
 
-          <View style={styles.newHoleColumn}>
-            <Text style={styles.text}>Par:</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Button title="-" onPress={() => setNewPar((prev) => prev > 3 ? prev - 1 : prev)} />
-              <Text style={styles.text}>{newPar}</Text>
-              <Button title="+" onPress={() => setNewPar((prev) => prev < 5 ? prev + 1 : prev)} />
-            </View>
-          </View>
 
           {
             teeBoxColors[1] > 0
@@ -281,6 +291,7 @@ const image = getRibbonImageSource(ribbonImage);
       }
       </View>)
   }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const [redNum, setRedNum] = useState('')
   const [par, setPar] = useState('')
@@ -385,5 +396,12 @@ const image = getRibbonImageSource(ribbonImage);
     },
     text: {
       textAlign: 'center', fontFamily: 'Arial', fontSize: 17, fontStyle: 'italic'
+    },
+    parChoiceBtn: {
+      backgroundColor: '#777',
+      paddingVertical: 5,
+      paddingHorizontal: 8,
+      borderRadius: 5,
+      marginHorizontal: 5
     },
   });
