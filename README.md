@@ -22,6 +22,46 @@ Golf Gooder is a comprehensive golf tracking application designed to help golfer
 ![Screenshot2](./git_gifs/GG_stats.gif) <!-- Add another relevant screenshot -->
 
 
+## 🏌️ How to Track Your Score
+
+![Screenshot3](./git_gifs/how_to_play.png)
+
+1. **![Yellow Star](https://via.placeholder.com/10/FFFF00?text=+) Hole Information**  
+     
+   All relevant information for the current hole is displayed here, including the hole number, par, yardage, and shot number.
+
+2. **![White Star](https://via.placeholder.com/10/FFFFFF?text=+) Shot Categorization**  
+     
+   After taking your shot, you can categorize it as either:
+   - **Great**
+   - **Good**
+   - **Bad**
+   - **Putt**
+
+   These categories are subjective and based on how you felt about the shot, considering factors like contact, outcome, or stress level.
+
+3. **![Pink Star](https://via.placeholder.com/10/FFC0CB?text=+)  Fairway in Regulation (FIR) and Green in Regulation (GIR) Tracking**  
+    
+   - If your **tee shot** lands in the fairway, check off the **FIR** box.
+   - If your **approach shot** lands on the green, allowing two putts to make par, check the **GIR** box.  
+     For a GIR, your ball should be on the green:
+     - **Par 3:** First shot
+     - **Par 4:** Second shot
+     - **Par 5:** Third shot
+
+4. **![Blue Star](https://via.placeholder.com/10/00BFFF?text=+)  Next Hole Button**  
+    
+   Tap the **Next** button in the top right corner to advance to the next hole.  
+   ⚠️ **Note:** Once you proceed to the next hole, you cannot go back and change your score. Make sure it's correct before moving on.
+
+
+
+
+
+
+
+
+
 License Agreement
 
 1. Usage: You may not use, copy, modify, or distribute this code in any form without the explicit permission of the author.
