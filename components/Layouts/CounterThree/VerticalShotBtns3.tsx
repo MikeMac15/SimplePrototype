@@ -50,7 +50,7 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, ad
       <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
   
   
-        <TouchableOpacity activeOpacity={0.5} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        <TouchableOpacity activeOpacity={0.5} style={[styles.shotBtn2, {shadowColor:'skyblue'}]} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           onPress={() => addShotGreat()}
           onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotGreat(); }}>
           <View style={{ backgroundColor: '#555', borderRadius: 20, borderWidth: 3, borderColor: '#73c7eb' }}>
@@ -67,7 +67,7 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, ad
         </TouchableOpacity>
   
   
-        <TouchableOpacity activeOpacity={0.8} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        <TouchableOpacity activeOpacity={0.8} style={[styles.shotBtn2, {shadowColor:'yellowgreen'}]} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           onPress={() => addShotGood()}
           onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotGood() }}>
           <View style={{ backgroundColor: '#555', borderRadius: 20, borderWidth: 3, borderColor: 'yellowgreen' }}>
@@ -85,7 +85,7 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, ad
         </TouchableOpacity>
   
   
-        <TouchableOpacity activeOpacity={0.8} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        <TouchableOpacity activeOpacity={0.8} style={[styles.shotBtn2, {shadowColor:'salmon'}]} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           onPress={() => addShotBad()}
           onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotBad() }}>
           <View style={{ backgroundColor: '#555', borderRadius: 20, borderWidth: 3, borderColor: 'salmon' }}>
@@ -102,7 +102,7 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, ad
           </View>
         </TouchableOpacity>
   
-        <TouchableOpacity activeOpacity={0.8} style={styles.shotBtn2} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        <TouchableOpacity activeOpacity={0.8} style={[styles.shotBtn2, {shadowColor:'tan'}]} onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           onPress={() => addShotPutt()}
           onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); subShotPutt() }}>
   
@@ -137,7 +137,11 @@ const VerticalBtns3: React.FC<BtnsProps> = ({addShot, subtractShot, shotData, ad
 
     shotBtn2: {
         width: 225,
-        marginVertical: 5,
+        marginVertical: 8,
+        // shadowColor: '#FFF',
+        shadowOffset: { width: 1.5, height: 1 },
+        shadowOpacity: 0.5, 
+        shadowRadius: 2.5,
       },
     centeredRow: { flexDirection: 'row', alignItems: 'center', },
     textShadow: {

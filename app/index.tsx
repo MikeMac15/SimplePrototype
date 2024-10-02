@@ -13,7 +13,7 @@ import WelcomeModal from "@/components/HomeComponents/WelcomeModal";
 
 
 export default function Index() {
-  const [menuImage, setMenuImage] = useState('ocean');
+  const [menuImage, setMenuImage] = useState('palms');
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const imageSource = getMenuImageSource(menuImage);

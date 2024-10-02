@@ -44,15 +44,15 @@ export default function Index() {
         firEligible: 0,
     });
 
-    const [par3Data, setPar3Data] = useState<QuickStats>({totalPutts:0,totalGIR:0,totalFIR:0,totalScore:0,avgScore:0,count:0,eaglesOrLess:0,birdies:0,pars:0,bogeys:0,doublePlus:0})
-    const [par4Data, setPar4Data] = useState<QuickStats>({totalPutts:0,totalGIR:0,totalFIR:0,totalScore:0,avgScore:0,count:0,eaglesOrLess:0,birdies:0,pars:0,bogeys:0,doublePlus:0})
-    const [par5Data, setPar5Data] = useState<QuickStats>({totalPutts:0,totalGIR:0,totalFIR:0,totalScore:0,avgScore:0,count:0,eaglesOrLess:0,birdies:0,pars:0,bogeys:0,doublePlus:0})
-    
+    const [par3Data, setPar3Data] = useState<QuickStats>({ totalPutts: 0, totalGIR: 0, totalFIR: 0, totalScore: 0, avgScore: 0, count: 0, eaglesOrLess: 0, birdies: 0, pars: 0, bogeys: 0, doublePlus: 0 })
+    const [par4Data, setPar4Data] = useState<QuickStats>({ totalPutts: 0, totalGIR: 0, totalFIR: 0, totalScore: 0, avgScore: 0, count: 0, eaglesOrLess: 0, birdies: 0, pars: 0, bogeys: 0, doublePlus: 0 })
+    const [par5Data, setPar5Data] = useState<QuickStats>({ totalPutts: 0, totalGIR: 0, totalFIR: 0, totalScore: 0, avgScore: 0, count: 0, eaglesOrLess: 0, birdies: 0, pars: 0, bogeys: 0, doublePlus: 0 })
 
-    
-    
-   
-    
+
+
+
+
+
     async function getAllPar3Data(): Promise<void> {
         try {
             const db = await openDb();
@@ -77,7 +77,7 @@ export default function Index() {
                 setPar3Data(data);
         } catch (error) {
             console.error("Failed to fetch Par 3 data", error);
-            
+
         }
     }
     async function getAllPar4Data(): Promise<void> {
@@ -99,13 +99,13 @@ export default function Index() {
              FROM holestats 
              JOIN hole ON hole.id = hole_id 
              WHERE hole.par = 4;`
-                
+
             );
             if (data)
                 setPar4Data(data);
         } catch (error) {
             console.error("Failed to fetch Par 4 data", error);
-            
+
         }
     }
     async function getAllPar5Data(): Promise<void> {
@@ -127,22 +127,22 @@ export default function Index() {
              FROM holestats 
              JOIN hole ON hole.id = hole_id 
              WHERE hole.par = 5;`
-                
+
 
             );
             if (data)
-            setPar5Data(data);
+                setPar5Data(data);
         } catch (error) {
             console.error("Failed to fetch Par 5 data", error);
-            
+
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getAllPar3Data()
         getAllPar4Data()
         getAllPar5Data()
-    },[])
+    }, [])
 
 
 
@@ -158,36 +158,36 @@ export default function Index() {
 
     const fetchRoundData = useCallback(async () => {
         try {
-          const [roundStats, timelineScoreArray] = await Promise.all([getRoundAllStats(), getTimelineScores()]);
-          const totals = {
-            count: roundStats.count,
-            minScore: roundStats.minScore,
-            maxScore: roundStats.maxScore,
-            avgStrokes: roundStats.avgStrokes,
-            eaglesOless: roundStats.eaglesOless,
-            birdies: roundStats.birdies,
-            pars: roundStats.pars,
-            bogies: roundStats.bogies,
-            doublePlus: roundStats.doublePlus,
-            toPar3: roundStats.toPar3,
-            toPar4: roundStats.toPar4,
-            toPar5: roundStats.toPar5,
-            great: roundStats.great,
-            good: roundStats.good,
-            bad: roundStats.bad,
-            totalPutts: roundStats.totalPutts,
-            avgGIR: roundStats.avgGIR,
-            avgFIR: roundStats.avgFIR,
-            firEligible: roundStats.firEligible, // Add this line
-          };
-          setShotTotals({ great: roundStats.great, good: roundStats.good, bad: roundStats.bad, totalPutts: roundStats.totalPutts });
-          setRoundStatTotals(totals);
-          setTimelineScores(timelineScoreArray);
+            const [roundStats, timelineScoreArray] = await Promise.all([getRoundAllStats(), getTimelineScores()]);
+            const totals = {
+                count: roundStats.count,
+                minScore: roundStats.minScore,
+                maxScore: roundStats.maxScore,
+                avgStrokes: roundStats.avgStrokes,
+                eaglesOless: roundStats.eaglesOless,
+                birdies: roundStats.birdies,
+                pars: roundStats.pars,
+                bogies: roundStats.bogies,
+                doublePlus: roundStats.doublePlus,
+                toPar3: roundStats.toPar3,
+                toPar4: roundStats.toPar4,
+                toPar5: roundStats.toPar5,
+                great: roundStats.great,
+                good: roundStats.good,
+                bad: roundStats.bad,
+                totalPutts: roundStats.totalPutts,
+                avgGIR: roundStats.avgGIR,
+                avgFIR: roundStats.avgFIR,
+                firEligible: roundStats.firEligible, // Add this line
+            };
+            setShotTotals({ great: roundStats.great, good: roundStats.good, bad: roundStats.bad, totalPutts: roundStats.totalPutts });
+            setRoundStatTotals(totals);
+            setTimelineScores(timelineScoreArray);
         } catch (error) {
-          console.error('Error fetching round data:', error);
+            console.error('Error fetching round data:', error);
         }
-      }, []);
-      
+    }, []);
+
 
     useEffect(() => {
         getPreferences();
@@ -201,66 +201,67 @@ export default function Index() {
 
     const delayedLoading = () => {
         setTimeout(() => {
-         return <Text style={{color:'whitesmoke', fontSize:20}}>No rounds played yet</Text> 
+            return <Text style={{ color: 'whitesmoke', fontSize: 20 }}>No rounds played yet</Text>
         }, 500);
     }
 
-    if (roundStatTotals.count === 0) {return <LinearGradient colors={MenuGradients[gradient]} style={styles.container2}></LinearGradient>}
+    if (roundStatTotals.count === 0) { return <LinearGradient colors={MenuGradients[gradient]} style={styles.container2}></LinearGradient> }
     return (
         <LinearGradient colors={MenuGradients[gradient]} style={styles.container2}>
-            
+
             {roundStatTotals.count === 0 ?
-            <View style={styles.centered}><Text style={{color:'whitesmoke', fontSize:20}}>No rounds played yet.</Text><Text style={{color:'whitesmoke', fontSize:20}}>Come back after a few rounds to view your statistics.</Text></View>
-        :
+                <View style={styles.centered}><Text style={{ color: 'whitesmoke', fontSize: 20 }}>No rounds played yet.</Text><Text style={{ color: 'whitesmoke', fontSize: 20 }}>Come back after a few rounds to view your statistics.</Text></View>
+                :
                 <ScrollView style={{ overflow: 'hidden' }}>
-                    <View style={[styles.centered,{marginTop:10}]}>
-                        <BigStats
-                            avgScore={roundStatTotals.avgStrokes}
-                            roundsPlayed={roundStatTotals.count}
-                            holesPlayed={roundStatTotals.count * 18}
-                            bestRound={roundStatTotals.minScore}
-                            />
-                    </View>
-                    <Text style={styles.title}>Scoring Overview</Text>
-                    <View style={styles.container}>
-                        <View style={styles.scaleDown}>
-                            <CourseAveragesView
-                                best={roundStatTotals.minScore}
-                                worst={roundStatTotals.maxScore}
-                                avgScore={roundStatTotals.avgStrokes}
-                                avgGIR={(roundStatTotals.avgGIR / 18) * 100}
-                                avgFIR={(roundStatTotals.avgFIR / roundStatTotals.firEligible) * 100}
-                                avgPPR={roundStatTotals.totalPutts / roundStatTotals.count}
-                                count={roundStatTotals.count}
+                    <View style={[styles.centered, { marginTop: 10 }]}>
+                        <Text style={styles.title}>Scoring Overview</Text>
+                        <View style={styles.container}>
+                            <View style={styles.scaleDown}>
+                                <CourseAveragesView
+                                    best={roundStatTotals.minScore}
+                                    worst={roundStatTotals.maxScore}
+                                    avgScore={roundStatTotals.avgStrokes}
+                                    avgGIR={(roundStatTotals.avgGIR / 18) * 100}
+                                    avgFIR={(roundStatTotals.avgFIR / roundStatTotals.firEligible) * 100}
+                                    avgPPR={roundStatTotals.totalPutts / roundStatTotals.count}
+                                    count={roundStatTotals.count}
                                 />
-                        </View>
-                        <View>
-                            <Text style={styles.title}>Avg Par Score</Text>
-                            <ToParBreakdown toPar3={Math.round((par3Data.avgScore+3)*10)/10} toPar4={Math.round((par4Data.avgScore+4)*10)/10} toPar5={Math.round((par5Data.avgScore+5)*10)/10} />
-                        </View>
-                        <View style={{width:'100%'}}>
-                        <Text style={styles.title}>Scoring Timeline</Text>
-                                <Timeline data1={timelineScores} />
-                        </View>
-                            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
-                                <View>
-
-                                
-
-                                    {/* <View style={{justifyContent:'center', alignItems:'center'}}>
-                                        <AllShotPieChart shotTotals={shotTotals} />
-                                        </View> */}
+                            </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical:10 }}>
+                            <View>
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <AllShotPieChart shotTotals={shotTotals} />
                                 </View>
-                                
                             </View>
-                            <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
-                                <ParSpecificStatView par3data={par3Data} par4data={par4Data} par5data={par5Data} roundStatTotals={roundStatTotals} />
+
+                            <BigStats
+                                avgScore={roundStatTotals.avgStrokes}
+                                roundsPlayed={roundStatTotals.count}
+                                holesPlayed={roundStatTotals.count * 18}
+                                bestRound={roundStatTotals.minScore}
+                                />
+                                </View>
+                        <View style={{ backgroundColor: 'rgba(15,15,15,.4)', padding: 10, borderRadius: 30, marginVertical: 10 }}>
+                            <Text style={styles.title}>Scoring Timeline</Text>
+                            <View style={{ transform: 'scaleX(0.9)' }}>
+                                <View style={{ transform: 'translateX(-20px)' }}>
+                                    <Timeline data1={timelineScores} />
+                                </View>
                             </View>
+                        </View>
+                        </View>
+                        <View style={{ transform: 'scale(.9)', backgroundColor: 'rgba(15,15,15,.4)', padding: 10, borderRadius: 30,  }}>
+                            <Text style={styles.title}>Avg Par Score</Text>
+                            <ToParBreakdown toPar3={Math.round((par3Data.avgScore + 3) * 10) / 10} toPar4={Math.round((par4Data.avgScore + 4) * 10) / 10} toPar5={Math.round((par5Data.avgScore + 5) * 10) / 10} />
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                            <ParSpecificStatView par3data={par3Data} par4data={par4Data} par5data={par5Data} roundStatTotals={roundStatTotals} />
+                        </View>
                         <RecentRoundStatList />
                     </View>
                 </ScrollView>
-        }
-            
+            }
+
         </LinearGradient>
     );
 }

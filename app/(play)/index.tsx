@@ -1,4 +1,4 @@
-import { getAllCourses,getAllCourseTeeboxes} from "@/components/DataBase/API";
+import { getAllCourses, getAllCourseTeeboxes, getJustPlayCourse, getJustPlayCourseAndTee } from "@/components/DataBase/API";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -18,11 +18,11 @@ export default function Play() {
   const [courseName, setCourseName] = useState('');
   const [teeID, setTeeID] = useState(-1);
   const [teeName, setTeeName] = useState('');
-  const [chosenCourse, setChosenCourse] = useState<CourseAndTees|null>();
+  const [chosenCourse, setChosenCourse] = useState<CourseAndTees | null>();
   const [gradient, setGradient] = useState('cool-guy');
   const [ribbonImage, setRibbonImage] = useState('proud-parent');
 
-  const [roundType, setRoundType] = useState('');
+  const [roundType, setRoundType] = useState('Keep Stats');
   const [gir, setGIR] = useState('7');
   const [fir, setFIR] = useState('7');
   const [strokes, setStrokes] = useState('75');
@@ -117,56 +117,60 @@ export default function Play() {
     </TouchableOpacity>
   );
 
-//   const JustPlayBtn = () => {
-//     const JustPlay = async () => {
-//       // Get Just Play course ID
-//       const justPlayId: number | null = await getJustPlayCourse();
-//       if (justPlayId) {
-//         setCourseID(justPlayId);
-//         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//         // router.push({
-//         //   pathname: '/(play)/counterThree',
-//         //   params: {
-//         //     courseID: chosenCourse?.id,
-//         //     courseName,
-//         //     teeID,
-//         //     girGoal: gir,
-//         //     puttGoal: putts,
-//         //     firGoal: fir,
-//         //     strokeGoal: strokes,
-//         //   },
-//         // });
-//         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//       }
-//     }
-
-//     return (
-//       <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-
-//         <TouchableOpacity
-//           onPress={() => {
-//             // Use router.push for navigation
-//             JustPlay();
-//           }}
-//         >
-//           <LinearGradient
-//             colors={['#4f4f4f', '#333']}
-//             style={[styles.playBtn, { marginTop: 0 }]}
-//           >
-//             <Text style={{ color: 'whitesmoke' }}>
-//               Just Play
-//             </Text>
-//           </LinearGradient>
-//         </TouchableOpacity>
+  const JustPlayBtn = () => {
+    const JustPlay = async () => {
+      // Get Just Play course ID
+      const justPlayId: number[] | null = await getJustPlayCourseAndTee();
+      if (justPlayId) {
 
 
-//         <Text style={{ color: 'whitesmoke', }}>
-//           (non course-specific round)
-//         </Text>
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        router.push({
+          pathname: '/(play)/justPlay',
+          params: {
+            courseID: justPlayId[0],
+            courseName: "Golf Gooder",
+            teeID: justPlayId[1],
+            girGoal: gir,
+            puttGoal: putts,
+            firGoal: fir,
+            strokeGoal: strokes,
+          },
+        });
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      }
+    }
 
-//       </View>
-//     )
-//   }
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+
+        <TouchableOpacity
+          onPress={() => {
+            // Use router.push for navigation
+            JustPlay();
+          }}
+        >
+          <LinearGradient
+            colors={['#4f4f4f', '#333']}
+            style={[styles.playBtn, { marginTop: 0 }]}
+          >
+            <Text style={{ color: 'whitesmoke' }}>
+              Just Play
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
+
+        <Text style={{ color: 'whitesmoke', }}>
+          (non course-specific round)
+        </Text>
+
+      </View>
+    )
+  }
+
+
+
   const SkinsSetup = () => {
     const [players, setPlayers] = useState([
       { name: '', buyIn: '0', color: 'aqua' },
@@ -187,7 +191,7 @@ export default function Play() {
       const selectedPlayers = players.slice(0, playerCount);
       setSerializedPlayers(JSON.stringify(selectedPlayers));
     }, [players, playerCount]);
-    
+
     const handlePlayerChange = (index: number, key: keyof typeof players[0], value: string | number) => {
       setPlayers((prevPlayers) => {
         const updatedPlayers = [...prevPlayers];
@@ -195,7 +199,7 @@ export default function Play() {
         return updatedPlayers;
       });
     };
-    
+
     const SkinsPlayBtn = () => {
       return (
         <Link href={{
@@ -205,7 +209,7 @@ export default function Play() {
             gameLength,
           },
         }}
-        asChild>
+          asChild>
           <TouchableOpacity style={[skinstyles.button, skinstyles.buttonSave, { marginTop: 20 }]}>
             <Text style={[skinstyles.textStyle, { color: '#111' }]}>Play Skins Match</Text>
           </TouchableOpacity>
@@ -232,7 +236,7 @@ export default function Play() {
             </TouchableOpacity>
           ))}
         </View>
-        
+
         <Text style={{ color: 'whitesmoke' }}>How many players?</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           {[2, 3, 4].map((count) => (
@@ -276,7 +280,7 @@ export default function Play() {
         {/* <SkinsPlayBtn /> */}
       </View>
     );
-};
+  };
 
 
 
@@ -320,7 +324,7 @@ export default function Play() {
     },
     buttonSave: {
       backgroundColor: 'yellowgreen',
-      
+
     },
     buttonIncomplete: {
       backgroundColor: '#888',
@@ -411,7 +415,7 @@ export default function Play() {
           color={'whitesmoke'}
           topBarProps={{ title: 'Course' }}>
 
-          {courses.map((course) => (<Picker.Item key={course.id} label={course.name} value={course.id} />))}
+          {courses.map((course) => {if (course.name != 'Just Play') return (<Picker.Item key={course.id} label={course.name} value={course.id} />)})}
         </Picker>
       </LinearGradient>
 
@@ -433,8 +437,8 @@ export default function Play() {
             <Picker.Item key={tee.id} label={tee.color2 > 0 ? `${TeeColors[tee.color1]} & ${TeeColors[tee.color2]} combo` : TeeColors[tee.color1]} value={tee.id} />
           ))} */}
           {chosenCourse?.teeboxes?.map((tee) => (
-  <Picker.Item key={tee.id} label={tee.color2 > 0 ? `${TeeColors[tee.color1]} & ${TeeColors[tee.color2]} combo` : TeeColors[tee.color1]} value={tee.id} />
-))}
+            <Picker.Item key={tee.id} label={tee.color2 > 0 ? `${TeeColors[tee.color1]} & ${TeeColors[tee.color2]} combo` : TeeColors[tee.color1]} value={tee.id} />
+          ))}
 
         </Picker>
       </LinearGradient>
@@ -482,32 +486,35 @@ export default function Play() {
     <LinearGradient colors={MenuGradients[gradient]} >
       <Stack.Screen options={StackOptions({ image: ribbonSource, imageTag: ribbonImage, title: 'Round Setup' })} />
 
-      
-        <View style={styles.container}>
-          {/* <StackHeader image={ribbonSource} imageTag={`${ribbonImage}`} title="Round Setup" /> */}
 
-          <RoundTypeSelector />
+      <View style={styles.container}>
+        {/* <StackHeader image={ribbonSource} imageTag={`${ribbonImage}`} title="Round Setup" /> */}
 
-          {roundType === 'Keep Stats' &&
-            <>
-              <CourseTeeSelector />
-              {/* <Goals /> */}
+        <RoundTypeSelector />
 
-              <PlayBtn />
-              {/* <JustPlayBtn /> */}
-            </>
-          }
+        {roundType === 'Keep Stats' &&
+          <>
+            <View style={{ marginBottom: 30 }}>
+              <JustPlayBtn />
+            </View>
 
-          {roundType === 'Skins/Match' &&
-            <>
+            <CourseTeeSelector />
+            {/* <Goals /> */}
+
+            <PlayBtn />
+          </>
+        }
+
+        {roundType === 'Skins/Match' &&
+          <>
             <SkinsSetup />
-            
-            </>
-          }
-        </View>
+
+          </>
+        }
+      </View>
 
 
-   
+
     </LinearGradient>
   );
 };
