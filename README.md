@@ -1,5 +1,7 @@
 # Golf Gooder ⛳️
 
+# Try it out today on ios using TestFlight https://testflight.apple.com/join/cg5J7JKh
+
 Golf Gooder is a comprehensive golf tracking application designed to help golfers analyze and improve their game. Available on both iOS and Android, this app provides advanced statistics, a dynamic scorecard, and strategic insights tailored to your home course and playing style.
 
 ![Golf Gooder Banner](./git_gifs/GG_backgrounds.gif) <!-- Add a banner image of your app here -->
