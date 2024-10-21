@@ -1,4 +1,4 @@
-Development Update
+# Development Update
 Currently in the process of setting up AWS services to store data in a PostgreSQL database. This infrastructure will enable machine learning capabilities, allowing the AI caddie feature to recommend the best club for specific shots based on historical data and performance metrics.
 
 
