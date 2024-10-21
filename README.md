@@ -1,3 +1,7 @@
+Development Update
+Currently in the process of setting up AWS services to store data in a PostgreSQL database. This infrastructure will enable machine learning capabilities, allowing the AI caddie feature to recommend the best club for specific shots based on historical data and performance metrics.
+
+
 # Golf Gooder ⛳️
 
 # Try it out today on ios using TestFlight https://testflight.apple.com/join/cg5J7JKh
@@ -53,9 +57,8 @@ Golf Gooder is a comprehensive golf tracking application designed to help golfer
 
 4. **![Blue Star](https://via.placeholder.com/10/00BFFF?text=+)  Next Hole Button**  
     
-   Tap the **Next** button in the top right corner to advance to the next hole.  
-   ⚠️ **Note:** Once you proceed to the next hole, you cannot go back and change your score. Make sure it's correct before moving on.
-
+   Tap the **Next** button on the right to advance to the next hole.  
+   Tap the **Back** button on the left to go back to the previous hole.
 
 
 
