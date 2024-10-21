@@ -1,21 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useReducer,  useState } from "react";
 import { Alert,  ImageBackground, Modal, Pressable,  StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
-
 import { Hole, HoleStats, Round, ShotData } from "@/components/DataBase/Classes";
 import { getAllTeeboxHoles} from "@/components/DataBase/API";
-
 import * as Haptics from 'expo-haptics';
 import VerticalCheckBoxes from "@/components/PlayComponents/VerticalCheckBoxes";
 import StatMarquee from "@/components/PlayComponents/StatMarque";
 import { C2HScoreData } from "@/components/Layouts/CounterThree/Header3";
-
 import VerticalBtns3 from "@/components/Layouts/CounterThree/VerticalShotBtns3";
-
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import { getRibbonImageSource, MenuGradients, TeeColors, teeTextColor } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
-
 import { initialState, reducer} from '@/components/DataBase/RoundReducer';
 import SummaryModal from "@/components/RoundSummary/SummaryModal";
 import useTheme from "@/constants/Theme";
@@ -23,9 +18,6 @@ import UpdatePrevScore from "@/components/UpdatePrevScore/UpdatePrevScore";
 import { Feather } from "@expo/vector-icons";
 import Options4 from "@/components/Layouts/CounterThree/Options4";
 import NewPieChart from "@/components/Layouts/CounterThree/NewPieChart";
-
-
-
 
 /**
  * CounterThree component.
