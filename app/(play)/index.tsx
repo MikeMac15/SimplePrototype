@@ -1,3 +1,83 @@
+/**
+ * The main component for setting up and starting a golf round.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ * 
+ * @remarks
+ * This component allows users to select a course, tee, and set goals for their round.
+ * It also provides options for different types of rounds, such as "Keep Stats" and "Skins/Match".
+ * 
+ * @example
+ * ```tsx
+ * import Play from './path/to/Play';
+ * 
+ * function App() {
+ *   return <Play />;
+ * }
+ * ```
+ * 
+ * @function
+ * @name Play
+ * 
+ * @typedef {Object} CourseAndTees
+ * @property {number} id - The ID of the course.
+ * @property {string} name - The name of the course.
+ * @property {Teebox[]} teeboxes - The list of teeboxes for the course.
+ * 
+ * @typedef {Object} Teebox
+ * @property {number} id - The ID of the teebox.
+ * @property {number} color1 - The primary color of the teebox.
+ * @property {number} color2 - The secondary color of the teebox (if any).
+ * 
+ * @typedef {Object} Player
+ * @property {string} name - The name of the player.
+ * @property {string} buyIn - The buy-in amount for the player.
+ * @property {string} color - The color associated with the player.
+ * 
+ * @typedef {Object} StackOptions
+ * @property {string} image - The source of the image.
+ * @property {string} imageTag - The tag of the image.
+ * @property {string} title - The title of the stack.
+ * 
+ * @typedef {Object} RouterParams
+ * @property {number} courseID - The ID of the selected course.
+ * @property {string} courseName - The name of the selected course.
+ * @property {number} teeID - The ID of the selected teebox.
+ * @property {string} girGoal - The goal for greens in regulation.
+ * @property {string} puttGoal - The goal for putts.
+ * @property {string} firGoal - The goal for fairways in regulation.
+ * @property {string} strokeGoal - The goal for strokes.
+ * 
+ * @typedef {Object} GradientColors
+ * @property {string[]} colors - The gradient colors.
+ * @property {Object} style - The style object for the gradient.
+ * 
+ * @typedef {Object} ButtonStyles
+ * @property {Object} button - The style object for the button.
+ * @property {Object} buttonSave - The style object for the save button.
+ * @property {Object} buttonCancel - The style object for the cancel button.
+ * @property {Object} buttonIncomplete - The style object for the incomplete button.
+ * @property {Object} textStyle - The style object for the text.
+ * @property {Object} modalText - The style object for the modal text.
+ * @property {Object} textInputBox - The style object for the text input box.
+ * 
+ * @typedef {Object} Styles
+ * @property {Object} container - The style object for the container.
+ * @property {Object} gradient - The style object for the gradient.
+ * @property {Object} marginVertical - The style object for vertical margins.
+ * @property {Object} picker - The style object for the picker.
+ * @property {Object} placeholder - The style object for the placeholder.
+ * @property {Object} title - The style object for the title.
+ * @property {Object} goalTable - The style object for the goal table.
+ * @property {Object} inputTable - The style object for the input table.
+ * @property {Object} inputTitle - The style object for the input title.
+ * @property {Object} goalInput - The style object for the goal input.
+ * @property {Object} buttonContainer - The style object for the button container.
+ * @property {Object} playBtn - The style object for the play button.
+ * @property {Object} playBtnDisabled - The style object for the disabled play button.
+ */
+
 import { getAllCourses, getAllCourseTeeboxes, getJustPlayCourse, getJustPlayCourseAndTee } from "@/components/DataBase/API";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router, Stack } from "expo-router";
@@ -282,13 +362,6 @@ export default function Play() {
     );
   };
 
-
-
-
-
-
-
-
   const skinstyles = StyleSheet.create({
     centeredView: {
       flex: 1,
@@ -346,59 +419,6 @@ export default function Play() {
       borderRadius: 20
     }
   });
-
-
-
-
-
-
-
-  // const Goals = () => {
-  //   return (
-
-  //     <View>
-  //       <Text style={styles.title}>Goals for this Round</Text>
-
-  //       <View style={{ flexDirection: 'row' }}>
-
-  //         {['Total Strokes', 'Total Putts'].map((goal, index) => (
-  //           <LinearGradient key={index} colors={['#4f4f4f', '#333']} style={styles.inputTable} >
-  //             <Text style={styles.inputTitle}>{goal}</Text>
-  //             <TextInput
-  //               style={styles.goalInput}
-  //               onChangeText={goal === 'Total Strokes' ? setStrokes : setPutts}
-  //               value={goal === 'Total Strokes' ? strokes : putts}
-  //               placeholder={goal === 'Total Strokes' ? "75" : "36"}
-  //               keyboardType="numeric"
-  //             />
-  //           </LinearGradient>
-  //         ))}
-
-  //       </View>
-
-
-  //       <View style={{ flexDirection: 'row' }}>
-  //         {["Green's In Reg", "Fwy's In Reg"].map((goal, index) => (
-  //           <LinearGradient key={index} colors={['#4f4f4f', '#333']} style={styles.inputTable} >
-  //             <Text style={styles.inputTitle}>{goal}</Text>
-  //             <TextInput
-  //               style={styles.goalInput}
-  //               onChangeText={goal === 'GIR' ? setGIR : setFIR}
-  //               value={goal === 'GIR' ? gir : fir}
-  //               placeholder={goal === 'GIR' ? "9/18" : "7/14"}
-  //               keyboardType="numeric"
-  //             />
-  //           </LinearGradient>
-  //         ))}
-
-  //       </View>
-  //     </View>
-  //   )
-
-  // }
-
-
-
 
   const CourseTeeSelector = () => {
     return (<>

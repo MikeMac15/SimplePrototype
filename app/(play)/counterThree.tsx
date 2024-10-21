@@ -1,22 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { Alert, Button, Dimensions, FlatList, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Stack, router, useLocalSearchParams } from "expo-router";
-
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { Alert, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Hole, HoleStats, Round, ShotData } from "@/components/DataBase/Classes";
-import { getAllTeeboxHoles, saveFullRound, saveHoleStats } from "@/components/DataBase/API";
-
-
+import { getAllTeeboxHoles } from "@/components/DataBase/API";
 import VerticalCheckBoxes from "@/components/PlayComponents/VerticalCheckBoxes";
 import StatMarquee from "@/components/PlayComponents/StatMarque";
 import C3Header3 from "@/components/Layouts/CounterThree/Header3";
 import C3Options3 from "@/components/Layouts/CounterThree/Options3";
 import VerticalBtns3 from "@/components/Layouts/CounterThree/VerticalShotBtns3";
-
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import { getRibbonImageSource, MenuGradients, TeeColors, teeTextColor } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
-
-import { initialState, reducer, State, } from '@/components/DataBase/RoundReducer';
+import { initialState, reducer } from '@/components/DataBase/RoundReducer';
 import StratTags from "@/components/PlayComponents/OGscreens/StratTags";
 import SummaryModal from "@/components/RoundSummary/SummaryModal";
 import useTheme from "@/constants/Theme";
@@ -30,6 +25,55 @@ import { Feather } from "@expo/vector-icons";
  * CounterThree component.
  * @component
  */
+/**
+ * CounterThree component is a React functional component that manages the state and logic for a golf round tracking application.
+ * It utilizes various hooks such as useState, useEffect, useReducer, and useCallback to manage state and side effects.
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} The rendered component.
+ * 
+ * @example
+ * <CounterThree />
+ * 
+ * @remarks
+ * This component fetches and displays hole data, manages round state, and allows users to navigate through holes, update shot data, and save round statistics.
+ * 
+ * @hook
+ * - `useReducer` to manage complex state logic for shot data.
+ * - `useState` to manage various state variables such as loading state, hole data, and round state.
+ * - `useEffect` to fetch initial data and update state based on dependencies.
+ * - `useCallback` to memoize functions that fetch preferences.
+ * - `useMemo` to memoize computed values for performance optimization.
+ * 
+ * @param {Object} props - The component props.
+ * 
+ * @property {Function} addRoundHole - Adds a hole to the current round.
+ * @property {Function} updateRoundHole - Updates the data for a specific hole in the current round.
+ * @property {Function} getTotalShots - Calculates the total number of shots.
+ * @property {Function} getCurrentHole - Retrieves the current hole data based on the hole number.
+ * @property {Function} saveRoundAndHoleStats - Saves the current round and hole statistics.
+ * @property {Function} lastHole - Handles the logic for completing the last hole.
+ * @property {Function} resetForNewHole - Resets the state for a new hole.
+ * @property {Function} getAllShotData - Retrieves all shot data for the current round.
+ * @property {Function} addShot - Adds a shot of a specific type.
+ * @property {Function} subtractShot - Subtracts a shot of a specific type.
+ * @property {Function} setGir - Sets the Green In Regulation (GIR) state.
+ * @property {Function} setFir - Sets the Fairway In Regulation (FIR) state.
+ * @property {Function} addShotColor - Adds a shot color.
+ * @property {Function} subShotColor - Subtracts a shot color.
+ * @property {Function} previousHole - Navigates to the previous hole.
+ * @property {Function} nextHole - Navigates to the next hole.
+ * @property {Function} loadHoleStatsIntoState - Loads the statistics of a previous hole into the state.
+ * 
+ * @property {JSX.Element} StackScreen - Renders the stack screen with navigation options.
+ * @property {JSX.Element} Marquee - Displays the statistics marquee.
+ * @property {JSX.Element} memoizedC3Options - Memoized component for C3 options.
+ * @property {JSX.Element} ShowOldData - Displays the old data for the current hole.
+ * @property {JSX.Element} HoleNavigation - Renders the navigation buttons for navigating between holes.
+ */
+
+
 const CounterThree: React.FC = () => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -78,15 +122,6 @@ const CounterThree: React.FC = () => {
     });
   };
 
-
-
-
-
-
-
-  // const roundRef = useRef<Round>(new Round(Number(teeID)));
-  // roundRef.current.date = new Date().toLocaleDateString();
-  // const [shotColors, setShotColors] = useState<string[]>([]);
   const theme = useTheme();
   const getTotalShots = () => {
     // return Object.values(shotData).reduce((total, value) => total + value, 0);
@@ -152,13 +187,6 @@ const CounterThree: React.FC = () => {
     }
   };
 
-  // const nextHole = () => {
-  //   if (currentHoleData){
-  //     addRoundHole(currentHoleData, state.shotData.putt, state.shotData.great, state.shotData.good, state.shotData.bad, state.gir, Number(strategy), state.fir);
-  //     resetForNewHole();
-  //     setHoleNumber(holeNumber + 1);
-  //   }
-  // }
   const lastHole = () => {
     if (currentHoleData) {
       const updatedRound = currentRound.addRoundHole(
@@ -267,49 +295,6 @@ const CounterThree: React.FC = () => {
       holeNumber={holeNumber}
     />
   ), [teeboxHoles, holeNumber, currentRound]);
-  ///////////////////////////////////////////////////////Create Own Folder When Finished///////////////////////////////////////////////////////
-
-  ///////////////////////////////////////////////////////Carousel///////////////////////////////////////////////////////
-
-
-
-  // const views = [
-
-  //   // { key: 'view1', component: <Insights holeNum={1} par={4} /> },
-  //   // { key: 'view2', component: <MainView /> },
-  //   { key: 'view1', component: <MainView /> },
-  //   { key: 'view2', component: <Insights holeNum={1} par={4} /> },
-
-  // ];
-
-  // const Carousel = () => {
-  //   const renderItem = ({ item }: { item: { key: string, component: JSX.Element } }) => {
-  //     return <View style={{width:width}}>{item.component}</View>;
-  //   };
-
-  //   const onViewRef = useRef(() => {
-  //     // You can handle view change events here
-  //   });
-
-  //   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
-
-  //   return (
-
-
-  //     <FlatList
-  //       data={views}
-  //       renderItem={renderItem}
-  //       keyExtractor={(item) => item.key}
-  //       horizontal
-  //       pagingEnabled
-  //       snapToAlignment="center"
-  //       showsHorizontalScrollIndicator={false}
-  //       onViewableItemsChanged={onViewRef.current}
-  //       viewabilityConfig={viewConfigRef.current}
-  //     />
-
-  //   );
-  // }; 
 
   const previousHole = () => {
     if (holeNumber > 1) {
@@ -404,8 +389,6 @@ const CounterThree: React.FC = () => {
               <Text style={{ fontSize: 18, color: state.gir ? 'yellowgreen' : 'salmon' }}>Green In Reg</Text>
               <Text style={{ fontSize: 26, color: state.gir ? 'yellowgreen' : 'salmon' }}>{state.gir ? 'Yes' : 'No'}</Text>
             </View>
-            {/* <DataColView title='GIR' data={state.gir ? 'Yes' : 'No'} color={state.gir ? 'yellowgreen' : 'salmon'} />
-            <DataColView title='FIR' data={state.fir ? 'Yes' : 'No'} color={state.fir ? 'yellowgreen' : 'salmon'} /> */}
           </View>
           <View style={{ marginHorizontal: 20 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -440,10 +423,6 @@ const CounterThree: React.FC = () => {
           <Text style={{ color: theme.color, fontSize: 20, textAlign: 'center' }}>Update Hole Data</Text>
         </TouchableOpacity>
 
-        {/* <DataColView title='Great' data={(state.shotData.great).toString()} color={'skyblue'}/>
-          <DataColView title='Good' data={(state.shotData.good).toString()} color={'yellowgreen'}/>
-          <DataColView title='Bad' data={(state.shotData.bad).toString()} color={'salmon'}/>
-        <DataColView title='Putts' data={(state.shotData.putt).toString()} color={'tan'}/> */}
       </View>
     )
   }
@@ -454,9 +433,9 @@ const CounterThree: React.FC = () => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 15, marginHorizontal: 20 }}>
 
         <TouchableOpacity onPress={previousHole} disabled={holeNumber === 1}>
-          <LinearGradient colors={['#454545', '#2d2d2d']} style={[styles.holeNav,{borderColor:'rgba(20,20,20,0.25)', borderWidth:2}]}>
+          <LinearGradient colors={['#454545', '#2d2d2d']} style={[styles.holeNav, { borderColor: 'rgba(20,20,20,0.25)', borderWidth: 2 }]}>
             <Feather name="chevron-left" size={24} color="whitesmoke" />
-            <Text style={{ color: 'whitesmoke', fontSize: 20, marginRight:10 }}> Hole {holeNumber - 1}</Text>
+            <Text style={{ color: 'whitesmoke', fontSize: 20, marginRight: 10 }}> Hole {holeNumber - 1}</Text>
           </LinearGradient>
         </TouchableOpacity>
 
@@ -465,15 +444,15 @@ const CounterThree: React.FC = () => {
         {holeNumber < teeboxHoles.length
           ?
           <TouchableOpacity onPress={() => nextHole()} >
-            <LinearGradient colors={['#454545', '#2d2d2d']} style={[styles.holeNav,{borderColor:'rgba(20,20,20,0.25)', borderWidth:1}]}>
+            <LinearGradient colors={['#454545', '#2d2d2d']} style={[styles.holeNav, { borderColor: 'rgba(20,20,20,0.25)', borderWidth: 1 }]}>
 
-              <Text style={{ color: 'whitesmoke', fontSize: 20, marginLeft:10 }}>Hole {holeNumber + 1}</Text>
+              <Text style={{ color: 'whitesmoke', fontSize: 20, marginLeft: 10 }}>Hole {holeNumber + 1}</Text>
               <Feather name="chevron-right" size={24} color="whitesmoke" />
             </LinearGradient>
           </TouchableOpacity>
           :
           <TouchableOpacity onPress={() => lastHole()}>
-            <LinearGradient colors={['#454545', '#333']} style={[styles.holeNav,{borderColor:'rgba(150,150,150,0.15)', borderWidth:1}]}>
+            <LinearGradient colors={['#454545', '#333']} style={[styles.holeNav, { borderColor: 'rgba(150,150,150,0.15)', borderWidth: 1 }]}>
               <Text style={{ color: 'whitesmoke', fontSize: 20 }}>Finish Round</Text>
             </LinearGradient>
           </TouchableOpacity>
@@ -582,6 +561,6 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { width: 10, height: 10 },
     shadowColor: '#fff',
-  
+
   },
 });

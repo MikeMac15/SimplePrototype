@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { Course, Teebox, Hole, Round, HoleStats, MostRecentRound, TimelineStats, AllStats, CourseHoleData, HoleInsights, HoleStatsExtra } from './Classes';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+
 
 
 export const openDb = async() => {
@@ -19,66 +19,6 @@ export const deleteDb = async() => {
         console.error(error)
     }
 };
-
-
-
-// old tables {
-//     await db.execAsync(`
-//     PRAGMA journal_mode = WAL;
-//     PRAGMA foreign_keys = ON;
-//     CREATE TABLE IF NOT EXISTS course (
-//         id INTEGER PRIMARY KEY AUTOINCREMENT,
-//         name TEXT UNIQUE CHECK(LENGTH(name) <= 20) NOT NULL
-//     );
-//     CREATE TABLE IF NOT EXISTS teebox (
-//         id INTEGER PRIMARY KEY AUTOINCREMENT,
-//         course_id INTEGER NOT NULL,
-//         color TEXT CHECK(LENGTH(color) <= 10) NOT NULL,
-//         par INTEGER DEFAULT 0,
-//         yardage INTEGER DEFAULT 0,
-//         FOREIGN KEY (course_id) REFERENCES course(id)
-//     );
-//     CREATE TABLE IF NOT EXISTS hole (
-//         id INTEGER PRIMARY KEY AUTOINCREMENT,
-//         teebox_id INTEGER NOT NULL,
-//         num INTEGER NOT NULL,
-//         par INTEGER NOT NULL,
-//         yardage INTEGER NOT NULL,
-//         FOREIGN KEY (teebox_id) REFERENCES teebox(id)
-//     );
-//     CREATE TABLE IF NOT EXISTS round (
-//         id INTEGER PRIMARY KEY AUTOINCREMENT,
-//         teebox_id INTEGER,
-//         date DATE DEFAULT (date('now')),
-//         totalFIR INTEGER NOT NULL,
-//         totalGIR INTEGER NOT NULL,
-//         totalPutts INTEGER NOT NULL,
-//         great INTEGER NOT NULL, 
-//         good INTEGER NOT NULL,
-//         bad INTEGER NOT NULL,
-//         totalStrokes INTEGER NOT NULL,
-//         totalPars INTEGER NOT NULL,
-//         totalBirdiesOrBetter INTEGER NOT NULL,
-//         totalBogiesOrWorse INTEGER NOT NULL,
-//         toPar INTEGER NOT NULL,
-//         toPar3 INTEGER NOT NULL,
-//         toPar4 INTEGER NOT NULL,
-//         toPar5 INTEGER NOT NULL,
-//         FOREIGN KEY (teebox_id) REFERENCES teebox(id)
-//     );
-//     CREATE TABLE IF NOT EXISTS holestats (
-//         id INTEGER PRIMARY KEY AUTOINCREMENT,
-//         hole_id INTEGER NOT NULL,
-//         round_id INTEGER NOT NULL,
-//         putts INTEGER NOT NULL,
-//         GIR BOOLEAN NOT NULL,
-//         FIR BOOLEAN NOT NULL,
-//         FIR_ELIGIBLE BOOLEAN NOT NULL, 
-//         toPar INTEGER NOT NULL,
-//         strat INTEGER NOT NULL,
-//         FOREIGN KEY (hole_id) REFERENCES hole(id),
-//         FOREIGN KEY (round_id) REFERENCES round(id)
-//     );`)
 
     interface id {'id':number}
 export const tableSetUp = async(db:SQLite.SQLiteDatabase) => {
@@ -495,9 +435,6 @@ if (!result) {
         }
     };
     
-    
-
-
     export const getJustPlayCourse = async (): Promise<number|null> => {
         try {
             const db = await openDb();

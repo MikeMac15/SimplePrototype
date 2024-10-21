@@ -1,23 +1,22 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { Alert, Button, Dimensions, FlatList, ImageBackground, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Stack, router, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useReducer,  useState } from "react";
+import { Alert,  ImageBackground, Modal, Pressable,  StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 import { Hole, HoleStats, Round, ShotData } from "@/components/DataBase/Classes";
-import { getAllTeeboxHoles, saveFullRound, saveHoleStats } from "@/components/DataBase/API";
+import { getAllTeeboxHoles} from "@/components/DataBase/API";
 
 import * as Haptics from 'expo-haptics';
 import VerticalCheckBoxes from "@/components/PlayComponents/VerticalCheckBoxes";
 import StatMarquee from "@/components/PlayComponents/StatMarque";
-import C3Header3, { C2HScoreData } from "@/components/Layouts/CounterThree/Header3";
-import C3Options3 from "@/components/Layouts/CounterThree/Options3";
+import { C2HScoreData } from "@/components/Layouts/CounterThree/Header3";
+
 import VerticalBtns3 from "@/components/Layouts/CounterThree/VerticalShotBtns3";
 
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import { getRibbonImageSource, MenuGradients, TeeColors, teeTextColor } from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { initialState, reducer, State, } from '@/components/DataBase/RoundReducer';
-import StratTags from "@/components/PlayComponents/OGscreens/StratTags";
+import { initialState, reducer} from '@/components/DataBase/RoundReducer';
 import SummaryModal from "@/components/RoundSummary/SummaryModal";
 import useTheme from "@/constants/Theme";
 import UpdatePrevScore from "@/components/UpdatePrevScore/UpdatePrevScore";
@@ -81,15 +80,6 @@ const JustPlay: React.FC = () => {
         });
     };
 
-
-
-
-
-
-
-    // const roundRef = useRef<Round>(new Round(Number(teeID)));
-    // roundRef.current.date = new Date().toLocaleDateString();
-    // const [shotColors, setShotColors] = useState<string[]>([]);
     const theme = useTheme();
     const getTotalShots = () => {
         // return Object.values(shotData).reduce((total, value) => total + value, 0);
@@ -411,10 +401,6 @@ const JustPlay: React.FC = () => {
                     <Text style={{ color: theme.color, fontSize: 20, textAlign: 'center' }}>Update Hole Data</Text>
                 </TouchableOpacity>
 
-                {/* <DataColView title='Great' data={(state.shotData.great).toString()} color={'skyblue'}/>
-          <DataColView title='Good' data={(state.shotData.good).toString()} color={'yellowgreen'}/>
-          <DataColView title='Bad' data={(state.shotData.bad).toString()} color={'salmon'}/>
-        <DataColView title='Putts' data={(state.shotData.putt).toString()} color={'tan'}/> */}
             </View>
         )
     }
@@ -588,18 +574,7 @@ const JustPlay: React.FC = () => {
 
                                                 <AfterParSelector />
 
-                                                {/* <TouchableOpacity onPress={() => setShowStrat(true)} style={{ width: 100, backgroundColor: 'rgba(50,50,50,.15)', borderRadius: 10, padding: 5 }}>
-                        <Text style={{ color: theme.color, fontSize: 16, textAlign: 'center' }}>Strategy:</Text>
-                        <Text
-                          numberOfLines={1} // Ensures single-line text
-                          ellipsizeMode="tail" // Truncate text at the end
-                          style={{ color: theme.color, fontSize: 16, textAlign: 'center' }}
-                        >
-                          {WhatStrat[strategy]}
-                        </Text>
-                      </TouchableOpacity>
-                      <StratTags par={currentHoleData.par} setHoleStrategy={setStrategy} holestrategy={strategy} setVisible={setShowStrat} visible={showStrat} /> */}
-
+           
                                                 <VerticalCheckBoxes
                                                     hole={currentHoleData}
                                                     gir={state.gir}

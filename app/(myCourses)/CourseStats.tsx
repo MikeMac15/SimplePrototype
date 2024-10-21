@@ -1,18 +1,49 @@
-import { getCourseHoleData, getTeeAllStats, getTeeTimelineScores, getTimelineScores } from "@/components/DataBase/API";
+import { getCourseHoleData, getTeeAllStats, getTeeTimelineScores } from "@/components/DataBase/API";
 import { AllStats, CourseHoleData } from "@/components/DataBase/Classes";
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import CourseStatView from "@/components/StatComponents/courseStats/CourseStatView";
-import HoleStats from "@/components/StatComponents/courseStats/holeStats/HoleStats";
+
 import HoleStats2 from "@/components/StatComponents/courseStats/holeStats/HoleStats2";
 
 import { teeTextColor, TeeColors, getRibbonImageSource, MenuGradients } from "@/constants/Colors";
 import StackHeader from "@/constants/StackHeader";
-import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, Dimensions, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { Button, Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native"
 
+/**
+ * CourseStats component displays statistical data for a golf course.
+ * It fetches and displays various statistics such as average scores, 
+ * hole pars, and shot totals for a specific tee.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @example
+ * <CourseStats />
+ *
+ * @remarks
+ * This component uses several hooks to manage state and side effects:
+ * - `useLocalSearchParams` to get URL parameters.
+ * - `useState` to manage component state.
+ * - `useEffect` to fetch data when the component mounts.
+ *
+ * The component fetches data from several asynchronous functions:
+ * - `getMenuGradient` to get the gradient preference.
+ * - `getRibbonImage` to get the ribbon image preference.
+ * - `getTeeAllStats` to get all statistics for a specific tee.
+ * - `getTeeTimelineScores` to get timeline scores for a specific tee.
+ * - `getCourseHoleData` to get hole data for a specific tee.
+ *
+ * The component conditionally renders different views based on the state:
+ * - A dropdown menu to select between "Course Overview" and "Holes Overview".
+ * - A `ScrollView` to display either `CourseStatView` or `HoleStats2` based on the selected view.
+ * - A message indicating no data if there are no timeline scores.
+ *
+ * @function
+ * @name CourseStats
+ */
 const CourseStats = () => {
     const height = Dimensions.get('window').height;
 
@@ -23,7 +54,7 @@ const CourseStats = () => {
     const [showSelection, setShowSelection] = useState(false)
     const [btnTitle, setBtnTitle] = useState('Course Overview')
 
-    const [courseHoleData,setCourseHoleData] = useState<CourseHoleData>({
+    const [courseHoleData, setCourseHoleData] = useState<CourseHoleData>({
         holePars: [0],
         avgScores: [0],
         totalScores: [0],
@@ -33,7 +64,7 @@ const CourseStats = () => {
         count: 0,
         firCount: 0,
     });
-    
+
 
     const [gradient, setGradient] = useState('cool-guy')
     const [ribbonImage, setRibbonImage] = useState('proud-parent')
@@ -43,12 +74,12 @@ const CourseStats = () => {
         const ribbonImgTag = await getRibbonImage()
         setRibbonImage(ribbonImgTag)
     }
-    
+
     useEffect(() => {
         getPreferences();
     }, [])
     const image = getRibbonImageSource(ribbonImage)
-    
+
 
     const [shotTotals, setShotTotals] = useState({ bad: 0, good: 0, great: 0, totalPutts: 0 });
     const [timelineScores, setTimelineScores] = useState<number[]>([])
@@ -116,7 +147,7 @@ const CourseStats = () => {
 
                 const courseAllHoleData = await getCourseHoleData(Number(teeID));
                 setCourseHoleData(courseAllHoleData);
-                
+
 
             } catch (error) {
                 console.error("Error fetching round data:", error);
@@ -134,75 +165,64 @@ const CourseStats = () => {
             case 0:
                 return (<ScrollView>
                     <CourseStatView AllStats={allStatTotals} ShotTimeline={timelineScores} />
-                    </ScrollView>
-                    )
+                </ScrollView>
+                )
             case 1:
                 return (
-                <ScrollView>
-                    <HoleStats2 data={courseHoleData} />
-                </ScrollView>)
-            // case 2:
-            //     return <HoleStats title='Total Score' data={courseHoleData.totalScores} />
-            // case 3:
-            //     return <HoleStats title='Putts Per Hole' data={courseHoleData.pph} />
-            // case 4:
-            //     return <HoleStats title='Green In Regulation' data={[0]} />
-            // case 5:
-            //     return <HoleStats title='Fairway In Regulation' data={[0]} />
+                    <ScrollView>
+                        <HoleStats2 data={courseHoleData} />
+                    </ScrollView>)
+
         }
     }
     const ColorSeperator = () => {
         return teeColor2.length > 1
-          ?
-          (
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ width: '50%', height: 5, backgroundColor: `${TeeColors[Number(teeColor1)].toLowerCase()}` }} />
-              <View style={{ width: '50%', height: 5, backgroundColor: `${TeeColors[Number(teeColor2)].toLowerCase()}` }} />
-            </View>
-          )
-          :
-          <View style={{ width: '100%', height: 5, backgroundColor: `${TeeColors[Number(teeColor1)].toLowerCase()}` }} />
-      }
+            ?
+            (
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ width: '50%', height: 5, backgroundColor: `${TeeColors[Number(teeColor1)].toLowerCase()}` }} />
+                    <View style={{ width: '50%', height: 5, backgroundColor: `${TeeColors[Number(teeColor2)].toLowerCase()}` }} />
+                </View>
+            )
+            :
+            <View style={{ width: '100%', height: 5, backgroundColor: `${TeeColors[Number(teeColor1)].toLowerCase()}` }} />
+    }
 
     const DropDown = () => {
         return (<View>
-            <Button title="Course Overview" onPress={()=>{setViewSelection(0); setShowSelection(!showSelection); setBtnTitle('Course Overview')}} />
-            <Button title="Holes Overview" onPress={()=>{setViewSelection(1); setShowSelection(!showSelection); setBtnTitle('Holes Overview')}} />
-            {/* <Button title="Total Score" onPress={()=>{setViewSelection(2); setShowSelection(!showSelection); setBtnTitle('Total Score')}} />
-            <Button title="Putts Per Hole" onPress={()=>{setViewSelection(3); setShowSelection(!showSelection); setBtnTitle('Putts Per Hole')}} />
-            <Button title="Green In Regulation" onPress={()=>{setViewSelection(4); setShowSelection(!showSelection); setBtnTitle('Green In Regulation')}} />
-            <Button title="Fairway In Regulation" onPress={()=>{setViewSelection(5); setShowSelection(!showSelection); setBtnTitle('Fairway In Regulation')}} />
-             */}
+            <Button title="Course Overview" onPress={() => { setViewSelection(0); setShowSelection(!showSelection); setBtnTitle('Course Overview') }} />
+            <Button title="Holes Overview" onPress={() => { setViewSelection(1); setShowSelection(!showSelection); setBtnTitle('Holes Overview') }} />
+
         </View>)
     }
-   
+
     return (
-<LinearGradient colors={MenuGradients[gradient]} style={{flex:1}}>
-       
-            <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} /> 
-        
-<ColorSeperator />
-               {(timelineScores.length < 1)
-               ? 
-               <View style={{height:height, justifyContent:'center', alignItems:'center'}}>
+        <LinearGradient colors={MenuGradients[gradient]} style={{ flex: 1 }}>
 
-               <Text style={{margin:30, color: 'whitesmoke'}}>no data.. play a round on this course to view your statistics.</Text>
-               </View>
-               :
-               <>
+            <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} />
 
-            <TouchableOpacity style={{ backgroundColor: '#111', paddingVertical:0}} onPress={()=>setShowSelection(!showSelection)}>
-                {showSelection
-                ? <DropDown />
-                : <Button title={btnTitle} onPress={()=> setShowSelection(!showSelection)} />
+            <ColorSeperator />
+            {(timelineScores.length < 1)
+                ?
+                <View style={{ height: height, justifyContent: 'center', alignItems: 'center' }}>
+
+                    <Text style={{ margin: 30, color: 'whitesmoke' }}>no data.. play a round on this course to view your statistics.</Text>
+                </View>
+                :
+                <>
+
+                    <TouchableOpacity style={{ backgroundColor: '#111', paddingVertical: 0 }} onPress={() => setShowSelection(!showSelection)}>
+                        {showSelection
+                            ? <DropDown />
+                            : <Button title={btnTitle} onPress={() => setShowSelection(!showSelection)} />
+                        }
+                    </TouchableOpacity>
+                    {DisplayView()}
+
+                </>
             }
-            </TouchableOpacity>
-            {DisplayView()}
+        </LinearGradient>
 
-            </>
-        }
-            </LinearGradient>
-      
     )
 
 }
