@@ -4,10 +4,15 @@ interface ToParBreakdownProps {
     toPar3: number,
     toPar4: number,
     toPar5: number,
+    
 }
 
-const ToParBreakdown: React.FC<ToParBreakdownProps> = ({ toPar3, toPar4, toPar5 }) => {
+const ToParBreakdown2: React.FC<ToParBreakdownProps> = ({ toPar3, toPar4, toPar5, }) => {
     return (
+        <>
+
+        
+
         <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
             
             
@@ -32,10 +37,11 @@ const ToParBreakdown: React.FC<ToParBreakdownProps> = ({ toPar3, toPar4, toPar5 
 
 
         </View>
+        </>
     )
 }
 
-export default ToParBreakdown;
+export default ToParBreakdown2;
 
 
 

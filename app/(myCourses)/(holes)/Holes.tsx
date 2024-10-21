@@ -1,13 +1,15 @@
-import { View, Text, TextInput, StyleSheet, Button } from "react-native";
+import { View, Text, TextInput, StyleSheet, Button, ScrollView } from "react-native";
 import { Stack } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { createTeeHoles, getAllTeeboxHoles, openDb } from "@/components/DataBase/API";
+import { createTeeHoles, getAllTeeboxHoles, openDb, updateHole } from "@/components/DataBase/API";
 import { getRibbonImageSource, MenuGradients, TeeColors } from "@/constants/Colors";
-import CourseScoreCard from "@/components/ScoreCards/CourseScoreCard";
+import CourseHoleInfo from "@/components/ScoreCards/CourseHoleInfo";
 import { LinearGradient } from "expo-linear-gradient";
 import { getMenuGradient, getRibbonImage } from "@/components/DataBase/localStorage";
 import StackHeader from "@/constants/StackHeader";
+import { TouchableOpacity } from "react-native";
+
 
 
 interface Hole {
@@ -19,88 +21,88 @@ interface Hole {
   yardage: number;
 }
 
-export const Scorecard = (holes: Hole[]) => {
-  return (
-    <View style={{ backgroundColor: 'tan' }}>
+// export const Scorecard = (holes: Hole[]) => {
+//   return (
+//     <View style={{ backgroundColor: 'tan' }}>
 
-      <View style={styles.scorecard}>
-        <Text style={{ textAlign: 'center', fontFamily: 'Arial', fontSize: 17, fontStyle: 'italic' }}> Front 9</Text>
-        <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
-          <View >
-            <Text style={styles.text}>Hole: </Text>
-          </View>
-          {holes.slice(0, 9).map(hole => (
-            <View style={{ width: 36.25, borderLeftWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 == 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
-              <Text style={styles.text}>{hole.num}</Text>
-            </View>
-          ))}
+//       <View style={styles.scorecard}>
+//         <Text style={{ textAlign: 'center', fontFamily: 'Arial', fontSize: 17, fontStyle: 'italic' }}> Front 9</Text>
+//         <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
+//           <View >
+//             <Text style={styles.text}>Hole: </Text>
+//           </View>
+//           {holes.slice(0, 9).map(hole => (
+//             <View style={{ width: 36.25, borderLeftWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 == 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
+//               <Text style={styles.text}>{hole.num}</Text>
+//             </View>
+//           ))}
 
-        </View>
-        <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
-          <View >
-            <Text style={[styles.text, { marginLeft: 5.7, marginTop: 3 }]}>Dist: </Text>
-          </View>
-          {holes.slice(0, 9).map(hole => (
-            <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 == 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
-              <Text style={[styles.text, { color: '#555' }]}>{hole.yardage}</Text>
-            </View>
-          ))}
+//         </View>
+//         <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
+//           <View >
+//             <Text style={[styles.text, { marginLeft: 5.7, marginTop: 3 }]}>Dist: </Text>
+//           </View>
+//           {holes.slice(0, 9).map(hole => (
+//             <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 == 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
+//               <Text style={[styles.text, { color: '#555' }]}>{hole.yardage}</Text>
+//             </View>
+//           ))}
 
-        </View>
-        <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
-          <View >
-            <Text style={[styles.text, { marginLeft: 8, marginTop: 3 }]}>Par: </Text>
-          </View>
-          {holes.slice(0, 9).map(hole => (
-            <View style={{ width: 36.35, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 == 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
-              <Text style={[styles.text, { color: '#444' }]}>{hole.par}</Text>
-            </View>
-          ))}
+//         </View>
+//         <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
+//           <View >
+//             <Text style={[styles.text, { marginLeft: 8, marginTop: 3 }]}>Par: </Text>
+//           </View>
+//           {holes.slice(0, 9).map(hole => (
+//             <View style={{ width: 36.35, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 == 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
+//               <Text style={[styles.text, { color: '#444' }]}>{hole.par}</Text>
+//             </View>
+//           ))}
 
-        </View>
-      </View>
-      <View style={styles.scorecard}>
-        <Text style={{ textAlign: 'center', fontFamily: 'Arial', fontSize: 17, fontStyle: 'italic' }}>Back 9 </Text>
+//         </View>
+//       </View>
+//       <View style={styles.scorecard}>
+//         <Text style={{ textAlign: 'center', fontFamily: 'Arial', fontSize: 17, fontStyle: 'italic' }}>Back 9 </Text>
 
-        <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
-          <View >
-            <Text style={styles.text}>Hole: </Text>
-          </View>
-          {holes.slice(9, 18).map(hole => (
-            <View style={{ width: 36.25, borderLeftWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 != 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
-              <Text style={[styles.text, {}]}>{hole.num}</Text>
-            </View>
-          ))}
+//         <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
+//           <View >
+//             <Text style={styles.text}>Hole: </Text>
+//           </View>
+//           {holes.slice(9, 18).map(hole => (
+//             <View style={{ width: 36.25, borderLeftWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 != 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
+//               <Text style={[styles.text, {}]}>{hole.num}</Text>
+//             </View>
+//           ))}
 
-        </View>
-        <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
-          <View >
-            <Text style={[styles.text, { marginLeft: 5.7, marginTop: 3 }]}>Dist: </Text>
-          </View>
-          {holes.slice(9, 18).map(hole => (
-            <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 != 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
-              <Text style={[styles.text, { color: '#555' }]}>{hole.yardage}</Text>
-            </View>
-          ))}
+//         </View>
+//         <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
+//           <View >
+//             <Text style={[styles.text, { marginLeft: 5.7, marginTop: 3 }]}>Dist: </Text>
+//           </View>
+//           {holes.slice(9, 18).map(hole => (
+//             <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 != 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
+//               <Text style={[styles.text, { color: '#555' }]}>{hole.yardage}</Text>
+//             </View>
+//           ))}
 
-        </View>
-        <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
-          <View >
-            <Text style={[styles.text, { marginLeft: 8, marginTop: 3 }]}>Par: </Text>
-          </View>
-          {holes.slice(9, 18).map(hole => (
-            <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 != 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
-              <Text style={[styles.text, { color: '#444' }]}>{hole.par}</Text>
-            </View>
-          ))}
+//         </View>
+//         <View style={{ flexDirection: 'row', borderWidth: 0.5 }} >
+//           <View >
+//             <Text style={[styles.text, { marginLeft: 8, marginTop: 3 }]}>Par: </Text>
+//           </View>
+//           {holes.slice(9, 18).map(hole => (
+//             <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num % 2 != 0 ? 'tan' : 'antiquewhite' }} key={hole.id}>
+//               <Text style={[styles.text, { color: '#444' }]}>{hole.par}</Text>
+//             </View>
+//           ))}
 
-        </View>
-      </View>
+//         </View>
+//       </View>
 
 
-    </View>
-  );
-};
+//     </View>
+//   );
+// };
 
 
 export default function Holes() {
@@ -233,15 +235,33 @@ const image = getRibbonImageSource(ribbonImage);
       :
       <View style={{ width: '100%', height: 5, backgroundColor: `${TeeColors[teeBoxColors[0]].toLowerCase()}` }} />
   }
-
-  const AddHoleInfoBtn = () => {
-    return (<View>
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const AddHoleInfoBtn = () => {
+  return (<View>
 
     {
       newHoleNumber <= 18
       ?
-      <View style={[styles.newHoleBtn, { width: '100%', height: 100, justifyContent: 'space-evenly', alignItems: 'center', backgroundColor: '#aaa' }]}>
-          <Text style={styles.text}>Hole {newHoleNumber}</Text>
+      <View style={[styles.newHoleBtn, { width: '100%', height: 100, justifyContent: 'space-evenly', backgroundColor: '#aaa' }]}>
+          <View style={{alignItems:'center'}}>
+            <Text style={[styles.text,{fontSize:20, textAlign:'center'}]}>Hole</Text>
+            <Text style={[styles.text,{fontSize:20, textAlign:'center'}]}> {newHoleNumber}</Text>
+          </View>
+
+          <View style={styles.newHoleColumn}>
+            <Text style={styles.text}>Par:</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {/* <Button title="-" onPress={() => setNewPar((prev) => prev > 3 ? prev - 1 : prev)} />
+              <Text style={styles.text}>{newPar}</Text>
+              <Button title="+" onPress={() => setNewPar((prev) => prev < 5 ? prev + 1 : prev)} /> */}
+              <TouchableOpacity style={[styles.parChoiceBtn, {backgroundColor: newPar == 3 ? 'yellowgreen' : '#888'}]} onPress={() => setNewPar(3)}><Text style={[styles.text,{fontSize:20}]}>3</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.parChoiceBtn, {backgroundColor: newPar == 4 ? 'yellowgreen' : '#888'}]} onPress={() => setNewPar(4)}><Text style={[styles.text,{fontSize:20}]}>4</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.parChoiceBtn, {backgroundColor: newPar == 5 ? 'yellowgreen' : '#888'}]} onPress={() => setNewPar(5)}><Text style={[styles.text,{fontSize:20}]}>5</Text></TouchableOpacity>
+              
+
+
+            </View>
+          </View>
 
           <View style={styles.newHoleColumn}>
 
@@ -249,14 +269,6 @@ const image = getRibbonImageSource(ribbonImage);
             <TextInput style={styles.textInputBox} value={newYardage} placeholder="400" onChangeText={(text) => setNewYardage(text)} keyboardType="numeric" />
           </View>
 
-          <View style={styles.newHoleColumn}>
-            <Text style={styles.text}>Par:</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Button title="-" onPress={() => setNewPar((prev) => prev > 3 ? prev - 1 : prev)} />
-              <Text style={styles.text}>{newPar}</Text>
-              <Button title="+" onPress={() => setNewPar((prev) => prev < 5 ? prev + 1 : prev)} />
-            </View>
-          </View>
 
           {
             teeBoxColors[1] > 0
@@ -279,30 +291,77 @@ const image = getRibbonImageSource(ribbonImage);
       }
       </View>)
   }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  const [redNum, setRedNum] = useState('')
+  const [par, setPar] = useState('')
+  const [yardage, setYardage] = useState('')
+  
+    
+    const updateMistakeHole = async () => {
+      if (redNum.length > 0 && par.length > 0 && yardage.length > 0) {
+          const updatedID = await updateHole(parseInt(redNum), parseInt(par), parseInt(yardage))
+          const updatedHoles = holes.map(hole => {
+            if (hole.id === parseInt(redNum)) {
+              hole.par = parseInt(par)
+              hole.yardage = parseInt(yardage)
+            }
+            return hole
+          })
+          setHoles(updatedHoles)
+        }
+      }
+
+   
 
 
-
-
+  const [allowEdit, setAllowEdit] = useState(false)
     return (
-      <LinearGradient colors={MenuGradients[gradient]}>
-        <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} /> 
 
+      
+
+        <>
+        
+        <StackHeader title={String(courseName)} image={image} imageTag={ribbonImage} /> 
         <ColorSeperator />
+      <LinearGradient colors={MenuGradients[gradient]} style={{height:'100%', paddingBottom:30}}>
+
+        <ScrollView>
 
         <TeeInfo />
+      <View>
 
         {AddHoleInfoBtn()}
+      </View>
 
         {holes && holes.length > 0
           ?
-          <CourseScoreCard holes={holes} />
-
+          <>
+          <CourseHoleInfo holes={holes} allowEdit={allowEdit} />
+          {allowEdit ? <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+            <Text style={styles.text}>Red Num:</Text>
+            <TextInput style={styles.textInputBox} value={redNum} placeholder="0" onChangeText={(text) => setRedNum(text)} keyboardType="numeric" />
+            <Text style={styles.text}>New Par:</Text>
+            <TextInput style={styles.textInputBox} value={par} placeholder="0" onChangeText={(text) => setPar(text)} keyboardType="numeric" />
+            <Text style={styles.text}>New Yardage:</Text>
+            <TextInput style={styles.textInputBox} value={yardage} placeholder="0" onChangeText={(text) => setYardage(text)} keyboardType="numeric" />
+            <Button title="Update Hole" onPress={() => updateMistakeHole()} />
+          </View>: <Text></Text>}
+          <Button title="Edit Holes" onPress={()=> setAllowEdit((prev)=> !prev)} />
+          </>
+          
+          
           : <Text>No hole data</Text>}
 
         <View>
-          <Text>Allow Edit holes</Text>
+          <Text style={{color:'whitesmoke'}}>*Allow Edit holes</Text>
         </View>
+          </ScrollView>
       </LinearGradient>
+    
+          
+          
+     </>     
     )
   }
 
@@ -338,5 +397,11 @@ const image = getRibbonImageSource(ribbonImage);
     text: {
       textAlign: 'center', fontFamily: 'Arial', fontSize: 17, fontStyle: 'italic'
     },
-
+    parChoiceBtn: {
+      backgroundColor: '#777',
+      paddingVertical: 5,
+      paddingHorizontal: 8,
+      borderRadius: 5,
+      marginHorizontal: 5
+    },
   });

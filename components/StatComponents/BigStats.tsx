@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 const BigStats = ({roundsPlayed,  holesPlayed, bestRound, avgScore}:{roundsPlayed: number, holesPlayed: number, bestRound: number, avgScore: number  }) => {
     return (
         <View>
-        <View style={{flexDirection:'row',justifyContent:'space-evenly', alignItems:'center'}}>
+        <View style={{justifyContent:'space-evenly', alignItems:'center'}}>
 
                 <LinearGradient colors={['#4f4f4f', '#333']} style={styles.statSquare}>
                   <Text style={{color:'whitesmoke', fontSize:16, fontFamily:'arial', fontStyle:'italic',}}>Rounds Played</Text>

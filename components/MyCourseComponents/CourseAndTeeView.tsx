@@ -3,7 +3,7 @@ import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Button, ImageBackground, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { createTeebox } from "../DataBase/API";
+import { createTeebox, DeleteCourse } from "../DataBase/API";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Teebox, CourseAndTees } from "../DataBase/Classes";
 import { TeeColors, teeTextColor } from "@/constants/Colors";
@@ -15,7 +15,7 @@ export default function CourseAndTeeView({course}:{course:CourseAndTees}) {
     const [teeColor, setTeeColor] = useState<number>(1)
     const [teeColor2, setTeeColor2] = useState<number>(0)
     const [combo, setCombo] = useState<boolean>(false)
-
+    const [deleted, setDeleted] = useState<boolean>(course.name === 'Just Play' ? true : false)
     
 
 
@@ -49,10 +49,46 @@ export default function CourseAndTeeView({course}:{course:CourseAndTees}) {
         }
     };
 
+    const [showDeleteBtn, setShowDeleteBtn] = useState(false);
+
+    const DeleteThisCourse = async (id:number) => {
+        try {
+            await DeleteCourse(id);
+            setDeleted(true);
+        } catch (error) {
+            console.error('Error deleting course:', error);
+            // Handle error appropriately (e.g., display error message to the user)
+        }
+    }
+
+    const DeleteCourseAlert = () => {
+        
+        Alert.alert(
+            "Delete Course",
+            "Are you sure you want to delete this course? This will delete all associated data including rounds played.",
+          
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Delete", onPress: () => DeleteThisCourse(course.id), style: 'destructive' }
+            ]
+        );
+    }
+
+    if (deleted) {
+        return <></>
+    }
 
     return (
-        
+        <TouchableOpacity onLongPress={() => setShowDeleteBtn(!showDeleteBtn)}>
         <LinearGradient colors={['#2a2a2a', '#000']} style={styles.fullCourseDiv}>
+
+          { showDeleteBtn &&
+            <Button title="Delete Course" onPress={() => DeleteCourseAlert()} />
+          }
              {/*///////////////////////// TEE MODAL ///////////////////////*/}
              <Modal
             animationType="slide"
@@ -136,22 +172,18 @@ export default function CourseAndTeeView({course}:{course:CourseAndTees}) {
             <ScrollView horizontal={true} >
             {teeboxes.length > 0 ? (
   teeboxes.map((teebox) => (
-    <Link
-    key={teebox.id}
-      href={{
-        pathname: '(myCourses)/(holes)/Holes',
+    
+    <TouchableOpacity key={teebox.id} style={[
+      teebox.color2
+        ? { borderTopColor: teeTextColor(teebox.color1), borderBottomColor: teeTextColor(teebox.color2), borderEndColor: teeTextColor(teebox.color2), borderStartColor: teeTextColor(teebox.color1) }
+        : { borderColor: teeTextColor(teebox.color1) },
+      styles.tee
+    ]} onPress={() => {router.push({
+        pathname: '/(myCourses)/(holes)/Holes',
         params: { teeID: teebox.id, courseName: course.name, teeColor1: teebox.color1, teeColor2: teebox.color2 }
-      }}
-      style={[
-        teebox.color2
-          ? { borderTopColor: teeTextColor(teebox.color1), borderBottomColor: teeTextColor(teebox.color2), borderEndColor: teeTextColor(teebox.color2), borderStartColor: teeTextColor(teebox.color1) }
-          : { borderColor: teeTextColor(teebox.color1) },
-        styles.tee
-      ]}
-      asChild
-      >
-    <TouchableOpacity
-    >
+      })}
+      }>
+    
           <View style={{ padding: 5, alignItems: 'center', flexDirection:'row' }}>
             <Text style={{ color: teeTextColor(teebox.color1), fontSize: 20, fontFamily: 'Arial', fontStyle: 'italic' }}>
               {`${TeeColors[teebox.color1]}`}
@@ -171,7 +203,7 @@ export default function CourseAndTeeView({course}:{course:CourseAndTees}) {
             }
           </View>
         </TouchableOpacity>
-      </Link>
+      
     
                     ))
                 ) : (
@@ -185,7 +217,7 @@ export default function CourseAndTeeView({course}:{course:CourseAndTees}) {
 </TouchableOpacity>
           
         </LinearGradient>
-       
+       </TouchableOpacity>
     )
 }
 

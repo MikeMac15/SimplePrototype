@@ -8,115 +8,137 @@ import ExitModal from "../CounterTwo/Buttons/Modals/ExitModal";
 import ScoreModal3 from "./ScoreModal3";
 import HoleInsightsModal from "../CounterTwo/Buttons/Modals/HoleInsights";
 import ShotTrackerModal from "@/components/Location/ShotTrackerModal";
-
+import useTheme from "@/constants/Theme";
 // import ImagesModal from "../CounterTwo/Buttons/Modals/ImagesModal";
-
 interface OptionsProps {
-  teeboxHoles:Hole[];
+  teeboxHoles: Hole[];
   roundHoles: { [num: number]: HoleStats };
-  round: Round
-  holeNumber: number
+  round: Round;
+  holeNumber: number;
 }
-const C3Options3: React.FC<OptionsProps> = ({teeboxHoles, roundHoles, round, holeNumber}) => {
 
+// Define a union type for valid modal keys
+type IconType = 'score' | 'bar' | 'dot' | 'track' | 'exit';
 
+const C3Options3: React.FC<OptionsProps> = ({ teeboxHoles, roundHoles, round, holeNumber }) => {
+  const theme = useTheme();
+  const [modalVisibility, setModalVisibility] = useState<{
+    [key in IconType]: boolean;
+  }>({
+    score: false,
+    bar: false,
+    dot: false,
+    track: false,
+    exit: false,
+  });
+  
+  const toggleModal = (icon: IconType) => {
+    setModalVisibility((prev) => ({
+      ...prev,
+      [icon]: !prev[icon],
+    }));
+  };
+  
+  const OptionBtn2 = (title: string, icon: IconType) => {
+    const Icon = () => {
+      switch (icon) {
+        case 'score':
+          return <Entypo name="document" color={theme.color} size={25} />;
+          case 'bar':
+            return <Ionicons name="stats-chart-sharp" color={theme.color} size={25} />;
+            case 'dot':
+              return <AntDesign name="dotchart" color={theme.color} size={25} />;
+              case 'track':
+                return <MaterialIcons name="share-location" color={theme.color} size={25} />;
+                case 'exit':
+                  return <MaterialCommunityIcons name="exit-run" color={theme.color} size={25} />;
+                }
+              };
+              
+              const Modal = () => {
+                switch (icon) {
+                  case 'score':
+                    return (
+                      <ScoreModal3
+                      modalVisible={modalVisibility[icon]}
+                      setModalVisible={() => toggleModal(icon)}
+                      teeboxHoles={teeboxHoles}
+                      roundHoles={roundHoles}
+                      holeNumber={holeNumber}
+                      round={round}
+                      />
+                    );
+                    case 'bar':
+                      return <RoundModal modalVisible={modalVisibility[icon]} setModalVisible={() => toggleModal(icon)} round={round} />;
+        case 'dot':
+          return (
+            <HoleInsightsModal
+              modalVisible={modalVisibility[icon]}
+              setModalVisible={() => toggleModal(icon)}
+              holeID={teeboxHoles[holeNumber - 1].id}
+              holePar={teeboxHoles[holeNumber - 1].par}
+              holeNumber={teeboxHoles[holeNumber - 1].num}
+            />
+          );
+        case 'track':
+          return <ShotTrackerModal modalVisible={modalVisibility[icon]} setModalVisible={() => toggleModal(icon)} />;
+        case 'exit':
+          return <ExitModal modalVisible={modalVisibility[icon]} setModalVisible={() => toggleModal(icon)} />;
+      }
+    };
+
+    return (
+      <TouchableOpacity
+        style={{ flexDirection: 'column', alignItems: 'center' }}
+        onPress={() => toggleModal(icon)}
+      >
+        <View style={{ marginBottom: 2 }}>
+          {Icon()}
+          {modalVisibility[icon] ? Modal() : null}
+        </View>
+        <View>
+          <Text style={{ color: theme.color, fontSize: 10 }}>{title}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  // const [height] = useState(new Animated.Value(0)); // Initialize height as 0
+  // const animationDuration = 300; // Animation duration in milliseconds
+  // const [isVisible, setIsVisible] = useState(true);
+  
+  // useEffect(() => {
+  //   Animated.timing(height, {
+  //     toValue: isVisible ? 55 : 0, // Target height: 55 when visible, 0 when hidden
+  //     duration: animationDuration,
+  //     useNativeDriver: false, // Set to false because height is a non-transform property
+  //   }).start();
+  // }, [isVisible, height]);
 
   
+  return (
+    // <View style={{ width: '115%', flexDirection: 'row', alignItems: 'center' }}>
+    <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}>
+      {/* <TouchableOpacity style={{ marginLeft: 20, marginVertical: 5 }} onPress={() => setIsVisible(!isVisible)}>
+        {isVisible ? (
+          <AntDesign name="caretcircleoup" color={'whitesmoke'} size={20} />
+        ) : (
+          <Ionicons name="caret-down-circle-outline" color={'whitesmoke'} size={20} />
+        )}
+      </TouchableOpacity> */}
 
-
-
-    const OptionBtn2 = (title:string, icon:string) => {
-      const [modalVisible, setModalVisible] = useState(false)
-        const Icon = () => {
-
-            switch (icon) {
-                case 'score':
-                    return <Entypo name="document" color={'whitesmoke'} size={25} />
-                case 'bar':
-                      return <Ionicons name='stats-chart-sharp' color={'whitesmoke'} size={25} />
-                case 'dot':
-                    return <AntDesign name='dotchart' color={'whitesmoke'} size={25} />
-                case 'track':
-                  return <MaterialIcons name="share-location" color={'whitesmoke'} size={25} />
-                // case 'green':
-                //   return <MaterialIcons name="golf-course" color={'whitesmoke'} size={25} />
-                case 'exit':
-                    return <MaterialCommunityIcons name="exit-run" color={'whitesmoke'} size={25} />
-                    
-                    }}
-          const Modal = () => {
-            switch (icon) {
-                case 'score':
-                    return <ScoreModal3 modalVisible={modalVisible} setModalVisible={setModalVisible} teeboxHoles={teeboxHoles} roundHoles={roundHoles} holeNumber={holeNumber} round={round} />
-                case 'bar':
-                    return <RoundModal modalVisible={modalVisible} setModalVisible={setModalVisible} round={round} />
-                case 'dot':
-                    return <HoleInsightsModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeID={teeboxHoles[holeNumber-1].id} holePar={teeboxHoles[holeNumber-1].par} holeNumber={teeboxHoles[holeNumber-1].num} />
-                case 'track':
-                    return <ShotTrackerModal modalVisible={modalVisible} setModalVisible={setModalVisible} />;
-                // case 'green':
-                //     return <ImagesModal modalVisible={modalVisible} setModalVisible={setModalVisible} holeNumber={holeNumber} green={true}/>
-                case 'exit':
-                    return <ExitModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
-                    
-                    }
-                }
-
-                
-        return (
-            
-                <TouchableOpacity style={{flexDirection:'column', alignItems:'center'}} onPress={()=>setModalVisible(true)}>
-                    <View style={{marginBottom:2}}>
-                        {Icon()}
-                        {modalVisible ? Modal() : ''}
-                    </View>
-                    <View>
-                        <Text style={{color:'whitesmoke', fontSize:10}}>{title}</Text>
-                    </View>
-                </TouchableOpacity>
-           
-        )
-    }
-
-    const [height] = useState(new Animated.Value(0)); // Initialize height as 0
-  const animationDuration = 300; // Animation duration in milliseconds
-    const [isVisible, setIsVisible] = useState(false)
-  useEffect(() => {
-    Animated.timing(height, {
-      toValue: isVisible ? 55 : 0, // Target height: 60 when visible, 0 when hidden
-      duration: animationDuration,
-      useNativeDriver: false, // Set to false because height is a non-transform property
-    }).start();
-  }, [isVisible, height]);
-
-
-
-
-    return(
-        <View style={{width:'115%', flexDirection:'row', alignItems:'center'}}>
-                <TouchableOpacity style={{ marginLeft:20, marginVertical:5,}} onPress={() => setIsVisible(!isVisible)}>
-                   
-                    {isVisible ?
-                    <AntDesign name='caretcircleoup' color={'whitesmoke'} size={20} />
-                    :
-                    <Ionicons name='caret-down-circle-outline' color={'whitesmoke'} size={20} />
-                }
-                </TouchableOpacity>
-
-                <Animated.View style={[styles.animatedView, { height,}, {}]}>
-        {/* {OptionBtn2('Yard Book', 'yrd')} */}
-        {OptionBtn2('Track Shot', 'track')}
+      {/* <Animated.View style={[styles.animatedView, { height }]}> */}
+      <View style={[styles.animatedView,{width:'100%'}]}>
+        {/* {OptionBtn2('Track Shot', 'track')} */}
+        {OptionBtn2('Scorecard', 'score')}
         {OptionBtn2('HoleHistory', 'dot')}
-        {/* {OptionBtn2('Scorecard', 'score')} */}
         {OptionBtn2('RoundStats', 'bar')}
-        
-        
         {OptionBtn2('Exit Round', 'exit')}
-    </Animated.View>
-   
+      </View>
+      {/* </Animated.View> */}
     </View>
-    )
-}
+  );
+};
 
 export default C3Options3;
 

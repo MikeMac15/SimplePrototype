@@ -34,7 +34,8 @@ export const MenuGradients: { [key: string]: string[] } = {
   'cool-guy': ['#3b705d', '#01383b'],
   'sunset': ['#ff859b', '#ffbb33'],
   'morning-dew': ['#82f3ff', '#fce674', '#f5d33b'],
-  'OG-Dark': ['#2f2f2f', '#111'],
+  'OG-Dark': ['#2f2f2f', '#151515'],
+  // 'OG-Dark': ['#3f3f3f', '#2f2f2f'],
   'OG-Light': ['whitesmoke', '#aaa'],
 };
 
@@ -55,8 +56,12 @@ export const getMenuImageSource = (menuImage: string) => {
       return require('../assets/images/retro4.png');
     case 'nasaJW':
       return require('../assets/images/nasaJW1.png');
+    case 'palms':
+      return require('../assets/images/palms.png');
+    case 'balls':
+      return require('../assets/images/balls1.png');
     default:
-      return require('../assets/images/ggwp.png');
+      return require('../assets/images/ocean.png');
     }
   };
       
@@ -68,8 +73,14 @@ export const getMenuImageSource = (menuImage: string) => {
         return require('../assets/images/retro-ribbon.png');
       case 'nasaJW':
         return require('../assets/images/jw2-ribbon.png');
+      case 'meadow':
+        return require('../assets/images/meadow.png');
+      case 'metal':
+        return require('../assets/images/metal.png');
+      case 'balls':
+        return require('../assets/images/balls.png');
       default:
-        return require('../assets/images/ggwp.png');
+        return require('../assets/images/metal.png');
     }
   };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +94,7 @@ export const TeeColors: { [key: number]: string } = {
   5: 'Gold',
   6: 'Silver',
   7: 'Green',
+  8: '',
 }
 
 export const teeTextColor = (color:number) : string => {
@@ -91,7 +103,9 @@ export const teeTextColor = (color:number) : string => {
       return '#888';
         
     case 2:
-      return 'skyblue';
+      return '#407fd6';
+      // return '#1e589e';
+      // return 'skyblue';
 
     case 3:
       return 'whitesmoke';
@@ -106,7 +120,10 @@ export const teeTextColor = (color:number) : string => {
       return '#e3e1dc';
     
     case 7:
-      return 'yellowgreen';
+      return 'green';
+    
+    case 8:
+      return 'tan';
         
     default:
       return 'grey'

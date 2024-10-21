@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Courses Snapshot Test renders correctly 1`] = `
+<ViewManagerAdapter_ExpoLinearGradient
+  colors={
+    [
+      4278190080,
+      4279308561,
+    ]
+  }
+  style={
+    {
+      "height": "100%",
+    }
+  }
+>
+  <MockStackScreen
+    options={
+      {
+        "headerRight": [Function],
+      }
+    }
+  />
+  <RCTScrollView>
+    <View>
+      <Text>
+        Add a Course.
+      </Text>
+    </View>
+  </RCTScrollView>
+  <ViewManagerAdapter_ExpoLinearGradient
+    colors={
+      [
+        4284111450,
+        4281545523,
+      ]
+    }
+    style={
+      {
+        "alignItems": "center",
+        "borderColor": "#222",
+        "borderRadius": 20,
+        "borderWidth": 1,
+        "flexDirection": "column",
+        "justifyContent": "center",
+        "margin": 12,
+        "marginBottom": 25,
+        "padding": 5,
+      }
+    }
+  >
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        {
+          "alignItems": "center",
+          "borderRadius": 10,
+          "flexDirection": "row",
+          "marginVertical": 10,
+          "opacity": 1,
+        }
+      }
+    >
+      <Text />
+      <Text
+        style={
+          {
+            "color": "white",
+            "fontSize": 16,
+          }
+        }
+      >
+        Add New Course
+      </Text>
+    </View>
+  </ViewManagerAdapter_ExpoLinearGradient>
+</ViewManagerAdapter_ExpoLinearGradient>
+`;

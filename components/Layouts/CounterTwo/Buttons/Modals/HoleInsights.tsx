@@ -1,5 +1,6 @@
 import { getHoleStatsByHoleID } from "@/components/DataBase/API";
 import { HoleInsights } from "@/components/DataBase/Classes";
+import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import { Alert, Button, Dimensions, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LineChart, PieChart } from "react-native-gifted-charts";
@@ -47,8 +48,8 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
 
   const HoleTitle = () => {
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', backgroundColor: '#222', paddingVertical: 3, }}>
-        <Text style={{ color: 'whitesmoke', fontSize: 20, fontFamily: 'papyrus' }}>Hole {holeNumber} Insights</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', paddingVertical: 3, }}>
+        <Text style={{ color: 'whitesmoke', fontSize: 25, fontStyle:'italic',marginBottom:10}}>Hole {holeNumber} Insights</Text>
 
       </View>
     );
@@ -131,11 +132,11 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
 
                 }}>
 
-                {renderLegend('Par', ParPercentages.par, 'yellowgreen')}
+                {renderLegend('Par', Math.floor(ParPercentages.par), 'yellowgreen')}
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                  {renderLegend('Under', ParPercentages.under, 'skyblue')}
-                  {renderLegend('Over', ParPercentages.over, 'salmon')}
+                  {renderLegend('Under', Math.floor(ParPercentages.under), 'skyblue')}
+                  {renderLegend('Over', Math.floor(ParPercentages.over), 'salmon')}
                 </View>
               </View>
             );
@@ -148,7 +149,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
     return (
       <View style={title2 ? { flexDirection: "row", justifyContent: 'center', alignItems: 'center' } : { flexDirection: "row", }}>
         <View style={{ justifyContent: 'center', alignItems: 'center', width: 70 }}>
-          <Text style={StylesInsights.text}>{title}</Text>
+          <Text style={[StylesInsights.text,{textAlign:'center'}]}>{title}</Text>
           {title2 ? <Text style={StylesInsights.text}>{title2}</Text>
             : ''}
         </View>
@@ -160,7 +161,7 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
   }
   const AllPastHoleStats = () => {
     return (
-      <View style={[StylesInsights.columns, {}]}>
+      <View style={[StylesInsights.columns, {alignItems:'flex-start', marginTop:20}]}>
 
         <PastHoleStats title="Avg" title2="Score" dataStr={`${averageOut(holeInsight.scores).toFixed(1)}`} />
         <PastHoleStats title="Avg" title2="Putts" dataStr={`${averageOut(holeInsight.pph).toFixed(1)}`} />
@@ -235,13 +236,80 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
 
   }
 
+
+  const AllStatHoleTimeline = ({ score,pph, refNum, title, step = false }: { score: number[],pph: number[], refNum: number, title: string, step?: boolean }) => {
+
+    const xAxis: string[] = []
+    // data1.map((value) => (xAxis.push((String(value)))))
+    return (
+      <LinearGradient colors={['#333','#444']} style={{borderRadius:20}}>
+        <Text style={{ color: 'whitesmoke', fontSize: 20, textAlign: 'center', marginVertical: 10 }}>Past {title}</Text>
+        <LineChart
+
+
+          {...(step ? { stepChart: true } : { areaChart: true })}
+
+
+          data={score.map(item => {
+            return {
+              value: item,
+              dataPointText: String(item),
+              textColor: '#DDD',
+              // item > refNum ? '#FFCCCC' : item < refNum ? '#CCCCFF' : '#CCFFCC',
+              dataPointColor: item > refNum ? 'salmon' : item < refNum ? 'skyblue' : 'yellowgreen'
+            }
+          })}
+          data2={pph.map(item => {
+            return{
+              value: item,
+              dataPointText: String(item),
+              textColor: '#DDD',
+              // item > refNum ? '#FFCCCC' : item < refNum ? '#CCCCFF' : '#CCFFCC',
+              dataPointColor: item > 2 ? 'salmon' : item < 2 ? 'skyblue' : 'yellowgreen'
+            }
+          })
+        }
+         
+          // stepChart3
+          // stepChart4
+          startFillColor="#aaa"
+          startOpacity={0.8}
+          endFillColor="#111"
+          endOpacity={0.3}
+          stepValue={1}
+          stepHeight={15}
+          width={width * .8}
+          maxValue={Math.max(...score) + 1}
+          color="#ccc"
+          secondaryLineConfig={{color: 'tan'}}
+          startFillColor2='tan' 
+          scrollToEnd
+          // curved
+
+          dataPointsColor="#ccc"
+          showXAxisIndices
+          textShiftY={20}
+          textColor="#ccc"
+          textFontSize={20}
+          rulesColor={'black'}
+          hideYAxisText
+        />
+        {/* Timeline */}
+        <TimeLineChoice />
+      </LinearGradient>
+    )
+
+  }
+  
+
   const TimelineViewer = ({ timelineChoice }: { timelineChoice: number }) => {
 
 
 
     switch (timelineChoice) {
       case 0:
-        return <PastHoleTimeline data1={holeInsight.scores} refNum={holePar} title="Scores" />
+        // return <PastHoleTimeline data1={holeInsight.scores} refNum={holePar} title="Scores" />
+        return <AllStatHoleTimeline score={holeInsight.scores} pph={holeInsight.pph} refNum={holePar} title="Scores" />
       case 1:
         return <PastHoleTimeline data1={holeInsight.pph} refNum={2} title="PPH" />
       case 2:
@@ -256,20 +324,30 @@ const HoleInsightsModal: React.FC<ModalProps> = ({ modalVisible, setModalVisible
   const TimeLineChoice = () => {
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', transform: 'translateY(-20px)' }}>
+        <View style={{justifyContent:'center', alignItems:'center'}} >
 
-        <TouchableOpacity onPress={() => setTimelineChoice(0)}>
-          <Text style={[styles.text, timelineChoice === 0 && styles.selectedText]}>Score</Text>
+        <TouchableOpacity onPress={() => setTimelineChoice(0)} style={{flexDirection:'row'}}>
+          <Text style={[styles.text, timelineChoice === 0 && {color:'whitesmoke',}]}>Score</Text>
+          <Text style={[styles.text, timelineChoice === 0 && {color:'whitesmoke'}]}>/</Text>
+          <Text style={[styles.text, timelineChoice === 0 && {color:'tan'}]}>PPH</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTimelineChoice(1)}>
+        <View style={{height:2,backgroundColor:'#007bff',width: timelineChoice===0 ? 100: 0}}/>
+        </View>
+        {/* <TouchableOpacity onPress={() => setTimelineChoice(1)}>
           <Text style={[styles.text, timelineChoice === 1 && styles.selectedText]}>PPH</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTimelineChoice(2)}>
+        </TouchableOpacity> */}
+        <View style={{justifyContent:'center', alignItems:'center'}} >
+        <TouchableOpacity onPress={() => setTimelineChoice(2)} style={{alignItems:'center'}}>
           <Text style={[styles.text, timelineChoice === 2 && styles.selectedText]}>GIR</Text>
+          <View style={{height:2,backgroundColor:'#007bff',width: timelineChoice===2 ? 100: 0}}/>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setTimelineChoice(3)}>
+        </View>
+        <View style={{justifyContent:'center', alignItems:'center'}} >
+        <TouchableOpacity onPress={() => setTimelineChoice(3)} style={{alignItems:'center'}}>
           <Text style={[styles.text, timelineChoice === 3 && styles.selectedText]}>FIR</Text>
+          <View style={{height:2,backgroundColor:'#007bff',width: timelineChoice===3 ? 100: 0}}/>
         </TouchableOpacity>
-
+</View>
       </View>
     );
   }
@@ -345,11 +423,12 @@ const StylesInsights = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
+    transform: 'scale(.90)',
     margin: 20,
 
     borderRadius: 20,
     padding: 20,
-    backgroundColor: '#111',
+    backgroundColor: '#3f3f3f',
 
     alignItems: 'center',
     shadowColor: '#000',

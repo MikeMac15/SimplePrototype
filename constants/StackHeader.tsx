@@ -1,5 +1,5 @@
-import { Stack } from 'expo-router';
-import { StyleSheet, ImageBackground, TouchableOpacity, Text, Button } from 'react-native'
+import { router, Stack } from 'expo-router';
+import { StyleSheet, ImageBackground, TouchableOpacity, Text, Button, Alert } from 'react-native'
 import useTheme from './Theme';
 import { useEffect, useMemo, useState } from 'react';
 import { Hole } from '@/components/DataBase/Classes';
@@ -16,7 +16,7 @@ interface StackHeaderProps {
   scorecard?: () => void;
 }
 
-const StackHeader: React.FC<StackHeaderProps> = ({ image, imageTag, title, roundRef, lastHole, nextHole, scorecard, teeboxHoles }) => {
+const StackHeader: React.FC<StackHeaderProps> = ({ image, imageTag, title, roundRef, lastHole, nextHole, teeboxHoles }) => {
   const [textColor, setTextColor] = useState('red');
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -32,6 +32,25 @@ const StackHeader: React.FC<StackHeaderProps> = ({ image, imageTag, title, round
         return 'red';
     }
   }, [imageTag]);
+
+
+  const exitAlert = () => {
+    Alert.alert(
+      "Exit Confirmation",
+      "Are you sure you want to exit? \n This will delete all shot data.",
+      [
+        {
+          text: "Cancel",
+
+        },
+        { text: "OK", onPress: () => router.dismissAll() }
+      ],
+      { cancelable: false }
+    );
+  };
+
+
+
 
   useEffect(() => {
     setTextColor(textColorMemo);
@@ -50,15 +69,13 @@ const StackHeader: React.FC<StackHeaderProps> = ({ image, imageTag, title, round
             style={[StyleSheet.absoluteFill, { flex: 1 }]}
           />
         ),
-        headerTitleStyle: { color: textColor, fontSize: 25, fontWeight: 'bold', fontFamily: 'Papyrus' },
+        headerTitleStyle: { color: "whitesmoke", fontSize: 25, fontWeight: 'bold', fontFamily: 'Papyrus' },
 
         headerBlurEffect: 'systemUltraThinMaterialDark',
         headerLeft: () => (
-          <TouchableOpacity onPress={() => setModalVisible(true)} >
-            <Text style={{ color: 'salmon', }}>Scorecard</Text>
-            {teeboxHoles &&
-              <ScoreModal3 modalVisible={modalVisible} setModalVisible={setModalVisible} teeboxHoles={teeboxHoles} roundHoles={roundRef.current.holes} holeNumber={Object.keys(roundRef.current.holes).length} round={roundRef.current} />
-            }
+          <TouchableOpacity onPress={() => exitAlert()} >
+            <Text style={{ color: 'salmon', fontSize:16 }}>Exit</Text>
+            
           </TouchableOpacity>
         ),
         headerRight: () => (

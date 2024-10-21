@@ -11,8 +11,8 @@ import { TeeColors, teeTextColor } from "@/constants/Colors";
 
 export default function CourseTeeStatView({course}:{course:CourseAndTees}) {
     
-    const [teeboxes, setTeeboxes] = useState<Teebox[]>(course.teeboxes);
-    
+    const teeboxes = course.teeboxes;
+    const courseID = course.id;
 
 
 
@@ -28,21 +28,30 @@ export default function CourseTeeStatView({course}:{course:CourseAndTees}) {
             <ScrollView horizontal={true} >
             {teeboxes.length > 0 ? (
   teeboxes.map((teebox) => (
-    <Link
+    // <Link
+    // key={teebox.id}
+    //   href={{
+    //     pathname: '(myCourses)/CourseStats',
+    //     params: { teeID: teebox.id, courseName: course.name, teeColor1: teebox.color1, teeColor2: teebox.color2 }
+    //   }}
+    //   style={[
+    //     teebox.color2
+    //       ? { borderTopColor: teeTextColor(teebox.color1), borderBottomColor: teeTextColor(teebox.color2), borderEndColor: teeTextColor(teebox.color2), borderStartColor: teeTextColor(teebox.color1) }
+    //       : { borderColor: teeTextColor(teebox.color1) },
+    //     styles.tee
+    //   ]}
+    //   asChild
+    // >
+    <TouchableOpacity
     key={teebox.id}
-      href={{
-        pathname: '(myCourses)/CourseStats',
-        params: { teeID: teebox.id, courseName: course.name, teeColor1: teebox.color1, teeColor2: teebox.color2 }
-      }}
-      style={[
+    style={[
         teebox.color2
           ? { borderTopColor: teeTextColor(teebox.color1), borderBottomColor: teeTextColor(teebox.color2), borderEndColor: teeTextColor(teebox.color2), borderStartColor: teeTextColor(teebox.color1) }
           : { borderColor: teeTextColor(teebox.color1) },
         styles.tee
       ]}
-      asChild
-    >
-    <TouchableOpacity
+      onPress={() => router.push({pathname: '/(myCourses)/CourseStats',
+        params: { teeID: teebox.id, courseName: course.name, teeColor1: teebox.color1, teeColor2: teebox.color2 }})}
     >
           <View style={{ padding: 5, alignItems: 'center', flexDirection:'row' }}>
             <Text style={{ color: teeTextColor(teebox.color1), fontSize: 20, fontFamily: 'Arial', fontStyle: 'italic' }}>
@@ -63,7 +72,7 @@ export default function CourseTeeStatView({course}:{course:CourseAndTees}) {
             }
           </View>
         </TouchableOpacity>
-      </Link>
+      // </Link>
     
                     ))
                 ) : (

@@ -4,9 +4,10 @@ import PieChart from "react-native-pie-chart";
 import AllShotPieChart from "../StatComponents/AllShotPieChart";
 import { BarChart } from "react-native-gifted-charts";
 import { MostRecentRound, Round } from "../DataBase/Classes";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getRecentRounds } from "../DataBase/API";
 import { TeeColors, teeTextColor } from "@/constants/Colors";
+import { useFocusEffect } from "expo-router";
 
 
   
@@ -36,9 +37,11 @@ const HomeRecentRound = () => {
     }
     
 
-    useEffect(()=>{
-        getMostRecentRound()
-    },[])
+    useFocusEffect(
+        useCallback(() => {
+          getMostRecentRound();
+        }, [])
+      );
 
 
     const CourseName = () => {

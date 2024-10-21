@@ -48,23 +48,19 @@ const HoleStats2: React.FC<HoleStats2Props> = ({ data}) => {
                 const subsetGIR = data.gir.slice(startIdx, endIdx);
                 const subsetFIR = data.fir.slice(startIdx, endIdx);
                 const subsetPars = data.holePars.slice(startIdx, endIdx);
-
+            
                 const avg = (arr: number[]) => arr.reduce((sum, val) => sum + val, 0) / arr.length;
-               
-                    for (let i = 0; i < subsetFIR.length; i++){
-                        if (subsetPars[i] == 3){
-                            subsetFIR.splice(i,1);
-                        }
-                    }
-                   
-                console.log(subsetFIR);
+            
+                // Filter out par 3 holes for FIR calculations
+                const validFIR = subsetFIR.filter((_, i) => subsetPars[i] > 3);
+                const validFIRTotal = validFIR.reduce((sum, val) => sum + val, 0);
                 const avgAvgScores = avg(subsetAvgScores);
                 const avgTotalScores = avg(subsetTotalScores);
                 const avgPPH = avg(subsetPPH);
                 const avgGIR = avg(subsetGIR);
-                const avgFIR = avg(subsetFIR);
+                const avgFIR = validFIR.length > 0 ? avg(validFIR) : 0; // Avoid division by zero
                 const sumPars = subsetPars.reduce((sum, val) => sum + val, 0);
-
+            
                 return (
                     <View>
                         {data.avgScores.slice(startIdx, startIdx + 9).map((avgScore, idx) => (
@@ -73,14 +69,14 @@ const HoleStats2: React.FC<HoleStats2Props> = ({ data}) => {
                                     <Text style={styles.holeText}>Hole {idx + 1 + startIdx}</Text>
                                     <Text style={styles.parText}>(Par {data.holePars[idx + startIdx]})</Text>
                                 </View>
-                                <View style={[styles.square,]}>
+                                <View style={[styles.square]}>
                                     <Text style={[styles.dataText, { color: AvgScoreColors(avgScore, 0, data.holePars[idx + startIdx]) }]}>{(avgScore).toFixed(1)}</Text>
                                 </View>
-                                <View style={[styles.square, { backgroundColor: '#333', flexDirection:'row' }]}>
-                                    <Text style={{color:'whitesmoke', fontSize:10}}>{data.totalScores[idx + startIdx] > 0 ? "+": ''}</Text>
+                                <View style={[styles.square, { backgroundColor: '#333', flexDirection: 'row' }]}>
+                                    <Text style={{ color: 'whitesmoke', fontSize: 10 }}>{data.totalScores[idx + startIdx] > 0 ? "+" : ''}</Text>
                                     <Text style={[styles.dataText, {}]}>{data.totalScores[idx + startIdx]}</Text>
                                 </View>
-                                <View style={[styles.square,]}>
+                                <View style={[styles.square]}>
                                     <Text style={[styles.dataText, { color: PuttColors(data.pph[idx + startIdx]) }]}>{(data.pph[idx + startIdx]).toFixed(1)}</Text>
                                 </View>
             
@@ -89,37 +85,37 @@ const HoleStats2: React.FC<HoleStats2Props> = ({ data}) => {
                                     <Text style={[styles.percent, { color: GIRFIRColors(data.gir[idx + startIdx], data.count) }]}>%</Text>
                                 </View>
                                 <View style={[styles.square, { flexDirection: 'row' },]}>
-                                    <Text style={[styles.dataText, { color: data.holePars[idx + startIdx] == 3 ? 'whitesmoke' : GIRFIRColors(data.fir[idx + startIdx], data.count) }]}>{data.holePars[idx + startIdx] != 3 ? ((data.fir[idx + startIdx] / data.count) * 100).toFixed(0) : '-'}</Text>
-                                    <Text style={[styles.percent, { color: GIRFIRColors(data.fir[idx + startIdx], data.count) }]}>{data.holePars[idx + startIdx] == 3 ? '' : '%'}</Text>
+                                    <Text style={[styles.dataText, { color: data.holePars[idx + startIdx] === 3 ? 'whitesmoke' : GIRFIRColors(data.fir[idx + startIdx], data.count) }]}>{data.holePars[idx + startIdx] !== 3 ? ((data.fir[idx + startIdx] / data.count) * 100).toFixed(0) : '-'}</Text>
+                                    <Text style={[styles.percent, { color: GIRFIRColors(data.fir[idx + startIdx], data.count) }]}>{data.holePars[idx + startIdx] === 3 ? '' : '%'}</Text>
                                 </View>
                             </View>
                         ))}
-                        <View style={[styles.row,{backgroundColor:'#111'}]}>
-                <View style={[styles.square, { backgroundColor: '#555', width: 80 }]}>
-                    <Text style={{}}>{startIdx == 0 ? 'Front 9' : 'Back 9'}</Text>
-                    <Text style={[styles.parText,{color:'black'}]}>(Par {sumPars})</Text>
-                </View>
-                <View style={[styles.square,{backgroundColor: AvgScoreColors(avgAvgScores, 0, avg(subsetPars)) }]}>
-                    <Text style={[styles.dataText, { color:'black' }]}>{(avgAvgScores).toFixed(1)}</Text>
-                </View>
-                <View style={[styles.square, {}]}>
-                    <Text style={[styles.dataText, {}]}>{(avgTotalScores).toFixed(1)}</Text>
-                </View>
-                <View style={[styles.square,{backgroundColor: PuttColors(avgPPH) }]}>
-                    <Text style={[styles.dataText, { color: 'black' }]}>{(avgPPH).toFixed(1)}</Text>
-                </View>
-                <View style={[styles.square, { flexDirection: 'row' }, { backgroundColor: GIRFIRColors(avgGIR, data.count) }]}>
-                    <Text style={[styles.dataText, { color: 'black' }]}>{((avgGIR / data.count) * 100).toFixed(1)}</Text>
-                    <Text style={[styles.percent, { color: 'black' }]}>%</Text>
-                </View>
-                <View style={[styles.square, { flexDirection: 'row', backgroundColor:GIRFIRColors(avgFIR, data.count) },]}>
-                    <Text style={[styles.dataText, { color: 'black'}]}>{((avgFIR /data.count)*100).toFixed(1)}</Text>
-                    <Text style={[styles.percent, { color: 'black' }]}>{'%'}</Text>
-                </View>
-            </View>
+                        <View style={[styles.row, { backgroundColor: '#111' }]}>
+                            <View style={[styles.square, { backgroundColor: '#555', width: 80 }]}>
+                                <Text>{startIdx === 0 ? 'Front 9' : 'Back 9'}</Text>
+                                <Text style={[styles.parText, { color: 'black' }]}> (Par {sumPars})</Text>
+                            </View>
+                            <View style={[styles.square, { backgroundColor: AvgScoreColors(avgAvgScores, 0, avg(subsetPars)) }]}>
+                                <Text style={[styles.dataText, { color: 'black' }]}>{(avgAvgScores).toFixed(1)}</Text>
+                            </View>
+                            <View style={[styles.square]}>
+                                <Text style={[styles.dataText]}>{(avgTotalScores).toFixed(1)}</Text>
+                            </View>
+                            <View style={[styles.square, { backgroundColor: PuttColors(avgPPH) }]}>
+                                <Text style={[styles.dataText, { color: 'black' }]}>{(avgPPH).toFixed(1)}</Text>
+                            </View>
+                            <View style={[styles.square, { flexDirection: 'row' }, { backgroundColor: GIRFIRColors(avgGIR, data.count) }]}>
+                                <Text style={[styles.dataText, { color: 'black' }]}>{((avgGIR / data.count) * 100).toFixed(1)}</Text>
+                                <Text style={[styles.percent, { color: 'black' }]}>%</Text>
+                            </View>
+                            <View style={[styles.square, { flexDirection: 'row', backgroundColor: GIRFIRColors(validFIRTotal, (validFIR.length * data.count)) }]}>
+                                <Text style={[styles.dataText, { color: 'black' }]}>{((validFIRTotal / (validFIR.length * data.count))*100).toFixed(1)}</Text>
+                                <Text style={[styles.percent, { color: 'black' }]}>%</Text>
+                            </View>
+                        </View>
                     </View>
-                )
-            }
+                );
+            };
 
 
     return (
@@ -139,6 +135,7 @@ export default HoleStats2;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#222',
+        paddingBottom:40
     },
     square: {
         width: 60,

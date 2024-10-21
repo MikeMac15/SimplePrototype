@@ -15,8 +15,10 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
     const color2 = '#666'
 
 
+
+
     const holesPlayed = Object.keys(round.holes).length
-    if (holesPlayed > 0) {
+    
       return (
         <View style={{ backgroundColor: '#222' }}>
 
@@ -27,7 +29,7 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
                 <Text style={styles.text}>Hole: </Text>
               </View>
               {holes.map(hole => (
-                <View style={{ width: 36.25, borderLeftWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num == holeNumber ? 'gold' : hole.num % 2 == 0 ? color1 : color2 }} key={hole.id}>
+                <View style={{ width: 36.25, borderLeftWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? color1 : color2 }} key={hole.id}>
                   <Text style={styles.text}>{hole.num}</Text>
                 </View>
               ))}
@@ -41,14 +43,14 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
                 <Text style={[styles.text, { marginTop: 3 }]}>Par: </Text>
               </View>
               {holes.map(hole => (
-                <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num == holeNumber ? 'gold' : hole.num % 2 == 0 ? color1 : color2 }} key={hole.id}>
+                <View style={{ width: 36.25, height: 25, justifyContent: 'center', alignItems: 'center', borderLeftWidth: 0.5, borderBottomWidth: 0.5, borderRightWidth: 0.5, borderColor: 'grey', borderTopWidth: 0.5, backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? color1 : color2 }} key={hole.id}>
                   <Text style={[styles.text, { color: 'whitesmoke' }]}>{hole.par}</Text>
                 </View>
               ))}
 
             </View>
 
-            {/* Score Row */}
+            {/* Score Row
             <View style={{ flexDirection: 'row', borderWidth: 0.5 }}>
               <View style={{ width: 50 }}>
                 <Text style={[styles.text, { marginLeft: 0, marginTop: 3 }]}>Score</Text>
@@ -65,14 +67,129 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
                     borderRightWidth: 0.5,
                     borderColor: 'grey',
                     borderTopWidth: 0.5,
-                    backgroundColor: hole.num == holeNumber ? 'gold' : hole.num % 2 == 0 ? color1 : color2
+                    backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? color1 : color2
                   }}
                   key={hole.id}
                 >
                   <Text style={[styles.text, { color: round.holes[hole.num] ? round.holes[hole.num].toPar > 0 ? 'salmon' : round.holes[hole.num].toPar < 0 ? 'yellowgreen' :'white' : 'white' }]}>{round.holes[hole.num] ? round.holes[hole.num].toPar >0 ? '+' : '' :'' }{round.holes[hole.num] ? round.holes[hole.num].toPar : '-'}</Text>
                 </View>
               ))}
-            </View>
+            </View> */}
+
+            {/* Score Row */}
+<View style={{ flexDirection: 'row', borderWidth: 0.5 }}>
+  <View style={{ width: 50 }}>
+    <Text style={[styles.text, { marginLeft: 0, marginTop: 3 }]}>Score</Text>
+  </View>
+  {holes.map(hole => (
+    <View
+      style={{
+        width: 36.25,
+        height: 35,
+        
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderLeftWidth: 0.5,
+        borderBottomWidth: 0.5,
+        borderRightWidth: 0.5,
+        borderColor: '#222',
+        borderTopWidth: 0.5,
+        backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? '#555' : '#444'
+      }}
+      key={hole.id}
+    >
+      {round.holes[hole.num] && (
+        <View >
+          
+          <Text
+            style={[
+              styles.text,
+              { 
+                // color: round.holes[hole.num].toPar > 0 ? 'salmon' : 
+                //        round.holes[hole.num].toPar < 0 ? 'yellowgreen' : 'white',
+                // color: '#222',
+                fontSize: 25
+              }
+            ]}
+          >
+            {round.holes[hole.num].toPar + round.holes[hole.num].hole.par}
+          </Text>
+        </View>
+      )}
+      {!round.holes[hole.num] && (
+        <Text style={[styles.text, { color: 'white' }]}>-</Text>
+      )}
+    </View>
+  ))}
+</View>
+
+
+            {/* Score Row */}
+            <View style={{ flexDirection: 'row', borderWidth: 0.5 }}>
+  <View style={{ width: 50 }}>
+    <Text style={[styles.text, { marginLeft: 0, marginTop: 3 }]}>Total</Text>
+  </View>
+  {holes.map(hole => (
+    <View
+      style={{
+        width: 36.25,
+        height: 25,
+        
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderLeftWidth: 0.5,
+        borderBottomWidth: 0.5,
+        borderRightWidth: 0.5,
+        borderColor: '#222',
+        borderTopWidth: 0.5,
+        backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? '#555' : '#444'
+      }}
+      key={hole.id}
+    >
+      {round.holes[hole.num] && (
+        <View style={{flexDirection:'row', alignItems:'center'}}>
+          
+          <Text
+            style={[
+              styles.text,
+              { 
+                color: round.holes[hole.num].toPar > 0 ? 'salmon' : 
+                       round.holes[hole.num].toPar < 0 ? 'yellowgreen' : 'white',
+                // color: '#222',
+                fontSize: 10
+              }
+            ]}
+          >
+            {round.holes[hole.num].toPar > 0 ? '+' : ''}
+          </Text>
+          <Text
+            style={[
+              styles.text,
+              { 
+                color: round.holes[hole.num].toPar > 0 ? 'salmon' : 
+                       round.holes[hole.num].toPar < 0 ? 'yellowgreen' : 'white',
+                // color: '#222',
+                fontSize: 20
+              }
+            ]}
+          >
+            {round.holes[hole.num].toPar}
+          </Text>
+        </View>
+      )}
+      {!round.holes[hole.num] && (
+        <Text style={[styles.text, { color: 'white' }]}>-</Text>
+      )}
+    </View>
+  ))}
+</View>
+        
+
+
+
+
+
+
           
             {/* Puut Row */}
             <View style={{ flexDirection: 'row', borderWidth: 0.5 }}>
@@ -91,12 +208,12 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
                     borderRightWidth: 0.5,
                     borderColor: 'grey',
                     borderTopWidth: 0.5,
-                    backgroundColor: hole.num == holeNumber ? 'gold' : hole.num % 2 == 0 ? color1 : color2
+                    backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? color1 : color2
                   }}
                   key={hole.id}
                 >
-                  <View style={{ backgroundColor: '#111', borderRadius: 200, paddingHorizontal: 5 }}>
-                    <Text style={[styles.text, { color: round.holes[hole.num]?.putts ? round.holes[hole.num]?.putts >= 3 ? 'salmon' : 'gold' : 'grey' }]}>{round.holes[hole.num] ? Number(round.holes[hole.num]?.putts) : '-'}</Text>
+                  <View >
+                    <Text style={[styles.text, { color: round.holes[hole.num]?.putts ? round.holes[hole.num]?.putts >= 3 ? 'salmon' : 'whitesmoke' : 'whitesmoke' }]}>{round.holes[hole.num] ? Number(round.holes[hole.num]?.putts) : '-'}</Text>
                   </View>
                 </View>
               ))}
@@ -121,7 +238,7 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
                     borderRightWidth: 0.5,
                     borderColor: 'grey',
                     borderTopWidth: 0.5,
-                    backgroundColor: hole.num == holeNumber ? 'gold' : hole.num % 2 == 0 ? color1 : color2
+                    backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? color1 : color2
                   }}
                   key={hole.id}
                 >
@@ -148,7 +265,7 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
                     borderRightWidth: 0.5,
                     borderColor: 'grey',
                     borderTopWidth: 0.5,
-                    backgroundColor: hole.num == holeNumber ? 'gold' : hole.num % 2 == 0 ? color1 : color2
+                    backgroundColor: hole.num == holeNumber ? '#222' : hole.num % 2 == 0 ? color1 : color2
                   }}
                   key={hole.id}
                 >
@@ -170,7 +287,7 @@ const Score9: React.FC<score9Props> = ({holes,holeNumber,title, round}) => {
         </View >
 
       )
-}}
+}
 export default Score9;
 
 const styles = StyleSheet.create({

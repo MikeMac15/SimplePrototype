@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native"
 import { getAllRoundHoles, getAllTeeboxHoles, openDb } from "../DataBase/API";
 import { useEffect, useState } from "react";
+import { HoleStatsExtra } from "../DataBase/Classes";
 
 
 
@@ -13,25 +14,13 @@ interface Hole {
     par: number;
     yardage: number;
 }
-interface HoleStats {
-    id :number,
-    hole_id :number,
-    round_id :number,
-    putts :number,
-    great :number,
-    good :number,
-    bad :number,
-    GIR :number,
-    FIR :number,
-    toPar:number, 
-    strat:number
-}
+
 
 
 
 const PreviousScore9 = ({roundID, teeboxID}: {roundID:number, teeboxID:number}) => {
     const [holes, setHoles] = useState<Hole[]>([])
-    const [roundHoles, setRoundHoles] = useState<HoleStats[]>([])
+    const [roundHoles, setRoundHoles] = useState<HoleStatsExtra[]>([])
 
     const fetchTeeboxHoles = async() => {
         const holes: Hole[] | undefined = await getAllTeeboxHoles(teeboxID);
@@ -40,7 +29,7 @@ const PreviousScore9 = ({roundID, teeboxID}: {roundID:number, teeboxID:number}) 
         }
     }
     const fetchRoundHoles = async() => {
-        const holes: HoleStats[] | undefined = await getAllRoundHoles(roundID);
+        const holes: HoleStatsExtra[] | undefined = await getAllRoundHoles(roundID);
         if (holes){
             setRoundHoles(holes)
         }
@@ -51,7 +40,7 @@ const PreviousScore9 = ({roundID, teeboxID}: {roundID:number, teeboxID:number}) 
         fetchRoundHoles();
     },[])
 
-    const Score = ({holes,roundHoles,title}:{holes: Hole[], roundHoles: HoleStats[], title:string}) => {
+    const Score = ({holes,roundHoles,title}:{holes: Hole[], roundHoles: HoleStatsExtra[], title:string}) => {
     return (
         <View style={styles.container}>
           <View style={styles.scorecard}>

@@ -5,13 +5,9 @@ import { Stack } from "expo-router"
 import { useEffect, useState } from "react"
 
 export default function CoursesLayout() {
-
-
-    const [gradient, setGradient] = useState('cool-guy')
     const [ribbonImage, setRibbonImage] = useState('proud-parent')
     const getPreferences = async () => {
-        const value = await getMenuGradient()
-        setGradient(value)
+        
         const ribbonImgTag = await getRibbonImage()
         setRibbonImage(ribbonImgTag)
     }

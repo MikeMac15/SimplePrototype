@@ -301,7 +301,7 @@ interface C2HScoreDataProps {
 }
 
 // C2HScoreData component to display score and shot information
-const C2HScoreData: React.FC<C2HScoreDataProps> = ({ totalShots, holePar, shotColors }) => {
+export const C2HScoreData: React.FC<C2HScoreDataProps> = ({ totalShots, holePar, shotColors }) => {
   const theme = useTheme();
   const length = Math.max(holePar, totalShots);
       const combinedShotList = [...Array(length).fill('#444')];
@@ -357,7 +357,9 @@ const Shot: React.FC<ShotProps> = ({ shotNum, color }) => {
   const positionStyle = shotNum > 5 ? { position: 'absolute' as 'absolute', right: 4 } : {};
   
   return (
-    <View style={[styles.shot, { backgroundColor: color }, transformStyle, positionStyle]}>
+    <View style={[styles.shot, { backgroundColor: color, shadowOffset: { width: .5, height: 1 },
+      shadowOpacity: 0.25, 
+      shadowRadius: 3, shadowColor: color }, transformStyle, positionStyle]}>
       <Text style={[styles.shotText, { color: color === '#444' ? 'whitesmoke' : 'black' }]}>{shotNum}</Text>
     </View>
   );

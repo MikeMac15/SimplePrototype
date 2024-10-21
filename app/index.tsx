@@ -1,6 +1,5 @@
 import { openDb, tableSetUp } from "@/components/DataBase/API";
 import { Link, Stack, useFocusEffect } from "expo-router";
-import { SQLiteProvider } from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { Button, View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image } from "react-native";
@@ -8,79 +7,44 @@ import { LinearGradient } from "expo-linear-gradient";
 import { getMenuImageSource } from "@/constants/Colors";
 
 import HomeRecentRound from "@/components/HomeComponents/HomeRecentRound";
-import { getMenuImage } from "@/components/DataBase/localStorage";
-import { ThemeProvider } from "@react-navigation/native";
+import { getHCP, getMenuImage, setHCP } from "@/components/DataBase/localStorage";
+import WelcomeModal from "@/components/HomeComponents/WelcomeModal";
 
 
 
 export default function Index() {
-  const [menuImage, setMenuImage] = useState('proud-parent')
-
+  const [menuImage, setMenuImage] = useState('palms');
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const imageSource = getMenuImageSource(menuImage);
 
-
-  const setUserPreferences = async () => {
-    const menuImgTag = await getMenuImage()
-    setMenuImage(menuImgTag)
-  }
-  useEffect(() => {
-    setUserPreferences();
-  }, [])
-
+  const setUserPreferences = useCallback(async () => {
+    const menuImgTag = await getMenuImage();
+    setMenuImage(menuImgTag);
+    // check is user has turned off the welcome modal
+    
+    const hcp = await getHCP();
+    if (hcp === null) {
+      setShowWelcomeModal(true);
+      
+    }
+  }, []);
 
   const setUpDB = async () => {
     const db = await openDb();
     await tableSetUp(db);
-  }
-
+  };
 
   useEffect(() => {
     setUpDB();
-
   }, []);
 
-  // const image = require('../assets/images/ggwp.png');
-
-
-
-
-
+  // refresh preferences when the screen is focused
   useFocusEffect(
     useCallback(() => {
-      setUserPreferences()
-
-      return () => {
-
-      };
-    }, [])
+      setUserPreferences();
+    }, [setUserPreferences])
   );
-
-
-
-
-  const MenuLink = ({ hurl, title }: { hurl: string, title: string }) => {
-
-
-    return (
-      <View style={{ transform: 'scale(.95)' }}>
-
-        <Link href={hurl} asChild>
-
-          <TouchableOpacity activeOpacity={0.6}>
-            <LinearGradient colors={['#444', '#222']} style={styles.Links}>
-
-              <Text style={styles.LinkText}>{title}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </Link>
-      </View>
-    )
-  }
-
-
-
-
 
   return (
 
@@ -90,15 +54,15 @@ export default function Index() {
 
       <Stack.Screen options={{
         headerTransparent: true, headerRight: () => (
-          <TouchableOpacity onPress={() => ''} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: 'rgba(20,20,20,0.6)', padding: 2, borderRadius: 30 }}>
-            <FontAwesome5 name="user-friends" size={30} color="white" />
-            <Text style={{ color: 'white', marginHorizontal: 5, fontSize: 10 }}>Social</Text>
+          <TouchableOpacity onPress={() => ''} style={{ flexDirection: 'column', alignItems: 'center', }}>
+            <FontAwesome5 name="users" size={30} color="#777" />
+            <Text style={{ color: '#777', marginHorizontal: 5, fontSize: 10 }}>Social</Text>
           </TouchableOpacity>
         ),
         headerLeft: () => (
           <Link href={("/(settings)")} asChild>
 
-            <TouchableOpacity onPress={() => ''} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: 'rgba(20,20,20,0.6)', borderRadius: 30 }}>
+            <TouchableOpacity onPress={() => ''} style={{ flexDirection: 'column', alignItems: 'center', }}>
               <FontAwesome name="cog" size={30} color="white" />
               <Text style={{ color: 'white', marginHorizontal: 5, fontSize: 10 }}>Settings</Text>
             </TouchableOpacity>
@@ -107,43 +71,18 @@ export default function Index() {
         ),
       }} />
 
-      <View style={{ justifyContent: 'center', alignItems: 'center', height:150  }}>
+      { showWelcomeModal && <WelcomeModal modalVisible={showWelcomeModal} setModalVisible={setShowWelcomeModal} /> }
 
-      {/* <View style={{ backgroundColor:'rgba(0,0,0,0.6)', borderRadius:20 }}> */}
+      <View style={{ justifyContent: 'center', alignItems: 'center', height: 150 }}>
+
+        {/* <View style={{ backgroundColor:'rgba(0,0,0,0.6)', borderRadius:20 }}> */}
         <Image
-resizeMode="cover"
-style={{ width: 300, height: 200 }}
-source={require('../assets/images/logo.png')}
-/>
+          resizeMode="cover"
+          style={{ width: 300, height: 200 }}
+          source={require('../assets/images/logo.png')}
+        />
       </View>
-      {/* </View> */}
 
-
-
-      {/*///////////////////////////////////////////////// Old /////////////////////////////////////////////////¿ */}
-      {/* <View
-          style={{
-            // paddingBottom:50,
-            marginTop:20,
-            justifyContent: "center",
-            flexDirection:'row',
-            alignItems: "center",
-            }}
-            >
-            <View>
-            
-            <MenuLink hurl="(play)" title="Play a Round" />
-            <MenuLink hurl='(myCourses)' title="My Courses"/>
-            </View>
-            <View>
-            
-            <MenuLink hurl='(tabs)' title="Stat Lounge"/>
-            
-            <MenuLink hurl='(settings)' title="Settings"/>
-            </View>
-            
-            
-            </View> */}
 
       <View
         style={{
@@ -153,11 +92,48 @@ source={require('../assets/images/logo.png')}
           flexDirection: 'row',
           alignItems: "center",
         }}
-        >
+      >
         <View>
-          <MenuLink hurl="(play)" title="Play a Round" />
-          <MenuLink hurl='(myCourses)' title="My Courses" />
-          <MenuLink hurl='(tabs)' title="Stat Lounge" />
+
+          <View style={{ transform: 'scale(.95)' }}>
+
+            <Link push href={'/(play)'} asChild>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+
+                  <Text style={styles.LinkText}>{"Play A Round"}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Link>
+          </View>
+
+          <View style={{ transform: 'scale(.95)' }}>
+
+            <Link push href={'/(myCourses)/'} asChild>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+
+                  <Text style={styles.LinkText}>{"My Courses"}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Link>
+          </View>
+
+          <View style={{ transform: 'scale(.95)' }}>
+
+            <Link href={'/(tabs)'} asChild>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <LinearGradient colors={['#444', '#222']} style={styles.Links}>
+
+                  <Text style={styles.LinkText}>{"Statistics"}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Link>
+          </View>
+
         </View>
       </View>
 
@@ -165,8 +141,6 @@ source={require('../assets/images/logo.png')}
 
       <View style={{ height: 200, alignItems: 'center', transform: 'translateY(-30px)' }}>
         <View style={{ transform: 'scaleY(0.75)' }}>
-  
-
 
           <HomeRecentRound />
 
